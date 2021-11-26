@@ -1,0 +1,21 @@
+extends ./templates/general.template.pug
+
+block append style 
+  link(rel="stylesheet", href="/css/home.css")
+
+block content 
+  include ./mixins/header.mixin.pug
+  +header
+
+  h1 Hello world!
+    i.bi.bi-windows
+  
+  ul
+    each person in data 
+      li.item.my-2 
+        span.name #{helpers.addQuotes(person.name)} &nbsp;
+        span.username= person.username
+
+block append script 
+  script(src="/js/home.js") 
+  

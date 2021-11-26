@@ -1,0 +1,29 @@
+{
+	"name": "covid-project",
+	"version": "1.0.0",
+	"description": "Covid 19 - Phát triển ứng dụng web",
+	"main": "index.js",
+	"repository": "https://github.com/TuanNguyen2504/covid-project",
+	"author": "18120144-18120606-18120609-18120634",
+	"license": "MIT",
+	"scripts": {
+		"start": "node ./src/index.js",
+		"dev": "nodemon ./src/index.js"
+	},
+	"dependencies": {
+		"axios": "^0.24.0",
+		"bcryptjs": "^2.4.3",
+		"cloudinary": "^1.27.1",
+		"cookie-parser": "^1.4.6",
+		"dotenv": "^10.0.0",
+		"express": "^4.17.1",
+		"morgan": "^1.10.0",
+		"pg": "^8.7.1",
+		"pg-hstore": "^2.3.4",
+		"pug": "^3.0.2",
+		"sequelize": "^6.12.0-alpha.1"
+	},
+	"devDependencies": {
+		"nodemon": "^2.0.15"
+	}
+}

@@ -7,7 +7,6 @@ const cookieParser = require('cookie-parser');
 const morgan = require('morgan');
 
 /* ============== Import ruote =============== */
-const homeRoute = require('./routes/home.route');
 
 /* ============== Config =============== */
 app.use(express.static(path.join(__dirname, 'public')));
@@ -23,8 +22,6 @@ app.set('views', path.join(__dirname, 'views'));
 app.use(morgan('tiny'));
 
 /* ============== Routes =============== */
-
-app.use('/', homeRoute);
 
 // 404 Not found redirect
 app.use((req, res) => res.render('404.pug'));

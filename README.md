@@ -26,7 +26,7 @@
     - [Boostrap v4.6.1](https://getbootstrap.com/docs/4.6/getting-started/introduction/) - Static File
     - [Jquery v3.6](https://api.jquery.com/) - Static File
     - [Bootstrap Icon v1.7.0](https://icons.getbootstrap.com/#usage) - CDN
-    - [Popper.js] - Static File
+    - [Popper.js](https://popper.js.org/) - Static File
 
   - Backend:
 
@@ -60,6 +60,23 @@
 
 ---
 
+## Coding Conventions
+
+- Dùng IDE là `Visual Studio Code`.
+- Format với `Prettier` extension.
+- Consistent coding với `Editor Config` extension.
+- Tên bảng trong database và model là `PascalCase`
+- Tên thuộc tính trong bảng (model), tên biến, hàm là `camelCase`
+- Không sử dụng hard code (magic number - là những chuỗi hoặc con số cứng). Hãy đặt nó trong `constants`.
+- Đặt tên file đi kèm với tên module của nó (bỏ `s`), trừ views và public. Ví dụ (name.controller.js, name.route.js)
+- Pull code trước khi push (báo conflict cho team nếu nó quá phức tạp).
+- Kiểm tra các template, mixin, helper trước khi code 1 chức năng (nhằm tái sử dụng lại chức năng).
+- Cố gắng tách các module, mixin nếu có thể.
+- Dùng async / await (nếu không bắt buộc phải dùng Promise).
+- dùng `exports.funcName` để export ra một module (nhầm dễ tìm định nghĩa hàm).
+- Đặt kiểu method trước mối hàm của controller. Ví dụ `getController, postController`.
+- Lưu đặt `try catch` trong controller để bắt lỗi (hoặc trong những hàm có connect DB). Log lỗi kèm với tên hàm.
+
 ## Yêu cầu đồ án
 
 &nbsp;
@@ -72,7 +89,7 @@
 
 ## 1. Hệ thống Quản lý Covid
 
-### 1.1 Đăng nhập, khởi tạo ban đầu
+### 1.1 Đăng nhập, khởi tạo ban đầu `(Tuấn)`
 
 - Khi chương trình khởi động thì cần yêu cầu đăng nhập. Tùy thuộc vào phân
   quyền của tài khoản mà mở màn hình với các chức năng thích hợp.
@@ -84,7 +101,7 @@
 
 ### 1.2 Phân hệ Quản lý
 
-#### 1.2.1 Quản lý danh sách người liên quan Covid-19
+#### 1.2.1 Quản lý danh sách người liên quan Covid-19 `(Tuấn)`
 
 - Người liên quan Covid-19 bao gồm các thông tin cơ bản sau:
   - Họ tên
@@ -100,18 +117,17 @@
 - Tìm kiếm
 - Sắp xếp theo nhiều tiêu chí.
 
-#### 1.2.2 Thêm người liên quan Covid-19 vào hệ thống
+#### 1.2.2 Thêm người liên quan Covid-19 vào hệ thống `(Tuấn)`
 
 - Form thêm với đầy đủ thông tin cần thiết
 - Có validation đầy đủ
 
-#### 1.2.3 Thay đổi trạng thái người liên quan Covid-19
+#### 1.2.3 Thay đổi trạng thái người liên quan Covid-19 `(Tuấn)`
 
 - Chuyển trạng thái cần thiết như: F2 -> F1, F2 -> F0,… với các thông tin phù hợp (người liên quan phải thay đổi trạng thái theo).
-- Chuyển trạng thái cần thiết như: F2 -> F1, F2 -> F0,… với các thông tin phù
-  hợp (người liên quan phải thay đổi trạng thái theo).
+- Chuyển nơi điều trị / cách ly (ràng buộc về sức chứa).
 
-#### 1.2.4 Quản lý các sản phẩm nhu yếu phẩm
+#### 1.2.4 Quản lý các sản phẩm nhu yếu phẩm `(Tuấn)`
 
 - Sản phẩm nhu yếu phẩm gồm các thông tin cơ bản
 
@@ -124,7 +140,7 @@
 - Tìm kiếm, Sắp xếp, Lọc
 - Thêm, xóa, sửa (luôn kiểm tra ràng buộc)
 
-#### 1.2.5 Quản lý các gói Nhu yếu phẩm
+#### 1.2.5 Quản lý các gói Nhu yếu phẩm `(Trí)`
 
 - Gói Nhu yếu phẩm gồm các thông tin cơ bản sau:
 
@@ -139,7 +155,7 @@
 - Tìm kiếm, sắp xếp, lọc
 - Thêm, xóa, sửa (luôn kiểm tra ràng buộc)
 
-#### 1.2.6 Thống kê thông tin
+#### 1.2.6 Thống kê thông tin `(Trí)`
 
 - Thống kê số lượng người ở từng trạng thái theo thời gian.
 - Thống kê các thông tin có thể như: số chuyển trạng thái, khỏi bệnh,…
@@ -147,31 +163,31 @@
 - Thống kê tiêu thụ sản phẩm
 - Thống kê dư nợ, thanh toán
 
-#### 1.2.7 Quản lý Thanh toán
+#### 1.2.7 Quản lý Thanh toán `(Trí)`
 
 - Thay đổi hạn mức thanh toán tối thiểu
 - Duyệt danh sách và gửi thông báo nhắc thanh toán
 
 ### 1.3 Phân hệ quản trị (Admin)
 
-#### 1.3.1 Tạo tài khoản
+#### 1.3.1 Tạo tài khoản `(Trang)`
 
 - Tạo tài khoản người quản lý với xử lý password lưu trữ hợp lý (không lưu trữ password bản rõ trong database).
 - Chỉ cần thông tin username, password và phân quyền.
 
-#### 1.3.2 Quản lý thông tin tài khoản người quản lý
+#### 1.3.2 Quản lý thông tin tài khoản người quản lý `(Trang)`
 
 - Khóa tài khoản.
 - Xem lịch sử hoạt động của tài khoản.
 
-#### 1.3.3 Quản lý địa điểm điều trị / cách ly
+#### 1.3.3 Quản lý địa điểm điều trị / cách ly `(Trang)`
 
 - Thêm mới, điều chỉnh.
 - Địa điểm điều trị / cách ly chỉ cần thông tin Tên, Sức chứa và Số lượng tiếp nhận hiện tại.
 
 ### 1.4 Phân hệ người dùng (Người được quản lý)
 
-#### 1.4.1 Xem thông tin cá nhân
+#### 1.4.1 Xem thông tin cá nhân `(Phúc)`
 
 - Các thông tin cơ bản
 - Lịch sử được quản lý
@@ -180,19 +196,19 @@
 - Lịch sử thanh toán
 - Thông báo nhắc thanh toán (nếu có)
 
-#### 1.4.2 Thay đổi thông tin cá nhân
+#### 1.4.2 Thay đổi thông tin cá nhân `(Trang)`
 
 - Chỉ cho thay đổi mật khẩu (quy trình hợp lý)
 - Liên kết sang Hệ thống thanh toán để nạp tiền
 
-#### 1.4.3 Chọn mua gói Nhu yếu phẩm
+#### 1.4.3 Chọn mua gói Nhu yếu phẩm `(Phúc)`
 
 - Xem danh sách các gói Nhu yếu phẩm
 - Tìm kiếm, sắp xếp, lọc
 - Thay đổi số lượng sản phẩm trong gói (trong phạm vi ràng buộc)
 - Chọn mua gói Nhu yếu phẩm (có kiểm tra các ràng buộc).
 
-#### 1.4.4 Thanh toán chi phí
+#### 1.4.4 Thanh toán chi phí `(Phúc)`
 
 - Thanh toán dư nợ theo hạn mức tối thiểu (có kiểm tra số dư từ Hệ thống thanh toán
 - Liên kết sang Hệ thống thanh toán để nạp tiền

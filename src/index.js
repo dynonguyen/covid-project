@@ -5,8 +5,9 @@ const app = express();
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const morgan = require('morgan');
+const { db } = require('./configs/db.config');
 
-/* ============== Import ruote =============== */
+/* ============== Import routes =============== */
 
 /* ============== Config =============== */
 app.use(express.static(path.join(__dirname, 'public')));
@@ -30,6 +31,8 @@ app.use((req, res) => res.render('404.pug'));
 const normalizePort = (port) => parseInt(port, 10);
 const PORT = normalizePort(process.env.PORT || 3000);
 
-app.listen(PORT, () => {
-	console.log(`Server is listening on port ${PORT}`);
+db.sync({ alter: true }).then((_) => {
+	app.listen(PORT, () => {
+		console.log(`Server is listening on port ${PORT}`);
+	});
 });

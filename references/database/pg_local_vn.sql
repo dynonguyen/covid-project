@@ -1,19 +1,4 @@
 --
--- Database: `pg_local_vn`
---
-
-
---
--- Table structure for Province table
---
-
-CREATE TABLE "Province" (
-  "id" int NOT NULL,
-  "name" varchar(30),
-  "code" varchar(20)
-);
-
---
 -- Insert data to Province table
 --
 
@@ -82,21 +67,9 @@ INSERT INTO "Province" ("id", "name", "code") VALUES
 (62, 'Bắc Kạn', 'BK'),
 (63, 'Cao Bằng', 'CB');
 
--- --------------------------------------------------------
 
 --
--- Table structure for District table
---
-
-CREATE TABLE "District" (
-  "id" int NOT NULL,
-  "name" varchar(30),
-  "prefix" varchar(20),
-  "provinceId" int
-);
-
---
--- Dumping data for District table
+-- Insert data for District table
 --
 
 INSERT INTO "District" ("id", "name", "prefix", "provinceId") VALUES
@@ -809,20 +782,6 @@ INSERT INTO "District" ("id", "name", "prefix", "provinceId") VALUES
 (707, 'Thông Nông', 'Huyện', 63),
 (708, 'Trà Lĩnh', 'Huyện', 63),
 (709, 'Trùng Khánh', 'Huyện', 63);
-
-
--- --------------------------------------------------------
-
---
--- Table structure for Ward table
---
-
-CREATE TABLE "Ward" (
-  "id" int NOT NULL,
-  "name" varchar(30),
-  "prefix" varchar(20),
-  "districtId" int
-);
 
 --
 -- Insert data to Ward table
@@ -12112,21 +12071,3 @@ INSERT INTO "Ward" ("id", "name", "prefix", "districtId") VALUES
 (11281, 'Thông Huề', 'Xã', 709),
 (11282, 'Trùng Khánh', 'Thị trấn', 709),
 (11283, 'Trung Phúc', 'Xã', 709);
-
-
---
--- PK and FK for Province table
---  
-ALTER TABLE "Province" ADD CONSTRAINT "PK_Province" PRIMARY KEY ("id");
---
-
--- PK and FK for District table
---  
-ALTER TABLE "District" ADD CONSTRAINT "PK_District" PRIMARY KEY ("id");
-ALTER TABLE "District" ADD CONSTRAINT "FK_District_Province" FOREIGN KEY ("provinceId") REFERENCES "Province" ("id");
-
---
--- PK and FK for Ward table
---  
-ALTER TABLE "Ward" ADD CONSTRAINT "PK_Ward" PRIMARY KEY ("id");
-ALTER TABLE "Ward" ADD CONSTRAINT "FK_Ward_District" FOREIGN KEY ("districtId") REFERENCES "District" ("id");

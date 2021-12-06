@@ -1,6 +1,6 @@
 const { DataTypes, db } = require('../configs/db.config');
 const { STATUS_F } = require('../constants/index.constant');
-const IsolationFacility = require('./isolationFacility.model');
+const IsolationFacility = require('./isolation-facility.model');
 const User = require('./user.model');
 
 const TreatmentHistory = db.define(

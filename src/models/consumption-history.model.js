@@ -1,5 +1,5 @@
 const { DataTypes, db } = require('../configs/db.config');
-const ProductPackage = require('./productPackage.model');
+const ProductPackage = require('./product-package.model');
 const User = require('./user.model');
 
 const ConsumptionHistory = db.define(

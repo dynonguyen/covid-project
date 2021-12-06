@@ -1,6 +1,6 @@
 const { DataTypes, db } = require('../configs/db.config');
 const { PAYMENT_TYPES } = require('../constants/index.constant');
-const ConsumptionHistory = require('./consumptionHistory.model');
+const ConsumptionHistory = require('./consumption-history.model');
 const User = require('./user.model');
 
 const PaymentHistory = db.define(

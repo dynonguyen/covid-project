@@ -1,6 +1,6 @@
 const { DataTypes, db } = require('../configs/db.config');
 const Product = require('./product.model');
-const ProductPackage = require('./productPackage.model');
+const ProductPackage = require('./product-package.model');
 
 const ProductInPackage = db.define(
 	'ProductInPackage',

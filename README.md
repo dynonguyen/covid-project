@@ -64,6 +64,7 @@
 
 - Dùng IDE là `Visual Studio Code`.
 - Format với `Prettier` extension.
+- Tên file, folder là các chữ viết thường, cách nhau bằng dấu `-` (nếu có nhiều từ)
 - Consistent coding với `Editor Config` extension.
 - Tên bảng trong database và model là `PascalCase`
 - Tên thuộc tính trong bảng (model), tên biến, hàm là `camelCase`

@@ -2,6 +2,15 @@
 
 BEGIN;
 
+CREATE TABLE IF NOT EXISTS public."AdminAccount"
+(
+    "accountId" integer NOT NULL,
+    username character varying(30) COLLATE pg_catalog."default" NOT NULL,
+    password character varying(72) COLLATE pg_catalog."default",
+    fullname character varying(50) COLLATE pg_catalog."default",
+    "failedLoginTime" smallint NOT NULL DEFAULT 0,
+    CONSTRAINT "AdminAccount_pkey" PRIMARY KEY ("accountId")
+);
 
 CREATE TABLE IF NOT EXISTS public."Account"
 (

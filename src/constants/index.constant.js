@@ -1,8 +1,7 @@
 module.exports = {
 	ACCOUNT_TYPES: {
 		USER: 0,
-		ADMIN: 1,
-		MANAGER: 2,
+		MANAGER: 1,
 	},
 
 	DEFAULT: {

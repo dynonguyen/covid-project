@@ -11,7 +11,7 @@ exports.postCreateAdminAccount = async (req, res) => {
 		}
 
 		// create an account
-		const hashPwd = await hashPassword();
+		const hashPwd = await hashPassword(password);
 		const adminAccount = await AdminAccount.create({
 			username,
 			password: hashPwd,

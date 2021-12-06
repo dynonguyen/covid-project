@@ -14,7 +14,7 @@ const {
 } = require('./middlewares/init-system.middleware');
 
 /* ============== Import routes =============== */
-const initSystemRoute = require('./routes/inti-system.route');
+const initSystemRoute = require('./routes/init-system.route');
 
 /* ============== Config =============== */
 app.use(express.static(path.join(__dirname, 'public')));
@@ -50,7 +50,7 @@ app.use((req, res) => res.render('404.pug'));
 const normalizePort = (port) => parseInt(port, 10);
 const PORT = normalizePort(process.env.PORT || 3000);
 
-db.sync({ alter: true }).then((_) => {
+db.sync({ after: true }).then((_) => {
 	app.listen(PORT, () => {
 		console.log(`Server is listening on port ${PORT}`);
 	});

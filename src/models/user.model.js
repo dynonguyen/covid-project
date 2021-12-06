@@ -38,8 +38,8 @@ const User = db.define(
 );
 
 // Foreign key
-User.hasMany(User, {
-	sourceKey: 'userId',
+Account.hasMany(User, {
+	sourceKey: 'accountId',
 	foreignKey: 'managerId',
 	onUpdate: 'CASCADE',
 	onDelete: 'RESTRICT',

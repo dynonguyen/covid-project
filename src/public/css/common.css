@@ -37,13 +37,13 @@ html {
 	font-weight: 500;
 }
 
-.btn-primary {
-	background-color: var(--primary) !important;
-}
-
-.btn-primary:hover {
+.btn:hover {
 	-webkit-filter: brightness(0.85);
 	filter: brightness(0.85);
+}
+
+.btn-primary {
+	background-color: var(--primary) !important;
 }
 
 /* ----------- field ------------- */

@@ -294,7 +294,7 @@ ALTER TABLE IF EXISTS public."User"
 
 ALTER TABLE IF EXISTS public."User"
     ADD CONSTRAINT "User_managerId_fkey" FOREIGN KEY ("managerId")
-    REFERENCES public."User" ("userId") MATCH SIMPLE
+    REFERENCES public."Account" ("accountId") MATCH SIMPLE
     ON UPDATE CASCADE
     ON DELETE RESTRICT;
 

@@ -1,0 +1,29 @@
+extends ./templates/general.template.pug
+
+block append style
+  link(rel="stylesheet", href="/css/init-system.css")
+
+block bootstrapIcon
+
+block content
+  .wrapper
+    .toast-msg#toastMsg
+    .container-wrapper.p-2.flex-center.w-100.h-100
+      .form-wrap.d-flex.justify-content-between
+        .form-picture
+          img.w-100(src="https://res.cloudinary.com/dynonary/image/upload/v1638761244/ptud-web/covid-project/system-icon.png", alt="System Icon")
+        form#initSystemForm.m-0-auto(action="/init-system", method="POST")
+          .form-title
+            h1.title.text-center Tạo tài khoản Admin
+            p.sub-title.text-center Khởi tạo hệ thống lần đầu tiên. Hãy tạo một tài khoản Adminstrator.
+          .d-flex.flex-column
+            input#username.field(type="text", name="username", maxLength="30", required, placeholder="Nhập username", autofocus)
+            input#password.field(type="password", name="password", maxLength="50", required, placeholder="Nhập mật khẩu")
+            input#confirmPw.field(type="password", maxLength="50", required, placeholder="Nhập lại mật khẩu")
+          button#submitBtn.submit-btn.btn.btn-primary(type="submit") Khởi tạo
+
+block append script
+  script(src="/js/init-system.js")
+
+
+

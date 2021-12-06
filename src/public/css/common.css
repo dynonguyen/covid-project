@@ -1,0 +1,138 @@
+/* ----------- Reset ------------- */
+:root {
+	--primary: #785fbb;
+	--light-gray: #e6e6e6;
+	--gray: #888;
+	--dark: #1e1e1e;
+}
+
+html,
+body {
+	overflow-x: hidden;
+	box-sizing: border-box;
+}
+
+html {
+	font-size: 100%;
+}
+
+/* ----------- atomic ------------- */
+.flex-center {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.m-0-auto {
+	margin: 0 auto;
+}
+
+/* ----------- button ------------- */
+.btn {
+	transition: all 0.35s;
+	border: none !important;
+	outline: none !important;
+	box-shadow: none !important;
+	text-transform: capitalize;
+	font-weight: 500;
+}
+
+.btn-primary {
+	background-color: var(--primary) !important;
+}
+
+.btn-primary:hover {
+	-webkit-filter: brightness(0.85);
+	filter: brightness(0.85);
+}
+
+/* ----------- field ------------- */
+.field {
+	outline: none;
+	border: none;
+	padding: 0.5rem 1.25rem;
+	border-radius: 25px;
+	font-size: 1rem;
+	font-weight: 500;
+
+	background-color: var(--light-gray);
+	color: var(--dark);
+}
+
+.field::-webkit-input-placeholder {
+	color: var(--gray);
+}
+
+.field::-moz-placeholder {
+	color: var(--gray);
+}
+
+.field:-ms-input-placeholder {
+	color: var(--gray);
+}
+
+.field::-ms-input-placeholder {
+	color: var(--gray);
+}
+
+.field::placeholder {
+	color: var(--gray);
+}
+
+/* ----------- toasts ------------- */
+.toast-msg {
+	z-index: 999;
+	position: fixed;
+	right: 15px;
+	top: 15px;
+
+	padding: 1.25rem 2.25rem;
+	border-radius: 8px;
+	background-color: #fff;
+	font-size: 1.1rem;
+	font-weight: 500;
+	box-shadow: rgba(0, 0, 0, 0.45) 0px 25px 50px -12px;
+	color: var(--gray-dark);
+	display: none;
+}
+
+.toast-msg.show {
+	display: block;
+	-webkit-animation: toast-ani 0.5s linear forwards;
+	animation: toast-ani 0.5s linear forwards;
+}
+
+.toast-msg.success {
+	background-color: var(--success);
+	color: #fff;
+}
+
+.toast-msg.danger {
+	background-color: var(--danger);
+	color: #fff;
+}
+
+.toast-msg .close-icon {
+	position: absolute;
+	top: 2px;
+	right: 12px;
+	cursor: pointer;
+	color: inherit;
+}
+
+@-webkit-keyframes toast-ani {
+	from {
+		right: -200px;
+	}
+	to {
+		right: 15px;
+	}
+}
+@keyframes toast-ani {
+	from {
+		right: -200px;
+	}
+	to {
+		right: 15px;
+	}
+}

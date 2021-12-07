@@ -1,0 +1,34 @@
+extends ./templates/general.template.pug
+
+block append style
+  link(rel="stylesheet", href="/css/auth-form.css")
+
+block content
+  .wrapper
+    if message
+      .toast-msg.danger.show#toastMsg= message
+        .close-icon x
+    else
+      .toast-msg#toastMsg
+
+    .container-wrapper.p-2.flex-center.w-100.h-100
+      .form-wrap.d-flex.justify-content-between
+        .form-picture
+          img(src="https://res.cloudinary.com/dynonary/image/upload/v1638867541/ptud-web/covid-project/login-icon.png", alt="Login Icon")
+        form#loginForm.m-0-auto(action="/auth/login", method="POST")
+          .form-title
+            h1.title.text-center Đăng nhập
+            p.sub-title.text-center Không cần nhập mật khẩu trong lần đầu đăng nhập
+          .d-flex.flex-column
+            input#username.field(type="text", name="username", maxLength="30", required, placeholder="Nhập username", autofocus, value=username ? username: '')
+            .position-relative
+              input#password.field.w-100(type="password", name="password", maxLength="50", placeholder="Nhập mật khẩu")
+              i.field-end-icon.bi.bi-eye-slash-fill.view-password-icon
+            .d-flex.align-items-center.mb-3.px-2
+              input#remember(type="checkbox", name="remember", style="width:18px;height:18px")
+              label.mb-0.ml-3.text-gray(for="remember", style="font-weight:500") Ghi nhớ đăng nhập
+          button#submitBtn.submit-btn.btn.btn-primary(type="submit") Đăng nhập
+
+block append script
+  script(src="/js/login.js")
+

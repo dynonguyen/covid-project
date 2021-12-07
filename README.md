@@ -98,7 +98,7 @@
 - Nếu Hệ thống khởi tạo lần đầu tiên thì cần cho phép tạo tài khoản admin.
 
 - Nếu là tài khoản của Người được quản lý đã có trong hệ thống nhưng chưa
-  từng đăng nhập thì yêu cầu taok password.
+  từng đăng nhập thì yêu cầu tạo password.
 
 ### 1.2 Phân hệ Quản lý
 

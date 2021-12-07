@@ -3,21 +3,20 @@
 // show & hide toast message
 function showToastMsg(toast, message = 'Message', type = '', timeout = 3000) {
 	if (toast) {
-		toast;
 		toast
 			.html(`${message} <div class="close-icon">x</div>`)
 			.addClass(`${type} show`);
 
 		if (timeout !== 0) {
 			setTimeout(() => {
-				toast.removeClass('show');
+				toast.removeClass(`${type} show`);
 			}, timeout);
 		}
 	}
 }
 
 $('.toast-msg').click(function () {
-	$(this).removeClass('show');
+	$(this).removeClass('show danger warning');
 });
 
 // show & hide view password input

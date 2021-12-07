@@ -12,8 +12,10 @@ const session = require('express-session');
 const {
 	checkInitSystemMiddleware,
 } = require('./middlewares/init-system.middleware');
+const { authMiddleware } = require('./middlewares/auth.middleware');
 
 /* ============== Import routes =============== */
+const authRoute = require('./routes/auth.route');
 const initSystemRoute = require('./routes/init-system.route');
 
 /* ============== Config =============== */
@@ -26,7 +28,6 @@ app.use(
 		secret: process.env.SESSION_SERECT || 'session_secret',
 		resave: false,
 		saveUninitialized: true,
-		cookie: { secure: true },
 	})
 );
 
@@ -42,6 +43,8 @@ app.use(checkInitSystemMiddleware);
 
 /* ============== Routes =============== */
 app.use('/init-system', initSystemRoute);
+app.use('/auth', authRoute);
+app.use('/', authMiddleware, (req, res) => res.send('Home'));
 
 // 404 Not found redirect
 app.use((req, res) => res.render('404.pug'));

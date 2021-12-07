@@ -27,6 +27,14 @@ html {
 	margin: 0 auto;
 }
 
+.cur-pointer {
+	cursor: pointer;
+}
+
+.text-gray {
+	color: var(--gray);
+}
+
 /* ----------- button ------------- */
 .btn {
 	transition: all 0.35s;
@@ -119,6 +127,10 @@ html {
 .toast-msg.danger {
 	background-color: var(--danger);
 	color: #fff;
+}
+
+.toast-msg.warning {
+	background-color: var(--warning);
 }
 
 .toast-msg .close-icon {

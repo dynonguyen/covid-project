@@ -1,5 +1,3 @@
-/// <reference path="D:\typings\jquery\globals\jquery\index.d.ts" />
-
 $(document).ready(function () {
 	$('#loginForm').submit(function (e) {
 		e.preventDefault();

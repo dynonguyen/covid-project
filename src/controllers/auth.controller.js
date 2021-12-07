@@ -1,10 +1,7 @@
 const bcrypt = require('bcryptjs');
-const {
-	ACCOUNT_TYPES,
-	COOKIE_KEY,
-	MAX,
-} = require('../constants/index.constant');
 const Account = require('../models/account.model');
+const { ACCOUNT_TYPES, MAX } = require('../constants/index.constant');
+const { hashPassword } = require('../helpers/index.helpers');
 
 exports.getLogin = async (req, res) => {
 	try {
@@ -58,8 +55,11 @@ exports.postLogin = async (req, res) => {
 
 		// if the account is a default user -> check empty password
 		if (accountType === ACCOUNT_TYPES.USER) {
-			if (!password) {
-				return res.send('Tao mat khau moi');
+			if (!accountPwd) {
+				return res.render('create-password.pug', {
+					title: 'Tạo mật khẩu mới',
+					username,
+				});
 			}
 		}
 
@@ -88,7 +88,7 @@ exports.postLogin = async (req, res) => {
 			);
 		} else {
 			await Account.update(
-				{ failedLoginTime: failedLoginTime + 1, isLocked: true },
+				{ failedLoginTime: MAX.FAILED_LOGIN_TIME, isLocked: true },
 				{ where: { username } }
 			);
 			message = `Tài khoản của bạn đã bị khoá do đăng nhập sai quá ${MAX.FAILED_LOGIN_TIME} lần`;
@@ -101,6 +101,21 @@ exports.postLogin = async (req, res) => {
 		});
 	} catch (error) {
 		console.error('Function postLogin Error: ', error);
+		return res.render('404');
+	}
+};
+
+exports.postCreatePassword = async (req, res) => {
+	const { username } = req.params;
+	const { password } = req.body;
+	try {
+		if (username && password) {
+			const hashPw = await hashPassword(password);
+			await Account.update({ password: hashPw }, { where: { username } });
+			return res.redirect('/auth/login');
+		}
+	} catch (error) {
+		console.error('Function postCreatePassword Error: ', error);
 		return res.render('404');
 	}
 };

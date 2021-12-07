@@ -42,7 +42,7 @@ body {
 }
 
 .cog2 {
-	border: 6vmin solid #4f8a8b;
+	border: 6vmin solid #785fbb;
 }
 
 .top,
@@ -67,7 +67,7 @@ body {
 .cog2 .left-down,
 .cog2 .right-top,
 .cog2 .right-down {
-	background-color: #4f8a8b;
+	background-color: #785fbb;
 }
 
 .top {
@@ -150,6 +150,6 @@ h1 {
 
 .wrong-para a {
 	text-decoration: none;
-	color: #4f8a8b;
+	color: #785fbb;
 	font-weight: bold;
 }

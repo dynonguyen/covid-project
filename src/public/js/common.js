@@ -19,3 +19,17 @@ function showToastMsg(toast, message = 'Message', type = '', timeout = 3000) {
 $('.toast-msg').click(function () {
 	$(this).removeClass('show');
 });
+
+// show & hide view password input
+$('.view-password-icon').click(function () {
+	const that = $(this);
+	const field = that.siblings('input.field');
+
+	if (that.hasClass('bi-eye-fill')) {
+		that.removeClass('bi-eye-fill').addClass('bi-eye-slash-fill');
+		field.attr('type', 'password');
+	} else {
+		that.removeClass('bi-eye-slash-fill').addClass('bi-eye-fill');
+		field.attr('type', 'text');
+	}
+});

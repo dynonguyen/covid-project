@@ -3,8 +3,6 @@ extends ./templates/general.template.pug
 block append style
   link(rel="stylesheet", href="/css/init-system.css")
 
-block bootstrapIcon
-
 block content
   .wrapper
     .toast-msg#toastMsg
@@ -18,8 +16,12 @@ block content
             p.sub-title.text-center Khởi tạo hệ thống lần đầu tiên. Hãy tạo một tài khoản Adminstrator.
           .d-flex.flex-column
             input#username.field(type="text", name="username", maxLength="30", required, placeholder="Nhập username", autofocus)
-            input#password.field(type="password", name="password", maxLength="50", required, placeholder="Nhập mật khẩu")
-            input#confirmPw.field(type="password", maxLength="50", required, placeholder="Nhập lại mật khẩu")
+            .position-relative
+              input#password.field.w-100(type="password", name="password", maxLength="50", required, placeholder="Nhập mật khẩu")
+              i.field-end-icon.bi.bi-eye-slash-fill.view-password-icon
+            .position-relative
+              input#confirmPw.field.w-100(type="password", maxLength="50", required, placeholder="Nhập lại mật khẩu")
+              i.field-end-icon.bi.bi-eye-slash-fill.view-password-icon
           button#submitBtn.submit-btn.btn.btn-primary(type="submit") Khởi tạo
 
 block append script

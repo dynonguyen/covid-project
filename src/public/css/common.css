@@ -79,6 +79,15 @@ html {
 	color: var(--gray);
 }
 
+.field-end-icon {
+	position: absolute;
+	right: 1rem;
+	top: 0.55rem;
+	font-size: 1.25rem;
+	color: var(--gray);
+	cursor: pointer;
+}
+
 /* ----------- toasts ------------- */
 .toast-msg {
 	z-index: 999;

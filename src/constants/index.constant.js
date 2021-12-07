@@ -13,8 +13,8 @@ module.exports = {
 	},
 
 	PAYMENT_TYPES: {
-		CONSUME: 1,
-		SEND_MONEY: 2,
+		CONSUME: 0,
+		SEND_MONEY: 1,
 	},
 
 	STATUS_F: {

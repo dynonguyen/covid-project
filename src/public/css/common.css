@@ -4,16 +4,26 @@
 	--light-gray: #e6e6e6;
 	--gray: #888;
 	--dark: #1e1e1e;
+	--transition: all ease-in-out 0.35s;
 }
 
 html,
 body {
 	overflow-x: hidden;
 	box-sizing: border-box;
+	font-family: 'Montserrat', sans-serif;
 }
 
 html {
 	font-size: 100%;
+}
+
+::-webkit-scrollbar {
+	width: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+	background: var(--gray);
 }
 
 /* ----------- atomic ------------- */
@@ -21,6 +31,11 @@ html {
 	display: flex;
 	align-items: center;
 	justify-content: center;
+}
+
+.center-vertical {
+	display: flex;
+	align-items: center;
 }
 
 .m-0-auto {
@@ -90,7 +105,8 @@ html {
 .field-end-icon {
 	position: absolute;
 	right: 1rem;
-	top: 0.55rem;
+	top: 50%;
+	transform: translateY(-50%);
 	font-size: 1.25rem;
 	color: var(--gray);
 	cursor: pointer;

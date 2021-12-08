@@ -20,13 +20,17 @@ block content
             h1.title.text-center Đăng nhập
             p.sub-title.text-center Không cần nhập mật khẩu trong lần đầu đăng nhập
           .d-flex.flex-column
-            input#username.field(type="text", name="username", maxLength="30", required, placeholder="Nhập username", autofocus, value=username ? username: '')
-            .position-relative
+
+            input#username.field.mb-3(type="text", name="username", maxLength="30", required, placeholder="Nhập username", autofocus, value=username ? username: '')
+
+            .position-relative.mb-3
               input#password.field.w-100(type="password", name="password", maxLength="50", placeholder="Nhập mật khẩu")
               i.field-end-icon.bi.bi-eye-slash-fill.view-password-icon
+
             .d-flex.align-items-center.mb-3.px-2
               input#remember(type="checkbox", name="remember", style="width:18px;height:18px")
               label.mb-0.ml-3.text-gray(for="remember", style="font-weight:500") Ghi nhớ đăng nhập
+
           button#submitBtn.submit-btn.btn.btn-primary(type="submit") Đăng nhập
 
 block append script

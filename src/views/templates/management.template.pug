@@ -1,0 +1,83 @@
+extends ./general.template.pug
+
+block append style
+  link(rel="stylesheet", href="/css/mgmt-template.css")
+  block addStyle
+
+block content
+  .layout-wrapper
+    //- navbar
+    .navbar-wrap.center-vertical
+      .logo-side.center-vertical
+        h1.logo #[a(href="/management") Covid-19 Project]
+        i.navbar-icon#toggleSidebar.bi.bi-layout-sidebar-inset-reverse
+
+      .searchbar-wrap.position-relative
+          input.field.w-100(type="text", placeholder="Tìm kiếm người liên quan Covid")
+          i.field-end-icon.bi.bi-search
+
+      .account-side.center-vertical
+        .d-flex.flex-column.mx-4
+          .username Username
+          .role Manager
+        a(href="/auth/logout") #[i.navbar-icon.bi.bi-box-arrow-in-right]
+
+    .d-flex
+      -
+        const menuList = [
+                      {
+                        menuTitle: 'Người liên quan Covid',
+                        list: [
+                          { title: 'Xem danh sách', to: '/' },
+                          { title: 'Thêm người liên quan', to: '/' },
+                        ],
+                      },
+                      {
+                        menuTitle: 'Nhu yếu phẩm',
+                        list: [
+                          { title: 'Xem danh sách', to: '/' },
+                          { title: 'Thêm nhu yếu phẩm', to: '' },
+                        ],
+                      },
+                      {
+                        menuTitle: 'Gói nhu yếu phẩm',
+                        list: [
+                          { title: 'Xem danh sách', to: '/' },
+                          { title: 'Thêm gói nhu yếu phẩm', to: '' },
+                        ],
+                      },
+                      {
+                        menuTitle: 'Thống kê',
+                        list: [
+                          { title: 'Người liên quan covid', to: '/' },
+                          { title: 'Thông tin trạng thái', to: '/' },
+                          { title: 'Mức tiêu thụ gói nhu yếu phẩm', to: '/' },
+                          { title: 'Tiêu thụ sản phẩm', to: '/' },
+                          { title: 'Dư nợ, thanh toán', to: '/' },
+                        ],
+                      },
+                      {
+                        menuTitle: 'Thanh toán',
+                        list: [
+                          { title: 'Hạn mức thanh toán tối thiểu', to: '/' },
+                          { title: 'Duyệt danh sách, nhắc thanh toán', to: '/' },
+                        ],
+                      },
+                    ];
+
+      //- sidebar
+      .sidebar-wrap#sidebar
+        .menu
+          each menu in menuList
+            h3.menu-title= menu.menuTitle
+            ul.menu-list
+              each menuItem in menu.list
+                li.menu-item(class=activePath===menuItem.to ? 'active' : '')
+                  a(href="/management" + menuItem.to)= menuItem.title
+
+      //- main content
+      block addContent
+
+block append script
+  script(src="/js/mgmt-template.js")
+  block addScript

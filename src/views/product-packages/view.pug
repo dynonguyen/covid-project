@@ -1,0 +1,48 @@
+extends ../templates/general.template.pug
+
+block content
+  h1 Product packages list
+
+  table.table
+    thead.thead-dark
+      tr
+        th(scope="col") id
+        th(scope="col") Name
+        th(scope="col") Limited products
+        th(scope="col") Limited in day
+        th(scope="col") Limited in week
+        th(scope="col") Limited in month
+    tbody
+      //- tr
+      //-   th(scope="row") 1
+      //-   td Mark
+      //-   td Otto
+      //-   td @mdo
+      //-   td Otto
+      //-   td @mdo
+      //- tr
+      //-   th(scope="row") 2
+      //-   td Jacob
+      //-   td Thornton
+      //-   td @fat
+      //-   td Thornton
+      //-   td @fat
+      //- tr
+      //-   th(scope="row") 3
+      //-   td Larry
+      //-   td the Bird
+      //-   td @twitter
+      //-   td the Bird
+      //-   td @twitter
+
+      each p in packages
+        tr
+          td
+            a(href="#")= p.productPackageId
+          td=  p.productPackageName
+          td=  p.limitedProducts
+          td=  p.limitedInDay
+          td=  p.limitedInWeek
+          td=  p.limitedInMonth
+
+

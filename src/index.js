@@ -17,6 +17,8 @@ const { authMiddleware } = require('./middlewares/auth.middleware');
 /* ============== Import routes =============== */
 const authRoute = require('./routes/auth.route');
 const initSystemRoute = require('./routes/init-system.route');
+const homeRoute = require('./routes/home.route');
+const managementRoute = require('./routes/management/index.route');
 
 /* ============== Config =============== */
 app.use(express.static(path.join(__dirname, 'public')));
@@ -44,7 +46,8 @@ app.use(checkInitSystemMiddleware);
 /* ============== Routes =============== */
 app.use('/init-system', initSystemRoute);
 app.use('/auth', authRoute);
-app.use('/', authMiddleware, (req, res) => res.send('Home'));
+app.use('/management', managementRoute);
+app.use('/', authMiddleware, homeRoute);
 
 // 404 Not found redirect
 app.use((req, res) => res.render('404.pug'));

@@ -17,6 +17,17 @@ exports.getLogin = async (req, res) => {
 	}
 };
 
+exports.getLogout = async (req, res) => {
+	try {
+		req.session.account = null;
+		res.clearCookie('username');
+		return res.redirect('/auth/login');
+	} catch (error) {
+		console.error('Function postLogout Error: ', error);
+		return res.render('404');
+	}
+};
+
 exports.postLogin = async (req, res) => {
 	const { username = '', password = '', remember } = req.body;
 
@@ -70,8 +81,8 @@ exports.postLogin = async (req, res) => {
 			req.session.account = { accountType, username };
 			if (remember) {
 				res.cookie('username', username, {
-					httpOnly: true,
 					signed: true,
+					httpOnly: true,
 					maxAge: MAX.COOKIE_AGE,
 				});
 			}

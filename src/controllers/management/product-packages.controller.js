@@ -1,23 +1,33 @@
+const { MAX } = require('../../constants/index.constant');
 const ProductPackage = require('../../models/product-package.model');
 
 exports.getProductPackage = async (req, res) => {
 	try {
-		const packagesList = (await ProductPackage.findAll()).map((p) => ({
-			productPackageId: p.get('productPackageId'),
-			productPackageName: p.get('productPackageName'),
-			limitedProducts: p.get('limitedProducts'),
-			limitedInDay: p.get('limitedInDay'),
-			limitedInWeek: p.get('limitedInWeek'),
-			limitedInMonth: p.get('limitedInMonth'),
-		}));
+		let { page = 1 } = req.params;
 
-		console.log(packagesList);
+		const packagesList = await ProductPackage.findAll({
+			raw: true,
+			// order: ['fullname'],
+			attributes: [
+				'productPackageId',
+				'productPackageName',
+				'limitedProducts',
+				'limitedInDay',
+				'limitedInWeek',
+				'limitedInMonth',
+			],
+			limit: MAX.PAGE_SIZE,
+			offset: 0,
+		});
 
-		return res.render('./management/product-packages/view', {
+		return res.render('./management/product-packages/view-list', {
 			title: 'Gói sản phẩm | Xem danh sách',
-			packages: packagesList ? packagesList : [],
+			packages: packagesList,
+			currentPage: page,
+			pageSize: MAX.PAGE_SIZE,
 		});
 	} catch (error) {
 		console.error('Load product packages list failed: ', error);
+		return res.render('404');
 	}
 };

@@ -1,10 +1,23 @@
 extends ../../templates/management.template.pug
 
+block addStyle
+  style.
+    @media only screen and (max-width: 992px) {
+      html {
+        font-size: 12px;
+      }
+    }
+    @media only screen and (max-width: 480px) {
+      html {
+        font-size: 8px;
+      }
+    }
+
 block addContent
   .p-4.flex-grow-1
     h1 Product packages list
 
-    table.table.w-100
+    table.table.table-striped.table-light.table-bordered.w-100
       thead.thead-dark
         tr
           th(scope="col") id
@@ -14,28 +27,6 @@ block addContent
           th(scope="col") Limited in week
           th(scope="col") Limited in month
       tbody
-        //- tr
-        //-   th(scope="row") 1
-        //-   td Mark
-        //-   td Otto
-        //-   td @mdo
-        //-   td Otto
-        //-   td @mdo
-        //- tr
-        //-   th(scope="row") 2
-        //-   td Jacob
-        //-   td Thornton
-        //-   td @fat
-        //-   td Thornton
-        //-   td @fat
-        //- tr
-        //-   th(scope="row") 3
-        //-   td Larry
-        //-   td the Bird
-        //-   td @twitter
-        //-   td the Bird
-        //-   td @twitter
-
         each p in packages
           tr
             td
@@ -45,5 +36,15 @@ block addContent
             td=  p.limitedInDay
             td=  p.limitedInWeek
             td=  p.limitedInMonth
+
+//-     #pagination
+//- block addScript
+//-   script.
+//-     const pageSize = parseInt("#{pageSize}");
+//-     const total = parseInt("#{total}");
+//-     const currentPage = parseInt("#{currentPage}");
+
+//-   script(src="/vendors/pagination.min.js")
+//-   script(src="/js/management/product-package-list.js")
 
 

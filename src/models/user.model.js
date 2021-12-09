@@ -21,7 +21,7 @@ const User = db.define(
 		},
 		peopleId: {
 			type: DataTypes.STRING(12),
-			allowNull: false,
+			allowNull: true,
 		},
 		DOB: {
 			type: DataTypes.DATE,
@@ -44,8 +44,9 @@ Account.hasMany(User, {
 	onUpdate: 'CASCADE',
 	onDelete: 'RESTRICT',
 });
-User.belongsTo(User, {
+User.belongsTo(Account, {
 	foreignKey: 'managerId',
+	as: 'manager',
 });
 
 Account.hasOne(User, {
@@ -59,6 +60,7 @@ Account.hasOne(User, {
 });
 User.belongsTo(Account, {
 	foreignKey: 'accountId',
+	as: 'account',
 });
 
 Address.hasOne(User, {

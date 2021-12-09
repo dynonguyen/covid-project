@@ -46,7 +46,7 @@ app.use(checkInitSystemMiddleware);
 /* ============== Routes =============== */
 app.use('/init-system', initSystemRoute);
 app.use('/auth', authRoute);
-app.use('/management', managementRoute);
+app.use('/management', authMiddleware, managementRoute);
 app.use('/', authMiddleware, homeRoute);
 
 // 404 Not found redirect

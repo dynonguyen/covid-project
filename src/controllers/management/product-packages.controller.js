@@ -13,7 +13,8 @@ exports.getProductPackage = async (req, res) => {
 
 		console.log(packagesList);
 
-		return res.render('product-packages/view', {
+		return res.render('./management/product-packages/view', {
+			title: 'Gói sản phẩm | Xem danh sách',
 			packages: packagesList ? packagesList : [],
 		});
 	} catch (error) {

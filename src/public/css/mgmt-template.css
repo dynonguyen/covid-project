@@ -1,5 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
-
 body {
 	background-color: var(--light-gray);
 	overflow: visible;
@@ -11,6 +9,37 @@ body {
 
 .layout-template {
 	overflow-x: hidden;
+}
+
+.mgmt-icon {
+	font-size: 1.35rem;
+	color: var(--primary);
+	cursor: pointer;
+	transition: var(--transition);
+}
+
+.edit-icon {
+	color: var(--warning);
+}
+
+.info-icon {
+	color: var(--info);
+}
+
+.mgmt-icon:hover,
+.logo a:hover,
+.searchbar-wrap .bi-search:hover {
+	-webkit-filter: brightness(0.65);
+	filter: brightness(0.65);
+}
+
+table {
+	box-shadow: 0 5px 10px -5px rgba(0, 0, 0, 0.2);
+}
+
+th,
+td {
+	vertical-align: middle !important;
 }
 
 /* ----------- Navbar ------------- */
@@ -28,18 +57,6 @@ body {
 	z-index: var(--navbar-zindex);
 }
 
-.navbar-icon {
-	font-size: 1.35rem;
-	color: var(--primary);
-	cursor: pointer;
-	transition: var(--transition);
-}
-
-.navbar-icon:hover,
-.logo a:hover {
-	color: var(--indigo);
-}
-
 .logo-side {
 	width: var(--sidebar-width);
 	padding: 0px var(--navbar-padding);
@@ -49,7 +66,7 @@ body {
 .logo {
 	font-size: 1.5rem;
 	font-weight: bold;
-	font-family: 'Pacifico', cursive;
+	margin-bottom: 0;
 }
 
 .logo a {
@@ -64,10 +81,6 @@ body {
 
 .searchbar-wrap .bi-search {
 	transition: var(--transition);
-}
-
-.searchbar-wrap .bi-search:hover {
-	color: var(--gray-dark);
 }
 
 .account-side {
@@ -171,6 +184,80 @@ body {
 .menu-item.active a {
 	letter-spacing: 0.5px;
 	color: var(--dark);
+}
+
+/* ----------- custom pagination.js ------------- */
+.paginationjs {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	--item-size: 2.5rem;
+}
+
+.paginationjs-go-input input,
+.paginationjs-go-button input {
+	width: var(--item-size);
+	height: var(--item-size);
+	outline: none;
+	border: none;
+	text-align: center;
+	border-radius: 8px;
+	box-shadow: 0 5px 10px -5px rgba(0, 0, 0, 0.2);
+}
+
+.paginationjs-go-button input {
+	margin-left: 0.75rem;
+	background-color: var(--info);
+	color: #fff;
+}
+
+.paginationjs-pages ul {
+	display: flex;
+	margin: 1.25rem auto;
+	padding: 0 0.75rem;
+	justify-content: center;
+}
+
+.paginationjs-pages li {
+	list-style: none;
+	margin: 0 4px;
+	width: var(--item-size);
+	height: var(--item-size);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+
+	background-color: var(--light);
+	border-radius: 8px;
+	cursor: pointer;
+	box-shadow: 0 5px 10px -5px rgba(0, 0, 0, 0.2);
+}
+
+.paginationjs-pages li:not(.disabled):hover {
+	-webkit-filter: brightness(0.95);
+	filter: brightness(0.95);
+}
+
+.paginationjs-pages li.active {
+	background-color: var(--primary);
+	color: #fff;
+	font-weight: bold;
+	cursor: no-drop;
+}
+
+.paginationjs-pages li.disabled {
+	cursor: no-drop;
+}
+
+.paginationjs-pages li.disabled a {
+	color: var(--gray) !important;
+}
+
+.paginationjs-pages li a {
+	font-size: 0.9rem;
+	font-weight: 500;
+	color: var(--gray-dark);
+	text-decoration: none;
 }
 
 /* ----------- responsive ------------- */

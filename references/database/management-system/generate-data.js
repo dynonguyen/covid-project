@@ -69,6 +69,7 @@ const forAddress = async () => {
 			})
 		);
 	}
+
 	return await Promise.all(promises);
 };
 

@@ -1,10 +1,9 @@
-/// <reference path="D:\typings\jquery\globals\jquery\index.d.ts" />
-
 $(document).ready(function () {
 	const sidebar = $('#sidebar');
 
+	// toggle sidebar
 	$('#toggleSidebar').click(function () {
-		sidebar.animate({ width: 'toggle' }, 250);
+		sidebar.animate({ width: 'toggle' }, 150);
 
 		if ($(this).hasClass('bi-layout-sidebar-inset')) {
 			$(this)
@@ -16,4 +15,8 @@ $(document).ready(function () {
 				.addClass('bi-layout-sidebar-inset');
 		}
 	});
+
+	// auto active menu item
+	const pathname = window.location.pathname.replace('/management', '');
+	$(`.menu-item[data-path="${pathname}"]`).addClass('active');
 });

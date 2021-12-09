@@ -11,6 +11,7 @@ module.exports = {
 	MAX: {
 		FAILED_LOGIN_TIME: 5,
 		COOKIE_AGE: 259_200_000, // 3 days
+		PAGE_SIZE: 6,
 	},
 
 	PAYMENT_TYPES: {

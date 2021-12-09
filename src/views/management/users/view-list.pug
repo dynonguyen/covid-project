@@ -1,0 +1,51 @@
+extends ../../templates/management.template.pug
+
+block addStyle
+  style.
+    @media only screen and (max-width: 992px) {
+      html {
+        font-size: 12px;
+      }
+    }
+    @media only screen and (max-width: 480px) {
+      html {
+        font-size: 8px;
+      }
+    }
+
+block addContent
+  .p-3.flex-grow-1
+    table.table.table-striped.table-light.table-bordered
+      thead.thead-dark
+        tr
+          th(scope="col") Họ tên
+          th(scope="col") CMND
+          th(scope="col") Năm sinh
+          th(scope="col") Tình trạng
+          th(scope="col") Địa chỉ
+          th(scope="col") Người quản lý
+          th(scope="col") SL liên quan
+          th(scope="col") Hành động
+      tbody
+        each user in userList
+          tr
+            td= user.fullname
+            td= user.peopleId
+            td= new Date(user.DOB).getFullYear()
+            td= helpers.convertStatusFToStr(user.statusF)
+            td= user.address
+            td= user.manager
+            td= user.numOfRelated
+            td.text-center
+              i.mgmt-icon.edit-icon.bi.bi-pencil-fill.px-2
+              i.mgmt-icon.info-icon.bi.bi-info-circle-fill.px-2
+
+    #pagination
+block addScript
+  script.
+    const pageSize = parseInt("#{pageSize}");
+    const total = parseInt("#{total}");
+    const currentPage = parseInt("#{currentPage}");
+
+  script(src="/vendors/pagination.min.js")
+  script(src="/js/management/user-list.js")

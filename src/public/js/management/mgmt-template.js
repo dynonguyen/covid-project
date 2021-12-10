@@ -33,4 +33,16 @@ $(document).ready(function () {
 	// auto active menu item
 	const pathname = window.location.pathname.replace('/management', '');
 	$(`.menu-item[data-path="${pathname}"]`).addClass('active');
+
+	// search user
+	$('#navbarSearchIcon').click(function () {
+		const searchQuery = $('#navbarSearch').val().trim();
+		if (!searchQuery) return;
+
+		$(this).addClass('disabled');
+
+		const href = `/management/users/list?search=${searchQuery}`;
+
+		location.href = href;
+	});
 });

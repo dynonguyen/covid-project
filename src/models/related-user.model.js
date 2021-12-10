@@ -20,6 +20,7 @@ User.hasMany(RelatedUser, {
 		name: 'originUserId',
 		allowNull: false,
 	},
+	as: 'origin',
 	onUpdate: 'CASCADE',
 	onDelete: 'RESTRICT',
 });
@@ -33,6 +34,7 @@ User.hasMany(RelatedUser, {
 		name: 'relatedUserId',
 		allowNull: false,
 	},
+	as: 'related',
 	onUpdate: 'CASCADE',
 	onDelete: 'RESTRICT',
 });

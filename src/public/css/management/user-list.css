@@ -23,6 +23,7 @@ th .has-icon .bi {
 	border-top-right-radius: 0px;
 	border-bottom-left-radius: 8px;
 	border-bottom-right-radius: 0px;
+	min-width: 300px;
 }
 
 .search .btn {

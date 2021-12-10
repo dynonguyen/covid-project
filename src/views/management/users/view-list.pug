@@ -1,4 +1,5 @@
 extends ../../templates/management.template.pug
+include ../../mixins/no-result.mixin.pug
 
 block addStyle
   link(rel="stylesheet", href="/css/management/user-list.css")
@@ -6,40 +7,45 @@ block addStyle
 block addContent
   .p-3.flex-grow-1
     .search.d-flex.mb-4
-      input.field.bg-white(type="text", placeholder="Nhập Tên, CMND hoặc ID")
-      button.btn.btn-info #[i.bi.bi-search]
+      input#searchInput.field.bg-white(type="text", placeholder="Nhập Tên, CMND người cần tìm")
+      button#searchBtn.btn.btn-info #[i.bi.bi-search]
 
-    table.table.table-striped.table-light.table-bordered
-      thead.thead-dark
-        tr
-          th(scope="col")
-            .has-icon #[span Họ tên] #[i.bi.sort-icon(data-sort="fullname")]
-          th(scope="col")
-            .has-icon #[span CMND] #[i.bi.sort-icon(data-sort="peopleId")]
-          th(scope="col")
-            .has-icon #[span Năm sinh] #[i.bi.sort-icon(data-sort="DOB")]
-          th(scope="col")
-            .has-icon #[span Tình trạng] #[i.bi.bi-filter] #[i.bi.sort-icon(data-sort="statusF")]
-          th(scope="col") Địa chỉ
-          th(scope="col") Quản lý
-          th(scope="col")
-            .has-icon #[span SL liên quan] #[i.bi.sort-icon(data-sort="numOfRelated")]
-          th(scope="col") Hành động
-      tbody
-        each user in userList
+    if search
+      h5.my-3.text-info Kết quả tìm kiếm cho: #[b.mx-3= search] #[a(href=`/management/users/list?page=${currentPage}`) #[i.bi.bi-x-square-fill.text-danger.cur-pointer#destroySearch]]
+
+    if userList && userList.length > 0
+      table.table.table-striped.table-light.table-bordered
+        thead.thead-dark
           tr
-            td= user.fullname
-            td= user.peopleId
-            td= new Date(user.DOB).getFullYear()
-            td= helpers.convertStatusFToStr(user.statusF)
-            td= user.address
-            td= user.manager
-            td= user.numOfRelated
-            td.text-center
-              i.mgmt-icon.edit-icon.bi.bi-pencil-fill.px-2
-              i.mgmt-icon.info-icon.bi.bi-info-circle-fill.px-2
+            th(scope="col")
+              .has-icon #[span Họ tên] #[i.bi.sort-icon(data-sort="fullname")]
+            th(scope="col")
+              .has-icon #[span CMND] #[i.bi.sort-icon(data-sort="peopleId")]
+            th(scope="col")
+              .has-icon #[span Năm sinh] #[i.bi.sort-icon(data-sort="DOB")]
+            th(scope="col")
+              .has-icon #[span Tình trạng] #[i.bi.sort-icon(data-sort="statusF")]
+            th(scope="col") Địa chỉ
+            th(scope="col") Quản lý
+            th(scope="col") Số ca LQ
+            th(scope="col") Hành động
+        tbody
+          each user in userList
+            tr
+              td= user.fullname
+              td= user.peopleId
+              td= new Date(user.DOB).getFullYear()
+              td= helpers.convertStatusFToStr(user.statusF)
+              td= user.address
+              td= user.manager
+              td= user.numOfRelated
+              td.text-center
+                i.mgmt-icon.edit-icon.bi.bi-pencil-fill.px-2
+                i.mgmt-icon.info-icon.bi.bi-info-circle-fill.px-2
+      #pagination
+    else
+      +noResult('w-80', '/management/users/list')
 
-    #pagination
 
 block addScript
   script.
@@ -48,6 +54,7 @@ block addScript
     const currentPage = parseInt("#{currentPage}");
     const sortListRaw = "#{sortList}";
     const sortList = sortListRaw.length > 0 ? sortListRaw.split(',') : [];
+    const search = "#{search}";
 
   script(src="/vendors/pagination.min.js")
   script(src="/js/management/user-list.js")

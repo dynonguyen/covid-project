@@ -58,9 +58,9 @@ function addSortClass(sortList = []) {
 }
 
 // generate query
-function generateQuery(page = 1, sortList = [], root = '') {
-	let query = root + '?';
-	query += `page=${page}`;
+function generateQuery(page = 1, sortList = [], search = '') {
+	let query = `?page=${page}`;
+	if (search) query += `&search=${search}`;
 
 	// sortList: ['item1', 'items DESC', 'item3']
 	if (sortList.length > 0) query += `&sort=`;
@@ -78,7 +78,7 @@ function generateQuery(page = 1, sortList = [], root = '') {
 }
 
 // sort icon click to generate query
-function sortIconClick(selector, currentPage, sortList, callback) {
+function sortIconClick(selector, currentPage, sortList, search, callback) {
 	selector.click(function () {
 		const that = $(this);
 		const dataSort = that.attr('data-sort');
@@ -105,7 +105,7 @@ function sortIconClick(selector, currentPage, sortList, callback) {
 			}
 		}
 
-		const query = generateQuery(currentPage, newSortList);
+		const query = generateQuery(currentPage, newSortList, search);
 		callback && callback(query);
 	});
 }

@@ -1,11 +1,12 @@
 /* ----------- Reset ------------- */
 :root {
 	--primary: #785fbb;
-	--light-gray: #e6e6e6;
+	--light-gray: #f2f2f2;
 	--gray: #888;
 	--dark: #1e1e1e;
 	--transition: all ease-in-out 0.35s;
 	--sm-box-shadow: 0 5px 10px -5px rgba(0, 0, 0, 0.2);
+	--text-color: #1e1e1e;
 }
 
 html,
@@ -25,6 +26,14 @@ html {
 
 ::-webkit-scrollbar-thumb {
 	background: var(--gray);
+}
+
+a {
+	text-decoration: none !important;
+}
+
+.disabled {
+	pointer-events: none;
 }
 
 /* ----------- atomic ------------- */

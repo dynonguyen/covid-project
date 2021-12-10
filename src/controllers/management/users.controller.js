@@ -8,14 +8,30 @@ const { Sequelize } = require('sequelize');
 const Account = require('../../models/account.model');
 const User = require('../../models/user.model');
 const RelatedUser = require('../../models/related-user.model');
+const { Op } = require('../../configs/db.config');
 
 exports.getUserList = async (req, res) => {
-	let { page = 1, sort = '' } = req.query;
+	let { page = 1, sort = '', search = '' } = req.query;
 	const sortList = parseSortStr(sort);
 	const order = sortList.map((i) => i.split(' '));
 
 	page = Number(page);
 	if (isNaN(page) || page < 1) page = 1;
+
+	const where = search
+		? {
+				[Op.or]: [
+					{
+						fullname: Sequelize.where(
+							Sequelize.fn('LOWER', Sequelize.col('fullname')),
+							'LIKE',
+							`%${search.toLowerCase()}%`
+						),
+					},
+					{ peopleId: { [Op.like]: `%${search}%` } },
+				],
+		  }
+		: {};
 
 	try {
 		const users = await User.findAndCountAll({
@@ -31,11 +47,13 @@ exports.getUserList = async (req, res) => {
 				'statusF',
 				[Sequelize.col('manager.username'), 'manager'],
 			],
+			where,
 			include: [
 				{
 					model: Account,
 					as: 'manager',
 					attributes: [],
+					required: true,
 				},
 			],
 			limit: MAX.PAGE_SIZE,
@@ -58,6 +76,7 @@ exports.getUserList = async (req, res) => {
 			currentPage: page,
 			pageSize: MAX.PAGE_SIZE,
 			sortList: sortList.join(','),
+			search,
 			helpers: {
 				convertStatusFToStr,
 			},

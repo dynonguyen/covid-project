@@ -1,3 +1,13 @@
+const SIDEBAR_STATUS = 'showSidebar';
+
+// set cookie, value: string
+function setCookie(cname, cvalue, exdays) {
+	const d = new Date();
+	d.setTime(d.getTime() + exdays * 24 * 60 * 60 * 1000);
+	let expires = 'expires=' + d.toUTCString();
+	document.cookie = cname + '=' + cvalue + ';' + expires + ';path=/';
+}
+
 $(document).ready(function () {
 	const sidebar = $('#sidebar');
 
@@ -9,12 +19,14 @@ $(document).ready(function () {
 			$(this)
 				.removeClass('bi-layout-sidebar-inset')
 				.addClass('bi-layout-sidebar-inset-reverse');
-			showSidebar = true;
+
+			setCookie(SIDEBAR_STATUS, '1', 7);
 		} else {
 			$(this)
 				.removeClass('bi-layout-sidebar-inset-reverse')
 				.addClass('bi-layout-sidebar-inset');
-			showSidebar = false;
+
+			setCookie(SIDEBAR_STATUS, '0', 7);
 		}
 	});
 

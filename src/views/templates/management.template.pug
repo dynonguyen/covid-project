@@ -10,7 +10,7 @@ block content
     .navbar-wrap.center-vertical
       .logo-side.center-vertical
         h1.logo #[a(href="/management") Covid-19 Project]
-        i.mgmt-icon#toggleSidebar.bi.bi-layout-sidebar-inset-reverse
+        i.mgmt-icon#toggleSidebar.bi(class=showSidebar ? "bi-layout-sidebar-inset-reverse" : "bi-layout-sidebar-inset")
 
       .searchbar-wrap.position-relative
           input.field.w-100(type="text", placeholder="Tìm kiếm người liên quan Covid")
@@ -66,7 +66,7 @@ block content
                       ];
 
       //- sidebar
-      .sidebar-wrap#sidebar
+      .sidebar-wrap#sidebar(style=showSidebar ? "" : "display:none")
         .menu
           each menu in menuList
             h3.menu-title= menu.menuTitle

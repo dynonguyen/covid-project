@@ -5,6 +5,7 @@
 	--gray: #888;
 	--dark: #1e1e1e;
 	--transition: all ease-in-out 0.35s;
+	--sm-box-shadow: 0 5px 10px -5px rgba(0, 0, 0, 0.2);
 }
 
 html,
@@ -48,6 +49,10 @@ html {
 
 .text-gray {
 	color: var(--gray);
+}
+
+.sm-box-shadow {
+	box-shadow: var(--sm-box-shadow);
 }
 
 /* ----------- button ------------- */

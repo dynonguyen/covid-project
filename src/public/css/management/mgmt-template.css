@@ -34,7 +34,7 @@ body {
 }
 
 table {
-	box-shadow: 0 5px 10px -5px rgba(0, 0, 0, 0.2);
+	box-shadow: var(--sm-box-shadow);
 }
 
 th,
@@ -202,7 +202,7 @@ td {
 	border: none;
 	text-align: center;
 	border-radius: 8px;
-	box-shadow: 0 5px 10px -5px rgba(0, 0, 0, 0.2);
+	box-shadow: var(--sm-box-shadow);
 }
 
 .paginationjs-go-button input {
@@ -230,7 +230,7 @@ td {
 	background-color: var(--light);
 	border-radius: 8px;
 	cursor: pointer;
-	box-shadow: 0 5px 10px -5px rgba(0, 0, 0, 0.2);
+	box-shadow: var(--sm-box-shadow);
 }
 
 .paginationjs-pages li:not(.disabled):hover {

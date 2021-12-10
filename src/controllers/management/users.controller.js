@@ -1,6 +1,7 @@
 const {
 	convertStatusFToStr,
 	getAddressUser,
+	parseSortStr,
 } = require('../../helpers/index.helpers');
 const { MAX } = require('../../constants/index.constant');
 const { Sequelize } = require('sequelize');
@@ -9,12 +10,17 @@ const User = require('../../models/user.model');
 const RelatedUser = require('../../models/related-user.model');
 
 exports.getUserList = async (req, res) => {
-	let { page = 1 } = req.params;
+	let { page = 1, sort = '' } = req.query;
+	const sortList = parseSortStr(sort);
+	const order = sortList.map((i) => i.split(' '));
+
+	page = Number(page);
+	if (isNaN(page) || page < 1) page = 1;
 
 	try {
 		const users = await User.findAndCountAll({
 			raw: true,
-			order: ['fullname'],
+			order,
 			attributes: [
 				'userId',
 				'addressId',
@@ -33,14 +39,14 @@ exports.getUserList = async (req, res) => {
 				},
 			],
 			limit: MAX.PAGE_SIZE,
-			offset: 3,
+			offset: (page - 1) * MAX.PAGE_SIZE,
 		});
 
 		for (let user of users.rows) {
 			const numOfRelated = await RelatedUser.count({
 				where: { originUserId: user.userId },
 			});
-			const address = await getAddressUser(user.addressId, 2);
+			const address = await getAddressUser(user.addressId, 5);
 			user.numOfRelated = numOfRelated;
 			user.address = address;
 		}
@@ -51,6 +57,7 @@ exports.getUserList = async (req, res) => {
 			total: users.count,
 			currentPage: page,
 			pageSize: MAX.PAGE_SIZE,
+			sortList: sortList.join(','),
 			helpers: {
 				convertStatusFToStr,
 			},

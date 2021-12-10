@@ -32,7 +32,7 @@ exports.convertStatusFToStr = (statusF) => {
  * get full address from addressId.
  *
  * @param {number} addressId - address Id of Address Model.
- * @param {number} level - result level: 1 - only details, 2 - to ward, 3 - to district, 4 - only province, default - full
+ * @param {number} level - result level: 1 - only details, 2 - to ward, 3 - to district, 4 - only province, 5 - district & province, default - full
  * @return {string} result - address fully.
  */
 exports.getAddressUser = async (addressId, level) => {
@@ -83,6 +83,8 @@ exports.getAddressUser = async (addressId, level) => {
 					return `${details}, ${wardPrefix} ${wardName}, ${districtPrefix} ${districtName}`;
 				case 4:
 					return province;
+				case 5:
+					return `${districtPrefix} ${districtName}, ${province}`;
 				default:
 					return `${details}, ${wardPrefix} ${wardName}, ${districtPrefix} ${districtName}, ${province}`;
 			}
@@ -92,4 +94,28 @@ exports.getAddressUser = async (addressId, level) => {
 	} catch (error) {
 		return '';
 	}
+};
+
+/**
+ * parse sort from string to sort array.
+ *
+ * @param {string} sortStr - EX: "item1,-item2,-item3".
+ * @return {[string]} sortList - Ex: ["item1", "item2 DESC", "item3 DESC"].
+ */
+exports.parseSortStr = (sortStr = '') => {
+	if (!sortStr) return [];
+
+	let sortList = [];
+
+	const sortSplited = sortStr.split(',');
+	sortSplited.forEach((item) => {
+		const s = item.trim();
+		if (s[0] === '-') {
+			sortList.push(`${s.substring(1)} DESC`);
+		} else {
+			sortList.push(s);
+		}
+	});
+
+	return sortList;
 };

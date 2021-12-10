@@ -1,30 +1,29 @@
 extends ../../templates/management.template.pug
 
 block addStyle
-  style.
-    @media only screen and (max-width: 992px) {
-      html {
-        font-size: 12px;
-      }
-    }
-    @media only screen and (max-width: 480px) {
-      html {
-        font-size: 8px;
-      }
-    }
+  link(rel="stylesheet", href="/css/management/user-list.css")
 
 block addContent
   .p-3.flex-grow-1
+    .search.d-flex.mb-4
+      input.field.bg-white(type="text", placeholder="Nhập Tên, CMND hoặc ID")
+      button.btn.btn-info #[i.bi.bi-search]
+
     table.table.table-striped.table-light.table-bordered
       thead.thead-dark
         tr
-          th(scope="col") Họ tên
-          th(scope="col") CMND
-          th(scope="col") Năm sinh
-          th(scope="col") Tình trạng
+          th(scope="col")
+            .has-icon #[span Họ tên] #[i.bi.sort-icon(data-sort="fullname")]
+          th(scope="col")
+            .has-icon #[span CMND] #[i.bi.sort-icon(data-sort="peopleId")]
+          th(scope="col")
+            .has-icon #[span Năm sinh] #[i.bi.sort-icon(data-sort="DOB")]
+          th(scope="col")
+            .has-icon #[span Tình trạng] #[i.bi.bi-filter] #[i.bi.sort-icon(data-sort="statusF")]
           th(scope="col") Địa chỉ
-          th(scope="col") Người quản lý
-          th(scope="col") SL liên quan
+          th(scope="col") Quản lý
+          th(scope="col")
+            .has-icon #[span SL liên quan] #[i.bi.sort-icon(data-sort="numOfRelated")]
           th(scope="col") Hành động
       tbody
         each user in userList
@@ -41,11 +40,14 @@ block addContent
               i.mgmt-icon.info-icon.bi.bi-info-circle-fill.px-2
 
     #pagination
+
 block addScript
   script.
     const pageSize = parseInt("#{pageSize}");
     const total = parseInt("#{total}");
     const currentPage = parseInt("#{currentPage}");
+    const sortListRaw = "#{sortList}";
+    const sortList = sortListRaw.length > 0 ? sortListRaw.split(',') : [];
 
   script(src="/vendors/pagination.min.js")
   script(src="/js/management/user-list.js")

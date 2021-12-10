@@ -1,0 +1,45 @@
+th .has-icon {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+th .has-icon .bi {
+	margin-left: 6px;
+}
+
+.has-icon .bi {
+	cursor: pointer;
+	font-size: 1.25rem;
+}
+
+.has-icon .bi.active {
+	color: var(--success);
+}
+
+.search .field {
+	box-shadow: var(--sm-box-shadow);
+	border-top-left-radius: 8px;
+	border-top-right-radius: 0px;
+	border-bottom-left-radius: 8px;
+	border-bottom-right-radius: 0px;
+}
+
+.search .btn {
+	box-shadow: var(--sm-box-shadow);
+	border-top-left-radius: 0px;
+	border-top-right-radius: 8px;
+	border-bottom-left-radius: 0px;
+	border-bottom-right-radius: 8px;
+}
+
+@media only screen and (max-width: 992px) {
+	html {
+		font-size: 12px;
+	}
+}
+@media only screen and (max-width: 480px) {
+	html {
+		font-size: 8px;
+	}
+}

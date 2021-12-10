@@ -9,10 +9,12 @@ $(document).ready(function () {
 			$(this)
 				.removeClass('bi-layout-sidebar-inset')
 				.addClass('bi-layout-sidebar-inset-reverse');
+			showSidebar = true;
 		} else {
 			$(this)
 				.removeClass('bi-layout-sidebar-inset-reverse')
 				.addClass('bi-layout-sidebar-inset');
+			showSidebar = false;
 		}
 	});
 

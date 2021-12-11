@@ -49,17 +49,8 @@ exports.getUserList = async (req, res) => {
 				'peopleId',
 				'DOB',
 				'statusF',
-				[Sequelize.col('manager.username'), 'manager'],
 			],
 			where,
-			include: [
-				{
-					model: Account,
-					as: 'manager',
-					attributes: [],
-					required: true,
-				},
-			],
 			limit: MAX.PAGE_SIZE,
 			offset: (page - 1) * MAX.PAGE_SIZE,
 		});
@@ -69,6 +60,20 @@ exports.getUserList = async (req, res) => {
 				where: { originUserId: user.userId },
 			});
 			const address = await getAddressUser(user.addressId, 5);
+			const isolationTreatment = await TreatmentHistory.findOne({
+				raw: true,
+				attributes: [
+					'isolationFacilityId',
+					[
+						Sequelize.col('IsolationFacility.isolationFacilityName'),
+						'isolationFacilityName',
+					],
+				],
+				where: { [Op.and]: [{ userId: user.userId }, { endDate: null }] },
+				include: { model: IsolationFacility, attributes: [] },
+			});
+
+			user.isolationTreatment = isolationTreatment;
 			user.numOfRelated = numOfRelated;
 			user.address = address;
 		}
@@ -76,6 +81,14 @@ exports.getUserList = async (req, res) => {
 		const userList = users.rows.map((user) =>
 			omitPropObj(user, ['userId', 'addressId'])
 		);
+
+		// get isolation facility list
+		if (!req.session.IFList) {
+			const IFList = await IsolationFacility.findAll({
+				raw: true,
+			});
+			req.session.IFList = IFList;
+		}
 
 		return res.render('./management/users/view-list', {
 			title: 'Người liên quan Covid | Xem danh sách',
@@ -85,6 +98,7 @@ exports.getUserList = async (req, res) => {
 			pageSize: MAX.PAGE_SIZE,
 			sortList: sortList.join(','),
 			search,
+			IFList: req.session.IFList || [],
 			helpers: {
 				convertStatusFToStr,
 			},

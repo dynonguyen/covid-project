@@ -2,6 +2,7 @@ extends ../../templates/management.template.pug
 include ../../mixins/no-result.mixin.pug
 
 block addStyle
+  link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/css/selectize.bootstrap3.min.css", integrity="sha256-ze/OEYGcFbPRmvCnrSeKbRTtjG4vGLHXgOqsyLFTRjg=", crossorigin="anonymous")
   link(rel="stylesheet", href="/css/management/user-list.css")
 
 block addContent
@@ -26,21 +27,22 @@ block addContent
             th(scope="col")
               .has-icon #[span Tình trạng] #[i.bi.sort-icon(data-sort="statusF")]
             th(scope="col") Địa chỉ
-            th(scope="col") Quản lý
+            th(scope="col") CS điều trị
             th(scope="col") Số ca LQ
             th(scope="col") Hành động
         tbody
           each user in userList
+            - const IFName = user.isolationTreatment ?  user.isolationTreatment.isolationFacilityName : '_';
             tr
               td= user.fullname
               td= user.peopleId
               td= new Date(user.DOB).getFullYear()
               td= helpers.convertStatusFToStr(user.statusF)
               td= user.address
-              td= user.manager
+              td= IFName
               td= user.numOfRelated
               td.text-center
-                i.mgmt-icon.edit-icon.bi.bi-pencil-fill.px-2
+                i.mgmt-icon.edit-icon.bi.bi-pencil-fill.px-2(data-uuid=user.uuid, data-statusf=user.statusF, data-if=IFName)
                 i.mgmt-icon.info-icon.bi.bi-info-circle-fill.px-2(data-uuid=user.uuid)
       #pagination
     else
@@ -49,7 +51,7 @@ block addContent
   .modal#userModal
     .modal-dialog.modal-dialog-centered.modal-dialog-scrollable.m-0-auto
       .modal-content
-        .modal-header.bg-danger
+        .modal-header.bg-info
           h5.modal-title.text-light.text-capitalize Chi tiết bệnh nhân
           button.close(type="button", data-dismiss="modal", aria-label="Close")
             span.text-light(aria-hidden="true") ×
@@ -61,6 +63,38 @@ block addContent
         .modal-footer
           button.btn.btn-secondary(type="button", data-dismiss="modal") Đóng
 
+  .modal#editModal
+    .modal-dialog.modal-dialog-centered.modal-dialog-scrollable.m-0-auto
+      .modal-content
+        .modal-header.bg-warning
+          h5.modal-title.text-capitalize Cập nhật trạng thái bệnh nhân
+          button.close(type="button", data-dismiss="modal", aria-label="Close")
+            span(aria-hidden="true") ×
+        .modal-body(style="padding:4rem 2rem")
+          #editModalBody
+            label(for="#statusFSelect").text-gray.font-weight-bold Tình trạng #[span#currentStatusF.font-weight-normal]
+            select.mb-5#statusFSelect
+              option(selected) Chọn tình trạng hiện tại
+              option(value="-1") Đã khỏi bệnh
+              option(value="0") F0
+              option(value="1") F1
+              option(value="2") F2
+              option(value="3") F3
+              option(value="4") F4
+              option(value="5") F5
+
+            label(for="#iFSelect").text-gray.font-weight-bold Cơ sở điều trị #[span#currentIF.font-weight-normal]
+            select.sm-box-shadow#IFSelect
+              option(selected) Chọn cơ sở điều trị cho bệnh nhân
+              if IFList && IFList.length > 0
+                each IFItem in IFList
+                  option(value=IFItem.isolationFacilityId)= IFItem.isolationFacilityName
+
+        .modal-footer
+          button.btn.btn-secondary(type="button", data-dismiss="modal") Đóng
+          button#updateBtn.btn.btn-warning(type="button") Cập nhật
+
+  .toast-msg#toastMsg
 block addScript
   script.
     const pageSize = parseInt("#{pageSize}");
@@ -70,5 +104,6 @@ block addScript
     const sortList = sortListRaw.length > 0 ? sortListRaw.split(',') : [];
     const search = "#{search}";
 
+  script(src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js", integrity="sha256-+C0A5Ilqmu4QcSPxrlGpaZxJ04VjsRjKu+G82kl5UJk=", crossorigin="anonymous")
   script(src="/vendors/pagination.min.js")
   script(src="/js/management/user-list.js")

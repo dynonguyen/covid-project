@@ -1,23 +1,23 @@
-const Account = require('../../src/models/account.model');
-const AdminAccount = require('../../src/models/admin-account.model');
-const AccountHistory = require('../../src/models/account-history.model');
-const Address = require('../../src/models/address.model');
-const ConsumptionHistory = require('../../src/models/consumption-history.model');
-const District = require('../../src/models/district.model');
-const IsolationFacility = require('../../src/models/isolation-facility.model');
-const PaymentHistory = require('../../src/models/payment-history.model');
-const Product = require('../../src/models/product.model');
-const ProductImage = require('../../src/models/product-image.model');
-const ProductInPackage = require('../../src/models/product-in-package.model');
-const ProductPackage = require('../../src/models/product-package.model');
-const Province = require('../../src/models/province.model');
-const RelatedUser = require('../../src/models/related-user.model');
-const TreatmentHistory = require('../../src/models/treatment-history.model');
-const User = require('../../src/models/user.model');
-const Ward = require('../../src/models/ward.model');
+const Account = require('../../../src/models/account.model');
+const AdminAccount = require('../../../src/models/admin-account.model');
+const AccountHistory = require('../../../src/models/account-history.model');
+const Address = require('../../../src/models/address.model');
+const ConsumptionHistory = require('../../../src/models/consumption-history.model');
+const District = require('../../../src/models/district.model');
+const IsolationFacility = require('../../../src/models/isolation-facility.model');
+const PaymentHistory = require('../../../src/models/payment-history.model');
+const Product = require('../../../src/models/product.model');
+const ProductImage = require('../../../src/models/product-image.model');
+const ProductInPackage = require('../../../src/models/product-in-package.model');
+const ProductPackage = require('../../../src/models/product-package.model');
+const Province = require('../../../src/models/province.model');
+const RelatedUser = require('../../../src/models/related-user.model');
+const TreatmentHistory = require('../../../src/models/treatment-history.model');
+const User = require('../../../src/models/user.model');
+const Ward = require('../../../src/models/ward.model');
 
 const faker = require('faker');
-const QUANTITY = 500;
+const QUANTITY = 200;
 
 // Account
 const forAccount = async () => {
@@ -25,14 +25,28 @@ const forAccount = async () => {
 	// password: 12345678 - salt = 10
 
 	const promises = [];
-	for (let i = 0; i < QUANTITY; ++i) {
+	// 5 manager
+	for (let i = 0; i < 5; ++i) {
+		promises.push(
+			Account.create({
+				username: `manager0${i + 1}`,
+				password:
+					'$2a$10$so40xTlmcQVV5Dc0bTvGQuVvSCJfZv205vIwuSQI2OUajkp3IOpua',
+				accountType: 1,
+				isLocked: false,
+				failedLoginTime: 0,
+			})
+		);
+	}
+
+	for (let i = 5; i < QUANTITY; ++i) {
 		promises.push(
 			Account.create({
 				username: faker.internet.userName(),
 				password:
 					'$2a$10$so40xTlmcQVV5Dc0bTvGQuVvSCJfZv205vIwuSQI2OUajkp3IOpua',
-				accountType: i % 2,
-				isLocked: i % 150 ? false : true,
+				accountType: 0,
+				isLocked: false,
 				failedLoginTime: 0,
 			})
 		);
@@ -44,12 +58,12 @@ const forAccount = async () => {
 const forAccountHistory = async () => {
 	faker.locale = 'en';
 	const promises = [];
-	for (let i = 2; i < QUANTITY; i += 2) {
+	for (let i = 0; i < QUANTITY; ++i) {
 		promises.push(
 			AccountHistory.create({
 				activity: faker.lorem.words(10),
 				createdDate: faker.date.between('2018-01-01', '2022-01-01'),
-				accountId: i,
+				accountId: (i % 5) + 1,
 			})
 		);
 	}
@@ -61,7 +75,7 @@ const forAddress = async () => {
 	faker.locale = 'vi';
 
 	const promises = [];
-	for (let i = 1; i < QUANTITY; i++) {
+	for (let i = 1; i < 11283; i += Math.round(11283 / QUANTITY)) {
 		promises.push(
 			Address.create({
 				wardId: i,
@@ -80,16 +94,31 @@ const forUser = async () => {
 	let statusF = 0;
 
 	const promises = [];
-	for (let i = 1; i < QUANTITY - 1; i += 2) {
+	for (let i = 6; i < 20; i += 1) {
 		promises.push(
 			User.create({
 				uuid: faker.datatype.uuid(),
 				fullname: faker.name.findName(),
 				peopleId: `${time + i}`.slice(1, 13),
 				DOB: faker.date.between('1950-01-01', '2022-01-01'),
-				statusF: statusF++ % 4,
+				statusF: -1,
 				accountId: i,
-				managerId: i + 1,
+				managerId: (i % 5) + 1,
+				addressId: i,
+			})
+		);
+	}
+
+	for (let i = 20; i < QUANTITY - 1; i++) {
+		promises.push(
+			User.create({
+				uuid: faker.datatype.uuid(),
+				fullname: faker.name.findName(),
+				peopleId: `${time + i}`.slice(1, 13),
+				DOB: faker.date.between('1950-01-01', '2022-01-01'),
+				statusF: statusF++ % 5,
+				accountId: i,
+				managerId: (i % 5) + 1,
 				addressId: i,
 			})
 		);
@@ -100,17 +129,18 @@ const forUser = async () => {
 // Isolation Facility
 const forIsoFac = async () => {
 	faker.locale = 'vi';
-	const time = Date.now();
 
 	const promises = [];
-	for (let i = 1; i < QUANTITY; i++) {
+	for (let i = 1; i < 20; i++) {
+		const cap = Math.round(faker.datatype.number(5000));
+		const curcap = Math.round(faker.datatype.number(4000));
 		promises.push(
 			IsolationFacility.create({
 				isolationFacilityName: `${
 					i % 2 ? 'Bệnh viện' : 'Khu cách ly'
 				} ${faker.company.companyName()}`,
-				capacity: Math.round(faker.datatype.number(5000)),
-				currentQuantity: Math.round(faker.datatype.number(5000)),
+				capacity: cap,
+				currentQuantity: curcap <= cap ? curcap : 1,
 				addressId: i,
 			})
 		);
@@ -121,7 +151,7 @@ const forIsoFac = async () => {
 // Related User
 const forRelatedUser = async () => {
 	const promises = [];
-	for (let i = 1; i < QUANTITY / 2 - 1; i++) {
+	for (let i = 20; i < QUANTITY - 21; i++) {
 		promises.push(
 			RelatedUser.create({
 				originUserId: i,
@@ -253,14 +283,26 @@ const forTreatmentHistory = async () => {
 	faker.locale = 'vi';
 
 	const promises = [];
-	for (let i = 1; i < QUANTITY; i++) {
+	for (let i = 6; i < 20; i++) {
 		promises.push(
 			TreatmentHistory.create({
 				startDate: faker.date.between('2018-01-01', '2019-01-01'),
 				endDate: faker.date.between('2019-02-02', '2022-01-01'),
-				statusF: i % 4,
-				userId: (i % ~~(QUANTITY / 2 - 1)) + 1,
-				isolationFacilityId: i,
+				statusF: i % 5,
+				userId: i,
+				isolationFacilityId: (i % 19) + 1,
+			})
+		);
+	}
+
+	for (let i = 20; i < QUANTITY - 21; i++) {
+		promises.push(
+			TreatmentHistory.create({
+				startDate: faker.date.between('2018-01-01', '2019-01-01'),
+				endDate: null,
+				statusF: i % 6,
+				userId: i,
+				isolationFacilityId: (i % 19) + 1,
 			})
 		);
 	}
@@ -286,7 +328,7 @@ const forConsumptionHistory = async () => {
 // Payment
 const forPaymentHistory = async () => {
 	const promises = [];
-	for (let i = 1; i < QUANTITY * 3; i++) {
+	for (let i = 6; i < QUANTITY * 3; i++) {
 		const type = i % 2;
 
 		promises.push(
@@ -296,7 +338,7 @@ const forPaymentHistory = async () => {
 				paymentType: type,
 				paymentCode: faker.datatype.uuid(),
 				totalMoney: ~~faker.datatype.number(10_000_000),
-				userId: (i % ~~(QUANTITY / 2 - 1)) + 1,
+				userId: (i % ~~(QUANTITY - 7)) + 1,
 				consumptionHistoryId: type ? null : i,
 			})
 		);

@@ -4,6 +4,7 @@ const DEFAULT = {
 };
 
 const STATUS_F = {
+	'Khỏi bệnh': -1,
 	F0: 0,
 	F1: 1,
 	F2: 2,

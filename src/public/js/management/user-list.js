@@ -14,7 +14,7 @@ const renderUserTreatmentHistories = (treatmentHistories = []) => {
     <th scope="row">${index + 1}</th>
     <td>${th.isolationFacilityName}</td>
     <td>${formatDateToStr(th.startDate)}</td>
-    <td>${endDate ? formatDateToStr(th.endDate) : ''}</td>
+    <td>${th.endDate ? formatDateToStr(th.endDate) : '_'}</td>
     <td>${convertStatusFToStr(th.statusF)}</td>
   </tr>`)
 	);
@@ -105,12 +105,12 @@ const renderUserDetails = (user) => {
   <li><span>Tổng số ca liên quan: </span>${relatedList.length}</li>
 </ul>
 
-<div class="py-1 my-3 bg-danger"></div>
+<div class="py-1 my-3 bg-info"></div>
 
 <h4 class="label">Lịch sử điều trị</h4>
 ${renderUserTreatmentHistories(treatmentHistories)}
 
-<div class="py-1 my-3 bg-danger"></div>
+<div class="py-1 my-3 bg-info"></div>
 
 <h4 class="label">Trường hợp liên quan</h4>
 ${renderRelatedList(relatedList)}
@@ -200,6 +200,46 @@ $(document).ready(function () {
 			modalBody.html(
 				'<div class="alert alert-danger">Lấy dữ liệu thất bại. Thử lại !</div>'
 			);
+		}
+	});
+
+	// show edit user modal
+	$('select').selectize({
+		shortField: 'text',
+	});
+
+	$('.edit-icon').click(async function () {
+		const modal = $('#editModal');
+
+		modal.removeClass('d-none');
+		modal.fadeIn(200).modal('show');
+
+		const statusF = $(this).attr('data-statusf');
+		const IFacility = $(this).attr('data-if');
+		const uuid = $(this).attr('data-uuid');
+
+		$('#currentStatusF').text(`( Hiện tại: ${convertStatusFToStr(statusF)} )`);
+		$('#currentIF').text(`( Hiện tại: ${IFacility} )`);
+
+		modal.attr('data-uuid', uuid);
+		modal.attr('data-statusf', statusF);
+	});
+
+	$('#updateBtn').click(function () {
+		const newStatusF = Number($('#statusFSelect').val());
+		const oldStatusF = Number($('#editModal').attr('data-statusf'));
+		const newIF = $('#IFSelect').val();
+		const uuid = $('#editModal').attr('data-uuid');
+		const toast = $('#toastMsg');
+
+		if (newStatusF >= oldStatusF) {
+			showToastMsg(
+				toast,
+				'Không thể chuyển trạng thái từ cấp cao về cấp thấp hơn',
+				'danger',
+				4000
+			);
+			return;
 		}
 	});
 });

@@ -61,7 +61,7 @@ a {
 }
 
 .sm-box-shadow {
-	box-shadow: var(--sm-box-shadow);
+	box-shadow: var(--sm-box-shadow) !important;
 }
 
 /* ----------- button ------------- */
@@ -128,7 +128,7 @@ a {
 
 /* ----------- toasts ------------- */
 .toast-msg {
-	z-index: 999;
+	z-index: 9999;
 	position: fixed;
 	right: 15px;
 	top: 15px;

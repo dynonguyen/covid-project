@@ -3,6 +3,15 @@ const DEFAULT = {
 	PAGE_SIZE: 8,
 };
 
+const STATUS_F = {
+	F0: 0,
+	F1: 1,
+	F2: 2,
+	F3: 3,
+	F4: 4,
+	F5: 5,
+};
+
 // show & hide toast message
 function showToastMsg(toast, message = 'Message', type = '', timeout = 3000) {
 	if (toast) {
@@ -108,6 +117,23 @@ function sortIconClick(selector, currentPage, sortList, search, callback) {
 		const query = generateQuery(currentPage, newSortList, search);
 		callback && callback(query);
 	});
+}
+
+// format date
+function formatDateToStr(date) {
+	const d = new Date(date);
+	const y = d.getFullYear();
+	const mm = `0${d.getMonth() + 1}`.slice(-2);
+	const dd = `0${d.getDate()}`.slice(-2);
+
+	return `${dd}-${mm}-${y}`;
+}
+
+function convertStatusFToStr(statusF) {
+	for (f in STATUS_F) {
+		if (STATUS_F[f] === Number(statusF)) return f;
+	}
+	return 'Không xác định';
 }
 
 // auto register when DOM loaded

@@ -20,7 +20,7 @@ block addContent
             th(scope="col")
               .has-icon #[span Họ tên] #[i.bi.sort-icon(data-sort="fullname")]
             th(scope="col")
-              .has-icon #[span CMND] #[i.bi.sort-icon(data-sort="peopleId")]
+              .has-icon #[span CMND/CCCD] #[i.bi.sort-icon(data-sort="peopleId")]
             th(scope="col")
               .has-icon #[span Năm sinh] #[i.bi.sort-icon(data-sort="DOB")]
             th(scope="col")
@@ -41,11 +41,25 @@ block addContent
               td= user.numOfRelated
               td.text-center
                 i.mgmt-icon.edit-icon.bi.bi-pencil-fill.px-2
-                i.mgmt-icon.info-icon.bi.bi-info-circle-fill.px-2
+                i.mgmt-icon.info-icon.bi.bi-info-circle-fill.px-2(data-uuid=user.uuid)
       #pagination
     else
       +noResult('w-80', '/management/users/list')
 
+  .modal#userModal
+    .modal-dialog.modal-dialog-centered.modal-dialog-scrollable.m-0-auto
+      .modal-content
+        .modal-header.bg-danger
+          h5.modal-title.text-light.text-capitalize Chi tiết bệnh nhân
+          button.close(type="button", data-dismiss="modal", aria-label="Close")
+            span.text-light(aria-hidden="true") ×
+        .modal-body
+          #loading.flex-center.py-4.d-none
+            .spinner-border.text-info(role="status")
+              span.sr-only Đang tải dữ liệu ...
+          #userModalBody
+        .modal-footer
+          button.btn.btn-secondary(type="button", data-dismiss="modal") Đóng
 
 block addScript
   script.

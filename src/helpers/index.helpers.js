@@ -119,3 +119,12 @@ exports.parseSortStr = (sortStr = '') => {
 
 	return sortList;
 };
+
+// omit some properties of an object
+exports.omitPropObj = (obj, someKey = []) => {
+	let newObj = {};
+	for (let key in obj) {
+		if (!someKey.includes(key)) newObj[key] = obj[key];
+	}
+	return { ...newObj };
+};

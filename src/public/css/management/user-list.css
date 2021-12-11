@@ -34,13 +34,31 @@ th .has-icon .bi {
 	border-bottom-right-radius: 8px;
 }
 
-@media only screen and (max-width: 992px) {
-	html {
-		font-size: 12px;
-	}
+.modal-dialog {
+	width: 80%;
+	max-width: 776px;
 }
-@media only screen and (max-width: 480px) {
-	html {
-		font-size: 8px;
-	}
+
+#userModalBody h3 {
+	font-size: 1.35rem;
+	font-weight: 600;
+	color: var(--dark);
+}
+
+#userModalBody li {
+	list-style: none;
+	margin-bottom: 8px;
+	letter-spacing: 0.5px;
+}
+
+#userModalBody li span {
+	font-weight: 500;
+	padding-right: 4px;
+	color: var(--gray);
+}
+
+#userModalBody .label {
+	font-size: 1.2rem;
+	color: var(--gray-dark);
+	text-transform: capitalize;
 }

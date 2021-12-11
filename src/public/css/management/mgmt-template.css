@@ -261,8 +261,20 @@ td {
 }
 
 /* ----------- responsive ------------- */
+@media only screen and (max-width: 992px) {
+	html {
+		font-size: 12px;
+	}
+}
+
 @media only screen and (max-width: 776px) {
 	.searchbar-wrap {
 		display: none;
+	}
+}
+
+@media only screen and (max-width: 480px) {
+	html {
+		font-size: 8px;
 	}
 }

@@ -26,6 +26,7 @@ User.hasMany(RelatedUser, {
 });
 RelatedUser.belongsTo(User, {
 	foreignKey: 'originUserId',
+	as: 'origin',
 });
 
 User.hasMany(RelatedUser, {
@@ -40,6 +41,7 @@ User.hasMany(RelatedUser, {
 });
 RelatedUser.belongsTo(User, {
 	foreignKey: 'relatedUserId',
+	as: 'related',
 });
 
 module.exports = RelatedUser;

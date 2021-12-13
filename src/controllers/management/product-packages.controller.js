@@ -4,7 +4,10 @@ const ProductPackage = require('../../models/product-package.model');
 
 exports.getProductPackage = async (req, res) => {
 	try {
-		let { page = 1 } = req.params;
+		let { page = 1, sort = '', search = '' } = req.query;
+
+		page = Number(page);
+		if (isNaN(page) || page < 1) page = 1;
 
 		const packagesList = await ProductPackage.findAndCountAll({
 			raw: true,
@@ -18,7 +21,7 @@ exports.getProductPackage = async (req, res) => {
 				'limitedInMonth',
 			],
 			limit: MAX.PAGE_SIZE,
-			offset: 0,
+			offset: (page - 1) * MAX.PAGE_SIZE,
 		});
 
 		// const productInPackageList = await ProductInPackage.findAndCountAll({
@@ -36,8 +39,7 @@ exports.getProductPackage = async (req, res) => {
 		// 	where: [{ productPackageId: req.params.id }],
 		// });
 
-		console.log(req.params);
-		console.log(req.body);
+		console.log(req.query);
 
 		return res.render('./management/product-packages/view-list', {
 			title: 'Gói sản phẩm | Xem danh sách',

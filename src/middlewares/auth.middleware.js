@@ -1,3 +1,4 @@
+const { ACCOUNT_TYPES } = require('../constants/index.constant');
 const Account = require('../models/account.model');
 
 exports.authMiddleware = async (req, res, next) => {
@@ -25,4 +26,23 @@ exports.authMiddleware = async (req, res, next) => {
 		console.log('Middleware authMidleware Error: ', error);
 		return res.render('404');
 	}
+};
+
+exports.mgmtAuthorizationMiddleware = async (req, res, next) => {
+	if (
+		req.session.account &&
+		req.session.account.accountType === ACCOUNT_TYPES.MANAGER
+	)
+		return next();
+	return res.render('404');
+};
+
+exports.userAuthorizationMiddleware = async (req, res, next) => {
+	if (
+		req.session.account &&
+		req.session.account.accountType === ACCOUNT_TYPES.USER
+	)
+		return next();
+
+	return res.render('404');
 };

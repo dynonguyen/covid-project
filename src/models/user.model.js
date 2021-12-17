@@ -42,7 +42,7 @@ Account.hasMany(User, {
 	sourceKey: 'accountId',
 	foreignKey: 'managerId',
 	onUpdate: 'CASCADE',
-	onDelete: 'RESTRICT',
+	onDelete: 'CASCADE',
 });
 User.belongsTo(Account, {
 	foreignKey: 'managerId',
@@ -56,7 +56,7 @@ Account.hasOne(User, {
 		allowNull: false,
 	},
 	onUpdate: 'CASCADE',
-	onDelete: 'RESTRICT',
+	onDelete: 'CASCADE',
 });
 User.belongsTo(Account, {
 	foreignKey: 'accountId',
@@ -70,7 +70,7 @@ Address.hasOne(User, {
 		allowNull: false,
 	},
 	onUpdate: 'CASCADE',
-	onDelete: 'RESTRICT',
+	onDelete: 'CASCADE',
 });
 User.belongsTo(Address, {
 	foreignKey: 'addressId',

@@ -1,0 +1,93 @@
+extends ../../templates/management.template.pug
+
+block addStyle
+  link(rel="stylesheet", href="/vendors/selectize/selectize.min.css")
+  link(rel="stylesheet", href="/css/management/new-user.css")
+
+block addContent
+  #toastMsg.toast-msg
+    .close-icon x
+
+  .flex-grow-1.row.p-4.new-user
+    //- origin user info
+    .col-12.col-lg-6.mb-5.mb-lg-0
+      .bg-white.sm-box-shadow.box-rounded.box#originUserBox
+        h3.box-title.mb-4 Thông tin người mắc Covid-19
+
+        .center-vertical.mb-3
+          label.field-inline-label(for="fullname") Họ tên:
+          input#fullname.field(type="text", name="fullname", autofocus)
+
+        .center-vertical.mb-3
+          label.field-inline-label(for="peopleId") CMND/CCCD:
+          input#peopleId.field(type="text", name="peopleId")
+
+        .center-vertical.mb-3
+          label.field-inline-label(for="DOB") Ngày sinh:
+          input#DOB.field(type="date", name="DOB")
+
+        .address.mb-3
+          label.mb-3.field-inline-label(for="addrDetails") Địa chỉ:
+          input#addrDetails.mb-3.field.w-100(type="text", name="addrDetails", placeholder="Số nhà, đường, tổ / thôn")
+          select#province.province.mb-2(name="province")
+            option(selected, disabled, hidden, value="") Chọn tỉnh / thành
+          select#district.district.mb-2(name="district")
+            option(selected, disabled, hidden, value="") Chọn quận / huyện
+          select#ward.ward(name="ward")
+            option(selected, disabled, hidden, value="") Chọn xã / phường
+
+        .center-vertical.mb-3
+          label.field-inline-label(for="isoFacility") Cơ sở điều trị
+          select#isoFacility.isoFacility.flex-grow-1(name="isoFacility")
+            option(selected, disabled, hidden, value="") Chọn cơ sở điều trị
+
+        .center-vertical.mb-3
+          label.field-inline-label(for="statusF") Tình trạng
+          select#statusF.statusf.flex-grow-1(name="statusF")
+            option(value="0") F0
+            option(value="1") F1
+            option(value="2") F2
+            option(value="3") F3
+
+        #relatedSearch.center-vertical.mb-3.d-none
+          label.field-inline-label(for="related")
+          select#related.related.flex-grow-1(name="related")
+            option(selected, disabled, hidden, value="") Chọn nguồn gốc lây nhiễm
+
+        .text-right.mt-4
+          .btn.btn-danger.mr-2.reset-btn Điền lại
+          #addUser.btn.btn-primary Thêm
+
+    //- related users
+    .col-12.col-lg-6
+      #relatedBox1.bg-white.sm-box-shadow.box-rounded.box.mb-4
+        h3.box-title.f-box.toggle-action.mb-0.cur-pointer(data-toggle-target="f1Box") Người liên quan liên đới F1
+          i.bi.bi-chevron-down
+
+        #f1Box(style="display:none")
+          .related-list(data-f="1")
+          button.btn.btn-outline-info.text-center.w-100.mt-3.add-form-btn(data-toggle-target="f1AddForm", data-f="1") #[span Thêm mới] #[i.bi.bi-plus.ml-2]
+          #f1AddForm(style="display:none")
+
+      #relatedBox2.bg-white.sm-box-shadow.box-rounded.box.mb-4
+        h3.box-title.f-box.toggle-action.mb-0.cur-pointer(data-toggle-target="f2Box") Người liên quan liên đới F2
+           i.bi.bi-chevron-down
+
+        #f2Box(style="display:none")
+          .related-list(data-f="2")
+          button.btn.btn-outline-info.text-center.w-100.mt-3.add-form-btn(data-toggle-target="f2AddForm", data-f="2") #[span Thêm mới] #[i.bi.bi-plus.ml-2]
+          #f2AddForm(style="display:none")
+
+      #relatedBox3.bg-white.sm-box-shadow.box-rounded.box
+        h3.box-title.f-box.toggle-action.mb-0.cur-pointer(data-toggle-target="f3Box") Người liên quan liên đới F3
+           i.bi.bi-chevron-down
+
+        #f3Box(style="display:none")
+          .related-list(data-f="3")
+          button.btn.btn-outline-info.text-center.w-100.mt-3.add-form-btn(data-toggle-target="f3AddForm", data-f="3") #[span Thêm mới] #[i.bi.bi-plus.ml-2]
+          #f3AddForm(style="display:none")
+
+block addScript
+  script(src="/vendors/selectize/selectize.min.js")
+  script(src="/js/management/new-user.js")
+

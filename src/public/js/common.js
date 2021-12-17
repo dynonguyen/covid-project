@@ -9,8 +9,6 @@ const STATUS_F = {
 	F1: 1,
 	F2: 2,
 	F3: 3,
-	F4: 4,
-	F5: 5,
 };
 
 // show & hide toast message

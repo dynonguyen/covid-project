@@ -2,6 +2,7 @@
 :root {
 	--primary: #785fbb;
 	--light-gray: #f2f2f2;
+	--field-bg: #e5e5e5;
 	--gray: #888;
 	--dark: #1e1e1e;
 	--transition: all ease-in-out 0.35s;
@@ -43,6 +44,12 @@ a {
 	justify-content: center;
 }
 
+.flex-center-between {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
 .center-vertical {
 	display: flex;
 	align-items: center;
@@ -62,6 +69,10 @@ a {
 
 .sm-box-shadow {
 	box-shadow: var(--sm-box-shadow) !important;
+}
+
+.box-rounded {
+	border-radius: 8px;
 }
 
 /* ----------- button ------------- */
@@ -92,7 +103,7 @@ a {
 	font-size: 1rem;
 	font-weight: 500;
 
-	background-color: var(--light-gray);
+	background-color: var(--field-bg);
 	color: var(--dark);
 }
 
@@ -124,6 +135,26 @@ a {
 	font-size: 1.25rem;
 	color: var(--gray);
 	cursor: pointer;
+}
+
+.field-inline-label {
+	margin-bottom: 0;
+	margin-right: 8px;
+	font-weight: 500;
+	font-size: 1.15rem;
+	color: var(--gray-dark);
+	text-transform: capitalize;
+}
+
+.selectize-input {
+	outline: none !important;
+	border: none !important;
+	box-shadow: none !important;
+	padding: 0.5rem 1.25rem !important;
+	font-size: 1rem !important;
+	font-weight: 500 !important;
+	background-color: var(--field-bg) !important;
+	color: var(--dark) !important;
 }
 
 /* ----------- toasts ------------- */

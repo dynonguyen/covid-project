@@ -3,15 +3,20 @@ const {
 	getAddressUser,
 	parseSortStr,
 	omitPropObj,
+	userValidation,
+	addNewAddress,
+	createUser,
+	addNewTreatmentHistory,
 } = require('../../helpers/index.helpers');
-const { MAX } = require('../../constants/index.constant');
+const { MAX, STATUS_F } = require('../../constants/index.constant');
+const { Op } = require('../../configs/db.config');
 const { Sequelize } = require('sequelize');
 const Account = require('../../models/account.model');
-const User = require('../../models/user.model');
-const RelatedUser = require('../../models/related-user.model');
-const { Op } = require('../../configs/db.config');
-const TreatmentHistory = require('../../models/treatment-history.model');
+const Address = require('../../models/address.model');
 const IsolationFacility = require('../../models/isolation-facility.model');
+const RelatedUser = require('../../models/related-user.model');
+const TreatmentHistory = require('../../models/treatment-history.model');
+const User = require('../../models/user.model');
 
 exports.getUserList = async (req, res) => {
 	let { page = 1, sort = '', search = '' } = req.query;
@@ -188,5 +193,183 @@ exports.getUser = async (req, res) => {
 	} catch (error) {
 		console.error('Function getUser Error: ', error);
 		return res.status(404).json({ message: 'Không tìm thấy người dùng' });
+	}
+};
+
+exports.getNewUserForm = async (req, res) => {
+	try {
+		return res.render('./management/users/new-user.pug', {
+			title: 'Người liên quan Covid | Thêm mới',
+		});
+	} catch (error) {
+		console.error('Function getNewUserForm Error: ', error);
+		return res.render('404');
+	}
+};
+
+exports.postNewUser = async (req, res) => {
+	const { relatedList = [], ...user } = req.body;
+
+	try {
+		const { isValid, msg } = await userValidation(user);
+		if (!isValid) {
+			return res.status(400).json({ msg });
+		}
+		const {
+			wardId,
+			details,
+			fullname,
+			peopleId,
+			DOB,
+			isolationFacility,
+			statusF,
+			related,
+		} = user;
+
+		const addressId = await addNewAddress(details, wardId);
+		if (!addressId) throw new Error();
+
+		// Get manager Id
+		const manager = await Account.findOne({
+			raw: true,
+			where: { username: req.session?.account?.username },
+			attributes: ['accountId'],
+		});
+
+		// Create origin user
+		const newUser = await createUser({
+			fullname,
+			peopleId,
+			DOB,
+			statusF,
+			addressId,
+			managerId: manager.accountId,
+		});
+
+		// add treament history
+		const { error, msg: treamentMsg } = await addNewTreatmentHistory(
+			Number(isolationFacility),
+			newUser.userId,
+			statusF
+		);
+		if (error) {
+			// rollback
+			User.destroy({ where: { userId: newUser.userId } });
+			Account.destroy({ where: { username: peopleId } });
+			Address.destroy({ where: { addressId } });
+			return res.status(400).json({ msg: treamentMsg });
+		}
+
+		// add related user if status-f # f0
+		if (Number(statusF) !== STATUS_F.F0 && related) {
+			// find root user
+			const originUser = await User.findOne({
+				where: { uuid: related },
+				raw: true,
+			});
+			if (originUser) {
+				RelatedUser.create({
+					originUserId: originUser.userId,
+					relatedUserId: newUser.userId,
+				});
+			}
+		}
+
+		// add related user list f1
+		for (const u1 of relatedList) {
+			const u1AddressId = await addNewAddress(u1.details, u1.wardId);
+			const u1NewUser = await createUser({
+				fullname: u1.fullname,
+				peopleId: u1.peopleId,
+				DOB: u1.DOB,
+				statusF: Number(statusF) + 1,
+				addressId: u1AddressId,
+				managerId: manager.accountId,
+			});
+
+			const { error: u1Error, msg: u1TreamentMsg } =
+				await addNewTreatmentHistory(
+					Number(u1.isolationFacility),
+					u1NewUser.userId,
+					statusF + 1
+				);
+			if (u1Error) {
+				User.destroy({ where: { userId: u1NewUser.userId } });
+				Address.destroy({ where: { addressId: u1AddressId } });
+				return res.status(400).json({ msg: u1TreamentMsg });
+			}
+
+			RelatedUser.create({
+				originUserId: newUser.userId,
+				relatedUserId: u1NewUser.userId,
+			});
+
+			// add related user list f2
+			const u1RelatedList = u1.relatedList || [];
+			for (const u2 of u1RelatedList) {
+				const u2AddressId = await addNewAddress(u2.details, u2.wardId);
+				const u2NewUser = await createUser({
+					fullname: u2.fullname,
+					peopleId: u2.peopleId,
+					DOB: u2.DOB,
+					statusF: Number(statusF) + 2,
+					addressId: u2AddressId,
+					managerId: manager.accountId,
+				});
+
+				const { error: u2Error, msg: u2TreamentMsg } =
+					await addNewTreatmentHistory(
+						Number(u2.isolationFacility),
+						u2NewUser.userId,
+						statusF + 2
+					);
+				if (u2Error) {
+					User.destroy({ where: { userId: u2NewUser.userId } });
+					Address.destroy({ where: { addressId: u2AddressId } });
+					return res.status(400).json({ msg: u2TreamentMsg });
+				}
+
+				RelatedUser.create({
+					originUserId: u1NewUser.userId,
+					relatedUserId: u2NewUser.userId,
+				});
+
+				// add related user list f3
+				const u3RelatedList = u2.relatedList || [];
+				for (const u3 of u3RelatedList) {
+					const u3AddressId = await addNewAddress(u3.details, u3.wardId);
+					const u3NewUser = await createUser({
+						fullname: u3.fullname,
+						peopleId: u3.peopleId,
+						DOB: u3.DOB,
+						statusF: Number(statusF) + 3,
+						addressId: u3AddressId,
+						managerId: manager.accountId,
+					});
+
+					const { error: u3Error, msg: u3TreamentMsg } =
+						await addNewTreatmentHistory(
+							Number(u3.isolationFacility),
+							u3NewUser.userId,
+							statusF + 3
+						);
+					if (u3Error) {
+						User.destroy({ where: { userId: u3NewUser.userId } });
+						Address.destroy({ where: { addressId: u3AddressId } });
+						return res.status(400).json({ msg: u3TreamentMsg });
+					}
+
+					RelatedUser.create({
+						originUserId: u2NewUser.userId,
+						relatedUserId: u3NewUser.userId,
+					});
+				}
+			}
+		}
+
+		return res.status(200).json({ msg: 'Thêm thành công' });
+	} catch (error) {
+		console.error('Function postNewUser Error: ', error);
+		return res.status(400).json({ msg: 'Thêm thất bại !' });
 	}
 };

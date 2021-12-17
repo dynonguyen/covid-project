@@ -1,5 +1,3 @@
-/// <reference path="D:\typings\jquery\globals\jquery\index.d.ts" />
-
 const ROOT_URL = '/management/users/list';
 
 const renderUserTreatmentHistories = (treatmentHistories = []) => {
@@ -72,7 +70,6 @@ const renderRelatedList = (relatedList = []) => {
 };
 
 const renderUserDetails = (user) => {
-	console.log(user);
 	const {
 		fullname,
 		address,

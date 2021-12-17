@@ -37,7 +37,7 @@ User.hasMany(TreatmentHistory, {
 		allowNull: false,
 	},
 	onUpdate: 'CASCADE',
-	onDelete: 'RESTRICT',
+	onDelete: 'CASCADE',
 });
 TreatmentHistory.belongsTo(User, { foreignKey: 'userId' });
 
@@ -48,7 +48,7 @@ IsolationFacility.hasMany(TreatmentHistory, {
 		allowNull: false,
 	},
 	onUpdate: 'CASCADE',
-	onDelete: 'RESTRICT',
+	onDelete: 'CASCADE',
 });
 TreatmentHistory.belongsTo(IsolationFacility, {
 	foreignKey: 'isolationFacilityId',

@@ -1,0 +1,57 @@
+.box {
+	padding: 1.5rem 2rem;
+}
+
+.box-title {
+	font-size: 1.35rem;
+	color: var(--info);
+	font-weight: 600;
+	text-transform: uppercase;
+}
+
+.f-box {
+	color: var(--orange);
+	font-size: 1.15rem;
+	position: relative;
+}
+
+.field-inline-label {
+	flex-shrink: 0;
+	flex-basis: 9rem;
+}
+
+.new-user .field {
+	border-radius: 8px;
+	flex-grow: 1;
+}
+
+.selectize-input {
+	border-radius: 8px;
+}
+
+.related-user {
+	background-color: var(--light-gray);
+	padding: 0.75rem;
+	border-radius: 8px;
+	margin: 0.75rem 0;
+}
+
+.toggle-action i[class*='bi-chevron'] {
+	position: absolute;
+	top: 50%;
+	right: 0.75rem;
+	transform: translateY(-50%);
+	cursor: pointer;
+}
+
+.add-form-btn {
+	border: dashed 1px var(--orange) !important;
+	background-color: transparent !important;
+	color: var(--orange) !important;
+}
+
+.toggle-form {
+	border: solid 1px var(--field-bg);
+	border-radius: 8px;
+	border-top: none;
+}

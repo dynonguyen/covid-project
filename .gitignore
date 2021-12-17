@@ -4,3 +4,4 @@ yarn-error.log
 .env
 local-refs/
 .vscode/
+note.*

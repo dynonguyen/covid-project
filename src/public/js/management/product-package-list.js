@@ -1,5 +1,47 @@
 const ROOT_URL = '/management/product-packages/list';
 
+const renderPackageDetails = (package) => {
+	// const [
+	// 	{ productPackageName, productName, price, unit, maxQuantity, quantity },
+	// ] = package;
+
+	let tableData = [];
+	for (let i = 0; i < package.length; ++i) {
+		tableData.push(
+			`
+      <tr>
+				<td>${package[i].productPackageName}</td>
+				<td>${package[i].productName}</td>
+				<td>${package[i].price}</td>
+				<td>${package[i].unit}</td>
+				<td>${package[i].maxQuantity}</td>
+				<td>${package[i].quantity}</td>
+			</tr>
+      `
+		);
+	}
+
+	return (
+		`
+	  <table class="table table-striped table-light table-bordered w-100">
+	    <thead class="thead-dark">
+	      <tr>
+	        <th scope="col">Tên gói</th>
+	        <th scope="col">Tên sản phẩm</th>
+	        <th scope="col">Giá</th>
+	        <th scope="col">Đơn vị tính</th>
+	        <th scope="col">Số lượng tối đa</th>
+	        <th scope="col">Số lượng</th>
+	      </tr>
+	    </thead>
+	    <tbody> ` +
+		`${tableData}` +
+		`</tbody>
+	  </table>
+	`
+	);
+};
+
 $(document).ready(function () {
 	// pagination
 	const paginationContainer = $('#pagination');
@@ -53,12 +95,39 @@ $(document).ready(function () {
 	});
 
 	// Show package detail (show package modal)
-	$('#packageModal').on('show.bs.modal', function (event) {
-		let button = $(event.relatedTarget);
-		let recipient = button.data('whatever');
-		let modal = $(this);
-		modal.find('.modal-title').text('Package ' + recipient);
-		modal.find('.modal-body input').val(recipient);
-		console.log($(this));
+	$('.info-icon').click(async function () {
+		const packageId = $(this).attr('data-uuid');
+		if (!packageId) return;
+
+		const loading = $('#loading');
+		const modalBody = $('#packageModalBody');
+		const modal = $('#packageModal');
+
+		// loading
+		loading.removeClass('d-none');
+		modalBody.empty();
+		modal.fadeIn(200).modal('show');
+
+		// fetch this package by packageId
+		const packageRes = await fetch(
+			`/management/product-packages/${packageId}`,
+			{
+				method: 'GET',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+			}
+		);
+
+		loading.addClass('d-none');
+
+		if (packageRes.status === 200) {
+			const package = await packageRes.json();
+			modalBody.html(renderPackageDetails(package));
+		} else {
+			modalBody.html(
+				'<div class="alert alert-danger">Lấy dữ liệu thất bại. Thử lại !</div>'
+			);
+		}
 	});
 });

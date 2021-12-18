@@ -23,12 +23,11 @@ block addContent
               i.mgmt-icon.edit-icon.bi.bi-pencil-fill.px-2
               i.mgmt-icon.info-icon.bi.bi-info-circle-fill.px-2(type="button", data-toggle="modal", data-target="#packageModal", data-whatever="#idPackage", data-uuid=p.productPackageId)
 
-              //- i.mgmt-icon.info-icon.bi.bi-info-circle-fill.px-2
 
     .modal.fade#packageModal(tabindex="-1", aria-labelledby="packageModalLabel", aria-hidden="true")
       .modal-dialog.modal-dialog-centered.modal-dialog-scrollable.m-0-auto
         .modal-content
-          .modal-header.bg-danger
+          .modal-header.bg-info
             h5.modal-title.text-light.text-capitalize Chi tiết gói nhu yếu phẩm
             button.close(type="button", data-dismiss="modal", aria-label="Close")
               span.text-light(aria-hidden="true") ×
@@ -36,19 +35,7 @@ block addContent
             #loading.flex-center.py-4.d-none
               .spinner-border.text-info(role="status")
                 span.sr-only Đang tải dữ liệu ...
-            #userModalBody
-              table.table.table-striped.table-light.table-bordered.w-100
-                thead.thead-dark
-                  tr
-                    th(scope="col") Tên sản phẩm
-                    th(scope="col") SL tối đa
-                    th(scope="col") SL hiện tại
-                tbody
-                  each p in packages
-                    tr
-                      td=  p.productPackageName
-                      td=  p.limitedProducts
-                      td=  p.limitedInDay
+            #packageModalBody
           .modal-footer
             button.btn.btn-secondary(type="button", data-dismiss="modal") Đóng
 

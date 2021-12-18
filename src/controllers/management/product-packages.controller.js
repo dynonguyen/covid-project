@@ -1,6 +1,8 @@
+const { Sequelize, where } = require('sequelize/dist');
 const { MAX } = require('../../constants/index.constant');
 const ProductInPackage = require('../../models/product-in-package.model');
 const ProductPackage = require('../../models/product-package.model');
+const Product = require('../../models/product.model');
 
 exports.getProductPackage = async (req, res) => {
 	try {
@@ -24,23 +26,6 @@ exports.getProductPackage = async (req, res) => {
 			offset: (page - 1) * MAX.PAGE_SIZE,
 		});
 
-		// const productInPackageList = await ProductInPackage.findAndCountAll({
-		// 	raw: true,
-		// 	order: ['productInPackageId'],
-		// 	attributes: [
-		// 		'productInPackageId',
-		// 		'maxQuantity',
-		// 		'quantity',
-		// 		'productId',
-		// 		'productPackageId',
-		// 	],
-		// 	limit: MAX.PAGE_SIZE,
-		// 	offset: 0,
-		// 	where: [{ productPackageId: req.params.id }],
-		// });
-
-		console.log(req.query);
-
 		return res.render('./management/product-packages/view-list', {
 			title: 'Gói sản phẩm | Xem danh sách',
 			total: packagesList.count,
@@ -50,6 +35,43 @@ exports.getProductPackage = async (req, res) => {
 		});
 	} catch (error) {
 		console.error('Load product packages list failed: ', error);
+		return res.render('404');
+	}
+};
+
+exports.getPackageDetail = async (req, res) => {
+	try {
+		const { productPackageId } = req.params;
+		if (!productPackageId)
+			return res
+				.status(404)
+				.json({ message: 'Không tìm thấy gói nhu yếu phẩm' });
+
+		const productInPackage = await ProductInPackage.findAll({
+			raw: true,
+			attributes: [
+				'maxQuantity',
+				'quantity',
+				[
+					Sequelize.col('ProductPackage.productPackageName'),
+					'productPackageName',
+				],
+				[Sequelize.col('Product.productName'), 'productName'],
+				[Sequelize.col('Product.price'), 'price'],
+				[Sequelize.col('Product.unit'), 'unit'],
+				[Sequelize.col('ProductInPackage.maxQuantity'), 'maxQuantity'],
+				[Sequelize.col('ProductInPackage.quantity'), 'quantity'],
+			],
+			where: { productPackageId },
+			include: [
+				{ model: ProductPackage, attributes: [] },
+				{ model: Product, attributes: [] },
+			],
+		});
+
+		return res.status(200).json(productInPackage);
+	} catch (error) {
+		console.error('Load product package detail failed: ', error);
 		return res.render('404');
 	}
 };

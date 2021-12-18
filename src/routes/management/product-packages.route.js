@@ -5,5 +5,9 @@ productPackageMgmtRoute.get(
 	'/list',
 	productPackageMgmtController.getProductPackage
 );
+productPackageMgmtRoute.get(
+	'/:productPackageId',
+	productPackageMgmtController.getPackageDetail
+);
 
 module.exports = productPackageMgmtRoute;

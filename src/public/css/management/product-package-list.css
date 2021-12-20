@@ -1,0 +1,64 @@
+th .has-icon {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+th .has-icon .bi {
+	margin-left: 6px;
+}
+
+.has-icon .bi {
+	cursor: pointer;
+	font-size: 1.25rem;
+}
+
+.has-icon .bi.active {
+	color: var(--success);
+}
+
+.search .field {
+	box-shadow: var(--sm-box-shadow);
+	border-top-left-radius: 8px;
+	border-top-right-radius: 0px;
+	border-bottom-left-radius: 8px;
+	border-bottom-right-radius: 0px;
+	min-width: 300px;
+}
+
+.search .btn {
+	box-shadow: var(--sm-box-shadow);
+	border-top-left-radius: 0px;
+	border-top-right-radius: 8px;
+	border-bottom-left-radius: 0px;
+	border-bottom-right-radius: 8px;
+}
+
+.modal-dialog {
+	width: 80%;
+	max-width: 776px;
+}
+
+#packageModalBody h3 {
+	font-size: 1.35rem;
+	font-weight: 600;
+	color: var(--dark);
+}
+
+#packageModalBody li {
+	list-style: none;
+	margin-bottom: 8px;
+	letter-spacing: 0.5px;
+}
+
+#packageModalBody li span {
+	font-weight: 500;
+	padding-right: 4px;
+	color: var(--gray);
+}
+
+#packageModalBody .label {
+	font-size: 1.2rem;
+	color: var(--gray-dark);
+	text-transform: capitalize;
+}

@@ -1,10 +1,6 @@
 const ROOT_URL = '/management/product-packages/list';
 
 const renderPackageDetails = (package) => {
-	// const [
-	// 	{ productPackageName, productName, price, unit, maxQuantity, quantity },
-	// ] = package;
-
 	let tableData = [];
 	for (let i = 0; i < package.length; ++i) {
 		tableData.push(

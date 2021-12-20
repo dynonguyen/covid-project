@@ -1,5 +1,8 @@
-const { Sequelize, where } = require('sequelize/dist');
+const { parseSortStr } = require('../../helpers/index.helpers');
+
+const { Sequelize } = require('sequelize/dist');
 const { MAX } = require('../../constants/index.constant');
+const { Op } = require('../../configs/db.config');
 const ProductInPackage = require('../../models/product-in-package.model');
 const ProductPackage = require('../../models/product-package.model');
 const Product = require('../../models/product.model');
@@ -7,13 +10,29 @@ const Product = require('../../models/product.model');
 exports.getProductPackage = async (req, res) => {
 	try {
 		let { page = 1, sort = '', search = '' } = req.query;
+		const sortList = parseSortStr(sort);
+		const order = sortList.map((i) => i.split(' '));
 
 		page = Number(page);
 		if (isNaN(page) || page < 1) page = 1;
 
+		const where = search
+			? {
+					[Op.or]: [
+						{
+							productPackageName: Sequelize.where(
+								Sequelize.fn('LOWER', Sequelize.col('productPackageName')),
+								'LIKE',
+								`%${search.toLowerCase()}%`
+							),
+						},
+					],
+			  }
+			: {};
+
 		const packagesList = await ProductPackage.findAndCountAll({
 			raw: true,
-			order: ['productPackageId'],
+			order,
 			attributes: [
 				'productPackageId',
 				'productPackageName',
@@ -22,6 +41,7 @@ exports.getProductPackage = async (req, res) => {
 				'limitedInWeek',
 				'limitedInMonth',
 			],
+			where,
 			limit: MAX.PAGE_SIZE,
 			offset: (page - 1) * MAX.PAGE_SIZE,
 		});
@@ -32,6 +52,8 @@ exports.getProductPackage = async (req, res) => {
 			currentPage: page,
 			pageSize: MAX.PAGE_SIZE,
 			packages: packagesList.rows,
+			sortList: sortList.join(','),
+			search,
 		});
 	} catch (error) {
 		console.error('Load product packages list failed: ', error);

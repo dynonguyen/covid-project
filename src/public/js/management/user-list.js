@@ -214,22 +214,43 @@ $(document).ready(function () {
 		const statusF = $(this).attr('data-statusf');
 		const IFacility = $(this).attr('data-if');
 		const uuid = $(this).attr('data-uuid');
+		const isLocked = $(this).attr('data-locked') == '1' ? true : false;
+		const ifId = $(this).attr('data-ifId');
 
 		$('#currentStatusF').text(`( Hiện tại: ${convertStatusFToStr(statusF)} )`);
 		$('#currentIF').text(`( Hiện tại: ${IFacility} )`);
+		$('#isLocked').prop('checked', isLocked);
 
 		modal.attr('data-uuid', uuid);
 		modal.attr('data-statusf', statusF);
+		modal.attr('data-if', ifId);
+		modal.attr('data-locked', isLocked ? 1 : 0);
 	});
 
-	$('#updateBtn').click(function () {
-		const newStatusF = Number($('#statusFSelect').val());
-		const oldStatusF = Number($('#editModal').attr('data-statusf'));
-		const newIF = $('#IFSelect').val();
-		const uuid = $('#editModal').attr('data-uuid');
+	$('#updateBtn').click(async function () {
 		const toast = $('#toastMsg');
+		const editModal = $('#editModal');
 
-		if (newStatusF >= oldStatusF) {
+		const oldStatusF = Number(editModal.attr('data-statusf'));
+		const newStatusF = $('#statusFSelect').val();
+
+		const oldIF = editModal.attr('data-if');
+		const newIF = $('#IFSelect').val();
+
+		const uuid = editModal.attr('data-uuid');
+
+		const oldIsLocked = editModal.attr('data-locked') == 1 ? true : false;
+		const newIsLocked = $('#isLocked').is(':checked');
+
+		if (
+			(oldStatusF == newStatusF || newStatusF == '') &&
+			(oldIF == newIF || newIF == '') &&
+			oldIsLocked == newIsLocked
+		) {
+			return;
+		}
+
+		if (newStatusF > oldStatusF) {
 			showToastMsg(
 				toast,
 				'Không thể chuyển trạng thái từ cấp cao về cấp thấp hơn',
@@ -237,6 +258,40 @@ $(document).ready(function () {
 				4000
 			);
 			return;
+		}
+
+		if (newStatusF == -1 && oldStatusF != 0) {
+			showToastMsg(
+				toast,
+				'Chỉ cập nhật trạng thái "Khỏi bệnh" cho bệnh nhân F0',
+				'danger',
+				4000
+			);
+			return;
+		}
+
+		$(this).addClass('disabled');
+
+		const resJSON = await fetch('/management/users/update', {
+			method: 'PUT',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({
+				uuid,
+				newIF,
+				newStatusF,
+				newIsLocked,
+			}),
+		});
+
+		if (resJSON.status === 200) {
+			showToastMsg(toast, 'Cập nhật thành công', 'success', 1000);
+			location.reload();
+		} else {
+			const { msg } = await resJSON.json();
+			$(this).removeClass('disabled');
+			showToastMsg(toast, msg || 'Cập nhật thất bại', 'danger', 3000);
 		}
 	});
 });

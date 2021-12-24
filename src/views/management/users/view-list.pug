@@ -33,6 +33,7 @@ block addContent
         tbody
           each user in userList
             - const IFName = user.isolationTreatment ?  user.isolationTreatment.isolationFacilityName : '_';
+            - const IFId = user.isolationTreatment ? user.isolationTreatment.isolationFacilityId : "" ;
             tr
               td= user.fullname
                 if user.isLocked
@@ -44,7 +45,7 @@ block addContent
               td= IFName
               td= user.numOfRelated
               td.text-center
-                i.mgmt-icon.edit-icon.bi.bi-pencil-fill.px-2(data-uuid=user.uuid, data-statusf=user.statusF, data-ifId=user.isolationTreatment.isolationFacilityId data-if=IFName, data-locked=user.isLocked ? "1": "0")
+                i.mgmt-icon.edit-icon.bi.bi-pencil-fill.px-2(data-uuid=user.uuid, data-statusf=user.statusF, data-ifId=IFId, data-if=IFName, data-locked=user.isLocked ? "1": "0")
                 i.mgmt-icon.info-icon.bi.bi-info-circle-fill.px-2(data-uuid=user.uuid)
       #pagination
     else

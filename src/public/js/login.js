@@ -4,6 +4,10 @@ $(document).ready(function () {
 		const submitBtn = $('#submitBtn');
 		const toast = $('#toastMsg');
 		const username = $('#username').val()?.trim();
+		const password = $('#password').val()?.trim();
+		if (!password) {
+			$('#password').val('0');
+		}
 
 		submitBtn.addClass('disabled');
 

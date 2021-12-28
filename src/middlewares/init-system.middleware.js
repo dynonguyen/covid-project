@@ -15,9 +15,7 @@ exports.checkInitSystemMiddleware = async (req, res, next) => {
 		// check database
 		const existAdmin = await AdminAccount.count({});
 		if (existAdmin === 0) {
-			return res.render('init-system.pug', {
-				title: 'Khởi tạo hệ thống',
-			});
+			return res.render('init-system.pug');
 		}
 
 		req.session.initChecked = true;

@@ -10,8 +10,9 @@ module.exports = {
 
 	MAX: {
 		FAILED_LOGIN_TIME: 5,
-		COOKIE_AGE: 259_200_000, // 3 days
 		PAGE_SIZE: 6,
+		TOKEN_EXP: 259_200_000, // 3 days
+		SESSION_EXP: 1_800_000, // 30 mins
 	},
 
 	PAYMENT_TYPES: {
@@ -26,4 +27,8 @@ module.exports = {
 		F2: 2,
 		F3: 3,
 	},
+
+	JWT_SECRET: process.env.JWT_SECRET || 'JWT_Covid_Project',
+	JWT_AUTHOR: 'Covid Project System',
+	JWT_COOKIE_KEY: 'access_token',
 };

@@ -1,5 +1,11 @@
 const { Sequelize } = require('sequelize');
-const { STATUS_F, ACCOUNT_TYPES } = require('../constants/index.constant');
+const {
+	STATUS_F,
+	ACCOUNT_TYPES,
+	MAX,
+	JWT_SECRET,
+	JWT_AUTHOR,
+} = require('../constants/index.constant');
 const Address = require('../models/address.model');
 const bcrypt = require('bcryptjs');
 const District = require('../models/district.model');
@@ -10,6 +16,7 @@ const Account = require('../models/account.model');
 const { v4: uuidv4 } = require('uuid');
 const IsolationFacility = require('../models/isolation-facility.model');
 const TreatmentHistory = require('../models/treatment-history.model');
+const jwt = require('jsonwebtoken');
 
 // Hash password with bcrypt
 exports.hashPassword = (password = '') => {
@@ -290,4 +297,17 @@ exports.addNewTreatmentHistory = async (
 			msg: `Cơ sở điều trị không tồn tại`,
 		};
 	}
+};
+
+exports.jwtEncode = (data, isRemember = true) => {
+	const now = Date.now();
+	return jwt.sign(
+		{
+			author: JWT_AUTHOR,
+			sub: data,
+			iat: now,
+			exp: isRemember ? now + MAX.TOKEN_EXP : now + MAX.SESSION_EXP,
+		},
+		JWT_SECRET
+	);
 };

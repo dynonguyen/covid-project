@@ -98,7 +98,6 @@ exports.getUserList = async (req, res) => {
 		}
 
 		return res.render('./management/users/view-list', {
-			title: 'Người liên quan Covid | Xem danh sách',
 			userList,
 			total: users.count,
 			currentPage: page,
@@ -200,9 +199,7 @@ exports.getUser = async (req, res) => {
 
 exports.getNewUserForm = async (req, res) => {
 	try {
-		return res.render('./management/users/new-user.pug', {
-			title: 'Người liên quan Covid | Thêm mới',
-		});
+		return res.render('./management/users/new-user.pug');
 	} catch (error) {
 		console.error('Function getNewUserForm Error: ', error);
 		return res.render('404');

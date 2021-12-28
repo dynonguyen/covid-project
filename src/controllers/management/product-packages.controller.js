@@ -47,7 +47,6 @@ exports.getProductPackage = async (req, res) => {
 		});
 
 		return res.render('./management/product-packages/view-list', {
-			title: 'Gói sản phẩm | Xem danh sách',
 			total: packagesList.count,
 			currentPage: page,
 			pageSize: MAX.PAGE_SIZE,

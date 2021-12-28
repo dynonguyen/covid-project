@@ -2,7 +2,8 @@ const { ACCOUNT_TYPES } = require('../constants/index.constant');
 
 exports.getHome = async (req, res) => {
 	try {
-		const { accountType } = req.session.account;
+		const { accountType } = req.user;
+
 		switch (accountType) {
 			case ACCOUNT_TYPES.USER:
 				return res.send('User page');

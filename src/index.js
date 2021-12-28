@@ -14,11 +14,15 @@ const {
 } = require('./middlewares/init-system.middleware');
 const {
 	authMiddleware,
+  authAdminMiddleware,
+  adminAuthorizationMiddleware,
 	mgmtAuthorizationMiddleware,
 } = require('./middlewares/auth.middleware');
 const { passSidebarStatus } = require('./middlewares/mgmt-session.middleware');
 
 /* ============== Import routes =============== */
+const loginRoute = require('./routes/admin/login.route');
+const adminRoute = require('./routes/admin/index.route');
 const authRoute = require('./routes/auth.route');
 const initSystemRoute = require('./routes/init-system.route');
 const homeRoute = require('./routes/home.route');
@@ -50,8 +54,17 @@ app.use(checkInitSystemMiddleware);
 
 /* ============== Routes =============== */
 app.use('/init-system', initSystemRoute);
+app.use('/auth-admin', loginRoute);
 app.use('/auth', authRoute);
 app.use('/api', apiRoute);
+app.use(
+	'/admin',
+	authAdminMiddleware,
+  adminAuthorizationMiddleware,
+	passSidebarStatus,
+	adminRoute
+);
+
 app.use(
 	'/management',
 	authMiddleware,
@@ -59,7 +72,8 @@ app.use(
 	passSidebarStatus,
 	managementRoute
 );
-app.use('/', authMiddleware, homeRoute);
+
+app.use('/', authMiddleware, authAdminMiddleware, homeRoute);
 
 // 404 Not found redirect
 app.use((req, res) => res.render('404.pug'));

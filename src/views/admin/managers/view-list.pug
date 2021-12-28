@@ -1,0 +1,59 @@
+extends ../../templates/admin.template.pug
+include ../../mixins/no-result.mixin.pug
+
+block addStyle
+  link(rel="stylesheet", href="/vendors/selectize/selectize.min.css")
+  link(rel="stylesheet", href="/css/admin/manager-list.css")
+
+block addContent
+  .p-3.flex-grow-1
+    if managerList && managerList.length > 0
+      table.table.table-striped.table-light.table-bordered
+        thead.thead-dark
+          tr
+            th(scope="col") Username
+            th(scope="col") isLocked
+            th(scope="col") failedLoginTime
+            th(scope="col") Hành động
+        tbody
+          each manager in managerList
+            tr
+              td= manager.username
+              td= manager.isLocked
+              td= manager.failedLoginTime
+              td.text-center
+                i.mgmt-icon.edit-icon.bi.bi-pencil-fill.px-2
+                i.mgmt-icon.info-icon.bi.bi-info-circle-fill.px-2(type="button", data-toggle="modal", data-target="#managerModal", data-whatever="#idManager", data-uuid=manager.accountId)
+      #pagination
+    else
+      +noResult('w-80', '/admin/managers/list')
+
+      .modal.fade#managerModal(tabindex="-1", aria-labelledby="managerModalLabel", aria-hidden="true")
+      .modal-dialog.modal-dialog-centered.modal-dialog-scrollable.m-0-auto
+        .modal-content
+          .modal-header.bg-info
+            h5.modal-title.text-light.text-capitalize Danh sách User đang quản lý
+            button.close(type="button", data-dismiss="modal", aria-label="Close")
+              span.text-light(aria-hidden="true") ×
+          .modal-body
+            #loading.flex-center.py-4.d-none
+              .spinner-border.text-info(role="status")
+                span.sr-only Đang tải dữ liệu ...
+            #managerModalBody
+          .modal-footer
+            button.btn.btn-secondary(type="button", data-dismiss="modal") Đóng
+
+    .toast-msg#toastMsg
+
+block addScript
+  script.
+    const pageSize = parseInt("#{pageSize}");
+    const total = parseInt("#{total}");
+    const currentPage = parseInt("#{currentPage}");
+    const sortListRaw = "#{sortList}";
+    const sortList = sortListRaw.length > 0 ? sortListRaw.split(',') : [];
+    const search = "#{search}";
+
+  script(src="/vendors/selectize/selectize.min.js")
+  script(src="/vendors/pagination.min.js")
+  script(src="/js/admin/manager-list.js")

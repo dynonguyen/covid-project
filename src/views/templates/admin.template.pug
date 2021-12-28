@@ -1,0 +1,74 @@
+extends ./general.template.pug
+
+block append style
+  link(rel="stylesheet", href="/css/admin/admin-template.css")
+  block addStyle
+
+block content
+  .layout-wrapper
+    //- navbar
+    .navbar-wrap.center-vertical
+      .logo-side.center-vertical
+        h1.logo #[a(href="/admin") Covid-19 Project]
+        i.admin-icon#toggleSidebar.bi(class=showSidebar ? "bi-layout-sidebar-inset-reverse" : "bi-layout-sidebar-inset")
+
+      .account-side.center-vertical
+        .d-flex.flex-column.mx-4
+          .username Username
+          .role Admin
+        a(href="/auth-admin/logout") #[i.admin-icon.bi.bi-box-arrow-in-right]
+
+    .d-flex
+      -
+        const menuList = [
+                        {
+                          menuTitle: 'Tài khoản người quản lý',
+                          icon: 'bi bi-people-fill',
+                          list: [
+                            { title: 'Xem danh sách', to: '/managers/list' },
+                            { title: 'Thêm người quản lý', to: '/' },
+                            //- /managers/new
+                          ],
+                        },
+                        {
+                          menuTitle: 'Địa điểm điều trị cách ly',
+                          icon: 'bi bi-box-seam',
+                          list: [
+                            { title: 'Xem danh sách', to: '/' },
+                            { title: 'Thêm địa điểm mới', to: '' },
+                          ],
+                        },
+                        {
+                          menuTitle: 'Thiết lập',
+                          icon: 'bi bi-gear-fill',
+                          list: [
+                            { title: 'Đổi mật khẩu', to: '/' },
+                            { title: 'Thông tin tài khoản', to: '' },
+                          ],
+                        },
+                        {
+                          menuTitle: 'Thông báo',
+                          icon: 'bi bi-bell',
+                          list: [
+                            { title: 'Thông báo đến', to: '/' },
+                            { title: 'Thông báo đi', to: '' },
+                          ],
+                        },
+                      ];
+
+      //- sidebar
+      .sidebar-wrap#sidebar(style=showSidebar ? "" : "display:none")
+        .menu
+          each menu in menuList
+            h3.menu-title #[i.mr-2(class=menu.icon)] #{menu.menuTitle}
+            ul.menu-list
+              each menuItem in menu.list
+                li.menu-item(data-path=menuItem.to)
+                  a(href="/admin" + menuItem.to)= menuItem.title
+
+      //- main content
+      block addContent
+
+block append script
+  script(src="/js/admin/admin-template.js")
+  block addScript

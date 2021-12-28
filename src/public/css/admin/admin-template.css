@@ -1,0 +1,273 @@
+body {
+	background-color: var(--light-gray);
+	overflow: visible;
+	--navbar-height: 4.25rem;
+	--navbar-padding: 1rem;
+	--sidebar-width: 18rem;
+	--navbar-zindex: 100;
+}
+
+.layout-template {
+	overflow-x: hidden;
+}
+
+.admin-icon {
+	font-size: 1.35rem;
+	color: var(--primary);
+	cursor: pointer;
+	transition: var(--transition);
+}
+
+.edit-icon {
+	color: var(--warning);
+}
+
+.info-icon {
+	color: var(--info);
+}
+
+.admin-icon:hover,
+.logo a:hover,
+.searchbar-wrap .bi-search:hover {
+	-webkit-filter: brightness(0.65);
+	filter: brightness(0.65);
+}
+
+table {
+	box-shadow: var(--sm-box-shadow);
+}
+
+th,
+td {
+	vertical-align: middle !important;
+}
+
+/* ----------- Navbar ------------- */
+.navbar-wrap {
+	height: var(--navbar-height);
+	background-color: #fff;
+	justify-content: space-between;
+	box-shadow: rgba(0, 0, 0, 0.2) 0px 10px 15px -10px;
+
+	position: -webkit-sticky;
+	position: sticky;
+	top: 0;
+	left: 0;
+	width: 100%;
+	z-index: var(--navbar-zindex);
+}
+
+.logo-side {
+	width: var(--sidebar-width);
+	padding: 0px var(--navbar-padding);
+	justify-content: space-between;
+}
+
+.logo {
+	font-size: 1.5rem;
+	font-weight: bold;
+	margin-bottom: 0;
+}
+
+.logo a {
+	color: var(--primary);
+	text-decoration: none;
+	transition: var(--transition);
+}
+
+
+.account-side {
+	padding-right: var(--navbar-padding);
+}
+
+.username {
+	color: var(--dark);
+	font-size: 1rem;
+	font-weight: 600;
+	letter-spacing: 0.5px;
+}
+
+.role {
+	font-size: 0.85rem;
+	color: var(--gray);
+	letter-spacing: 0.5px;
+}
+
+/* ----------- Sidebar ------------- */
+.sidebar-wrap {
+	width: var(--sidebar-width);
+	height: calc(100vh - var(--navbar-height));
+	background-color: #fff;
+	box-shadow: rgba(0, 0, 0, 0.2) 10px 0 20px -10px;
+	padding: calc(var(--navbar-padding) * 2) var(--navbar-padding) 0;
+
+	flex-shrink: 0;
+	position: -webkit-sticky;
+	position: sticky;
+	left: 0;
+	top: var(--navbar-height);
+	z-index: calc(var(--navbar-zindex) - 1);
+	overflow-y: auto;
+}
+
+.sidebar-wrap.show {
+	-webkit-animation: showSidebar 0.35s linear forwards;
+	animation: showSidebar 0.35s linear forwards;
+}
+
+.sidebar-wrap.hide {
+	-webkit-animation: hideSidebar 0.35s linear forwards;
+	animation: hideSidebar 0.35s linear forwards;
+}
+
+@-webkit-keyframes hideSidebar {
+	from {
+		width: var(--sidebar-width);
+	}
+	to {
+		width: 0;
+		opacity: 0;
+		visibility: hidden;
+		padding: 0;
+	}
+}
+
+@keyframes hideSidebar {
+	from {
+		width: var(--sidebar-width);
+	}
+	to {
+		width: 0;
+		opacity: 0;
+		visibility: hidden;
+		padding: 0;
+	}
+}
+
+/* ----------- Menu ------------- */
+.menu-list {
+	padding-left: 1.25rem;
+}
+
+.menu-title {
+	text-transform: uppercase;
+	font-size: 0.9rem;
+	font-weight: bold;
+	color: var(--primary);
+	margin-bottom: 1.2rem;
+}
+
+.menu-item {
+	margin-bottom: 1.25rem;
+	list-style: none;
+}
+
+.menu-item a {
+	text-decoration: none;
+	color: var(--gray);
+	font-weight: 500;
+	transition: var(--transition);
+}
+
+.menu-item.active a {
+	font-weight: bold;
+}
+
+.menu-item:hover a,
+.menu-item.active a {
+	letter-spacing: 0.5px;
+	color: var(--dark);
+}
+
+/* ----------- custom pagination.js ------------- */
+.paginationjs {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	--item-size: 2.5rem;
+}
+
+.paginationjs-go-input input,
+.paginationjs-go-button input {
+	width: var(--item-size);
+	height: var(--item-size);
+	outline: none;
+	border: none;
+	text-align: center;
+	border-radius: 8px;
+	box-shadow: var(--sm-box-shadow);
+}
+
+.paginationjs-go-button input {
+	margin-left: 0.75rem;
+	background-color: var(--info);
+	color: #fff;
+}
+
+.paginationjs-pages ul {
+	display: flex;
+	margin: 1.25rem auto;
+	padding: 0 0.75rem;
+	justify-content: center;
+}
+
+.paginationjs-pages li {
+	list-style: none;
+	margin: 0 4px;
+	width: var(--item-size);
+	height: var(--item-size);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+
+	background-color: var(--light);
+	border-radius: 8px;
+	cursor: pointer;
+	box-shadow: var(--sm-box-shadow);
+}
+
+.paginationjs-pages li:not(.disabled):hover {
+	-webkit-filter: brightness(0.95);
+	filter: brightness(0.95);
+}
+
+.paginationjs-pages li.active {
+	background-color: var(--primary);
+	color: #fff;
+	font-weight: bold;
+	cursor: no-drop;
+}
+
+.paginationjs-pages li.disabled {
+	cursor: no-drop;
+}
+
+.paginationjs-pages li.disabled a {
+	color: var(--gray) !important;
+}
+
+.paginationjs-pages li a {
+	font-size: 0.9rem;
+	font-weight: 500;
+	color: var(--gray-dark);
+	text-decoration: none;
+}
+
+/* ----------- responsive ------------- */
+@media only screen and (max-width: 992px) {
+	html {
+		font-size: 12px;
+	}
+}
+
+@media only screen and (max-width: 776px) {
+	.searchbar-wrap {
+		display: none;
+	}
+}
+
+@media only screen and (max-width: 480px) {
+	html {
+		font-size: 8px;
+	}
+}

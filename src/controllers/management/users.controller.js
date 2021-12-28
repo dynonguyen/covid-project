@@ -54,7 +54,9 @@ exports.getUserList = async (req, res) => {
 				'peopleId',
 				'DOB',
 				'statusF',
+				[Sequelize.col('account.isLocked'), 'isLocked'],
 			],
+			include: [{ model: Account, as: 'account', attributes: [] }],
 			where,
 			limit: MAX.PAGE_SIZE,
 			offset: (page - 1) * MAX.PAGE_SIZE,
@@ -96,7 +98,6 @@ exports.getUserList = async (req, res) => {
 		}
 
 		return res.render('./management/users/view-list', {
-			title: 'Người liên quan Covid | Xem danh sách',
 			userList,
 			total: users.count,
 			currentPage: page,
@@ -198,9 +199,7 @@ exports.getUser = async (req, res) => {
 
 exports.getNewUserForm = async (req, res) => {
 	try {
-		return res.render('./management/users/new-user.pug', {
-			title: 'Người liên quan Covid | Thêm mới',
-		});
+		return res.render('./management/users/new-user.pug');
 	} catch (error) {
 		console.error('Function getNewUserForm Error: ', error);
 		return res.render('404');
@@ -371,5 +370,99 @@ exports.postNewUser = async (req, res) => {
 	} catch (error) {
 		console.error('Function postNewUser Error: ', error);
 		return res.status(400).json({ msg: 'Thêm thất bại !' });
+	}
+};
+
+exports.putUpdateUserStatus = async (req, res) => {
+	let { uuid, newStatusF, newIF, newIsLocked } = req.body;
+
+	try {
+		const user = await User.findOne({ raw: true, where: { uuid } });
+		if (!user) {
+			return res.status(400).json({ msg: 'Tài khoản không tồn tại' });
+		}
+
+		const { statusF, accountId, userId } = user;
+
+		// update the account lock status
+		Account.update({ isLocked: newIsLocked }, { where: { accountId } });
+
+		// update treatment history
+		if (newIF !== '' && !isNaN(Number(newIF))) {
+			newIF = Number(newIF);
+
+			// check capacity
+			const isoFac = await IsolationFacility.findOne({
+				raw: true,
+				where: { isolationFacilityId: newIF },
+			});
+			if (!isoFac) {
+				return res.status(400).json({ msg: 'Khu điều trị không tồn tại' });
+			}
+			if (isoFac.currentQuantity >= isoFac.capacity) {
+				return res.status(400).json({ msg: 'Khu điều trị đã đầy' });
+			}
+
+			TreatmentHistory.update(
+				{ endDate: new Date() },
+				{ where: { userId, endDate: null } }
+			);
+			TreatmentHistory.create({
+				userId,
+				isolationFacilityId: newIF,
+				startDate: new Date(),
+				endDate: null,
+				statusF: newStatusF === '' ? statusF : Number(newStatusF),
+			});
+		}
+
+		// update user status f
+		if (newStatusF !== '' && newStatusF > statusF) {
+			return res.status(400).json({
+				msg: 'Không thể chuyển trạng thái từ cấp cao về cấp thấp hơn',
+			});
+		}
+
+		if (newStatusF === '') return res.status(200).json({});
+
+		newStatusF = Number(newStatusF);
+		if (isNaN(newStatusF)) throw new Error();
+		User.update({ statusF: newStatusF }, { where: { userId } });
+
+		if (newStatusF === STATUS_F['Khỏi bệnh']) {
+			return res.status(200).json({});
+		}
+
+		// Update status for related user
+		let relatedList = [];
+
+		let tempList = [userId];
+		do {
+			let list = [];
+			for (let id of tempList) {
+				list = [
+					...list,
+					...((
+						await RelatedUser.findAll({
+							attributes: ['relatedUserId'],
+							raw: true,
+							where: { originUserId: id },
+						})
+					)?.map((u) => u.relatedUserId) || []),
+				];
+			}
+
+			tempList = [...list];
+			relatedList = [...relatedList, ...list];
+		} while (tempList && tempList.length > 0);
+
+		relatedList?.forEach((uId) => {
+			User.increment({ statusF: -1 }, { where: { userId: uId } });
+		});
+
+		return res.status(200).json({});
+	} catch (error) {
+		console.error('Function putUpdateUserStatus Error: ', error);
+		return res.status(400).json({ msg: 'Cập nhật thất bại !' });
 	}
 };

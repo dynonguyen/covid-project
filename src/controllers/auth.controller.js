@@ -1,119 +1,59 @@
-const bcrypt = require('bcryptjs');
 const Account = require('../models/account.model');
-const { ACCOUNT_TYPES, MAX } = require('../constants/index.constant');
-const { hashPassword } = require('../helpers/index.helpers');
+const { hashPassword, jwtEncode } = require('../helpers/index.helpers');
+const passport = require('passport');
+const { JWT_COOKIE_KEY, MAX } = require('../constants/index.constant');
+require('../middlewares/passport.middleware');
 
-exports.getLogin = async (req, res) => {
-	try {
-		if (req.session.account) {
-			return res.redirect('/');
-		}
-
-		return res.render('login', {
-			title: 'Đăng nhập',
-		});
-	} catch (error) {
-		console.error('Function postLogin Error: ', error);
+exports.getLogin = (req, res) => {
+	if (req.isAuthenticated()) {
+		return res.redirect('/');
 	}
+	return res.render('login.pug');
 };
 
-exports.getLogout = async (req, res) => {
-	try {
-		req.session.account = null;
-		res.clearCookie('username');
-		return res.redirect('/auth/login');
-	} catch (error) {
-		console.error('Function postLogout Error: ', error);
-		return res.render('404');
-	}
+exports.getLogout = (req, res) => {
+	req.logout();
+	res.clearCookie(JWT_COOKIE_KEY);
+	return res.redirect('/auth/login');
 };
 
-exports.postLogin = async (req, res) => {
-	const { username = '', password = '', remember } = req.body;
+exports.postLogin = async (req, res, next) => {
+	const { remember = false } = req.body;
 
-	try {
-		// check if account existence
-		const account = await Account.findOne({
-			where: { username },
-			raw: true,
-		});
-
-		// if not exist
-		if (!account) {
-			return res.render('login', {
-				title: 'Đăng nhập',
-				message: 'Tài khoản không tồn tại !',
-				username,
+	passport.authenticate('local', function (error, user, info) {
+		if (error) {
+			return res.render('login.pug', {
+				message: 'Đăng nhập thất bại, thử lại !',
 			});
 		}
 
-		const {
-			password: accountPwd,
-			accountType,
-			failedLoginTime,
-			isLocked,
-		} = account;
-
-		// The account has been locked
-		if (isLocked) {
-			return res.render('login', {
-				title: 'Đăng nhập',
-				message:
-					'Tài khoản đã bị khoá, vui lòng liên hệ người quản trị để mở khoá !',
-				username,
-			});
-		}
-
-		// if the account is a default user -> check empty password
-		if (accountType === ACCOUNT_TYPES.USER) {
-			if (!accountPwd) {
+		if (!user) {
+			const { isCreatePwd = false, message, username } = info;
+			if (isCreatePwd) {
 				return res.render('create-password.pug', {
-					title: 'Tạo mật khẩu mới',
 					username,
 				});
 			}
+
+			return res.render('login.pug', {
+				message,
+				username,
+			});
 		}
 
-		// else check password
-		const isCorrectPwd = await bcrypt.compare(password, accountPwd);
-
-		if (isCorrectPwd) {
-			req.session.account = { accountType, username };
-			if (remember) {
-				res.cookie('username', username, {
-					signed: true,
-					httpOnly: true,
-					maxAge: MAX.COOKIE_AGE,
-				});
+		const jwtToken = jwtEncode(user, Boolean(remember));
+		req.login(user, function (err) {
+			if (err) {
+				return res.render('404.pug');
 			}
+
+			res.cookie(JWT_COOKIE_KEY, jwtToken, {
+				httpOnly: true,
+				maxAge: Boolean(remember) ? MAX.TOKEN_EXP : MAX.SESSION_EXP,
+			});
 			return res.redirect('/');
-		}
-
-		// if the password is incorrect
-		let message = '';
-		if (failedLoginTime < MAX.FAILED_LOGIN_TIME - 1) {
-			message = 'Mật khẩu không chính xác';
-			await Account.update(
-				{ failedLoginTime: failedLoginTime + 1 },
-				{ where: { username } }
-			);
-		} else {
-			await Account.update(
-				{ failedLoginTime: MAX.FAILED_LOGIN_TIME, isLocked: true },
-				{ where: { username } }
-			);
-			message = `Tài khoản của bạn đã bị khoá do đăng nhập sai quá ${MAX.FAILED_LOGIN_TIME} lần`;
-		}
-
-		return res.render('login', {
-			title: 'Đăng nhập',
-			message,
-			username,
 		});
-	} catch (error) {
-		console.error('Function postLogin Error: ', error);
-		return res.render('404');
-	}
+	})(req, res, next);
 };
 
 exports.postCreatePassword = async (req, res) => {

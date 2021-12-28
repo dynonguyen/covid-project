@@ -24,13 +24,9 @@ exports.postCreateAdminAccount = async (req, res) => {
 		}
 
 		// failed
-		return res.render('init-system.pug', {
-			title: 'Khởi tạo hệ thống',
-		});
+		return res.render('init-system.pug');
 	} catch (error) {
 		console.error('Function postCreateAdminAccount Error: ', error);
-		return res.render('init-system.pug', {
-			title: 'Khởi tạo hệ thống',
-		});
+		return res.render('init-system.pug');
 	}
 };

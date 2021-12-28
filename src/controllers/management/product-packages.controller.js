@@ -1,6 +1,6 @@
 const { parseSortStr } = require('../../helpers/index.helpers');
 
-const { Sequelize } = require('sequelize/dist');
+const { Sequelize } = require('sequelize');
 const { MAX } = require('../../constants/index.constant');
 const { Op } = require('../../configs/db.config');
 const ProductInPackage = require('../../models/product-in-package.model');
@@ -47,7 +47,6 @@ exports.getProductPackage = async (req, res) => {
 		});
 
 		return res.render('./management/product-packages/view-list', {
-			title: 'Gói sản phẩm | Xem danh sách',
 			total: packagesList.count,
 			currentPage: page,
 			pageSize: MAX.PAGE_SIZE,

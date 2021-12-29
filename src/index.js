@@ -9,28 +9,26 @@ const { db } = require('./configs/db.config');
 const session = require('express-session');
 const passport = require('passport');
 
-/* ============== Import middlewares =============== */
+/* ============== Import middleware =============== */
 const {
 	checkInitSystemMiddleware,
-} = require('./middlewares/init-system.middleware');
+} = require('./middleware/init-system.middleware');
 const {
 	authMiddleware,
-	authAdminMiddleware,
 	adminAuthorizationMiddleware,
 	mgmtAuthorizationMiddleware,
-} = require('./middlewares/auth.middleware');
-const { passSidebarStatus } = require('./middlewares/mgmt-session.middleware');
+} = require('./middleware/auth.middleware');
+const { passSidebarStatus } = require('./middleware/mgmt-session.middleware');
 
 /* ============== Import routes =============== */
-const loginRoute = require('./routes/admin/login.route');
-const adminRoute = require('./routes/admin/index.route');
 const authRoute = require('./routes/auth.route');
 const initSystemRoute = require('./routes/init-system.route');
 const homeRoute = require('./routes/home.route');
 const managementRoute = require('./routes/management/index.route');
 const apiRoute = require('./routes/api.route');
 const { MAX } = require('./constants/index.constant');
-const { unlessRoute } = require('./middlewares/unless.middleware');
+const { unlessRoute } = require('./middleware/unless.middleware');
+const adminRoute = require('./routes/admin/index.route');
 
 /* ============== Config =============== */
 app.use(express.static(path.join(__dirname, 'public')));
@@ -63,24 +61,15 @@ app.use(unlessRoute(['/auth', '/init-system'], authMiddleware));
 
 /* ============== Routes =============== */
 app.use('/init-system', initSystemRoute);
-app.use('/auth-admin', loginRoute);
-app.use('/auth', authRoute);
 app.use('/api', apiRoute);
-app.use(
-	'/admin',
-	authAdminMiddleware,
-	adminAuthorizationMiddleware,
-	passSidebarStatus,
-	adminRoute
-);
-
+app.use('/auth', authRoute);
+app.use('/admin', adminAuthorizationMiddleware, passSidebarStatus, adminRoute);
 app.use(
 	'/management',
 	mgmtAuthorizationMiddleware,
 	passSidebarStatus,
 	managementRoute
 );
-
 app.use('/', homeRoute);
 
 // 404 Not found redirect

@@ -1,7 +1,11 @@
 extends ./general.template.pug
 
 block append style
-  link(rel="stylesheet", href="/css/admin/admin-template.css")
+  link(rel="stylesheet", href="/css/management/mgmt-template.css")
+  style.
+      :root {
+        --primary: #D79018 !important;
+      }
   block addStyle
 
 block content
@@ -10,13 +14,13 @@ block content
     .navbar-wrap.center-vertical
       .logo-side.center-vertical
         h1.logo #[a(href="/admin") Covid-19 Project]
-        i.admin-icon#toggleSidebar.bi(class=showSidebar ? "bi-layout-sidebar-inset-reverse" : "bi-layout-sidebar-inset")
+        i.mgmt-icon#toggleSidebar.bi(class=showSidebar ? "bi-layout-sidebar-inset-reverse" : "bi-layout-sidebar-inset")
 
       .account-side.center-vertical
         .d-flex.flex-column.mx-4
           .username Username
           .role Admin
-        a(href="/auth-admin/logout") #[i.admin-icon.bi.bi-box-arrow-in-right]
+        a(href="/auth/logout") #[i.mgmt-icon.bi.bi-box-arrow-in-right]
 
     .d-flex
       -

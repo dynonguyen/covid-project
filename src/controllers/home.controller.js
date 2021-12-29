@@ -1,14 +1,16 @@
 const { ACCOUNT_TYPES } = require('../constants/index.constant');
 
-exports.getHome = async (req, res) => {
+exports.getHome = (req, res) => {
 	try {
 		const { accountType } = req.user;
 
 		switch (accountType) {
 			case ACCOUNT_TYPES.USER:
-				return res.send('User page');
+				return res.redirect('/user');
 			case ACCOUNT_TYPES.MANAGER:
 				return res.redirect('/management');
+			case ACCOUNT_TYPES.ADMIN:
+				return res.redirect('/admin');
 			default:
 				return res.render('404');
 		}

@@ -1,6 +1,4 @@
 const { ACCOUNT_TYPES } = require('../../constants/index.constant');
-const { Op } = require('../../configs/db.config');
-const { Sequelize } = require('sequelize');
 const { MAX } = require('../../constants/index.constant');
 const Account = require('../../models/account.model');
 
@@ -22,10 +20,7 @@ exports.getManagerList = async (req, res) => {
 		});
 		const managerList = managers.rows;
 
-		console.log('page', page);
-		console.log('req query', req.query);
 		return res.render('./admin/managers/view-list', {
-			title: 'Người quản lý | Xem danh sách',
 			managerList,
 			total: managers.count,
 			currentPage: page,

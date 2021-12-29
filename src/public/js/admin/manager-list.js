@@ -1,13 +1,8 @@
-// const { search } = require('../../../routes/auth.route');
-
 const ROOT_URL = '/admin/managers/list';
 
 $(document).ready(function () {
-	console.log('object');
 	// pagination
 	const paginationContainer = $('#pagination');
-	console.log(total, pageSize, currentPage);
-	console.log(sortList, search);
 
 	if (paginationContainer.length) {
 		pagination(paginationContainer, total, pageSize, currentPage, {
@@ -18,7 +13,6 @@ $(document).ready(function () {
 			callback: () => {
 				$('#pagination li:not(.disabled)').click(async function () {
 					const page = $(this).attr('data-num');
-					console.log('curent page', page);
 					if (page == currentPage) return;
 					location.href = ROOT_URL + generateQuery(page, sortList, search);
 				});

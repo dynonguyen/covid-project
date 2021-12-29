@@ -4,7 +4,6 @@ const {
 	JWT_SECRET,
 } = require('../constants/index.constant');
 const Account = require('../models/account.model');
-const AdminAccount = require('../models/admin-account.model');
 const jwt = require('jsonwebtoken');
 
 exports.authMiddleware = async (req, res, next) => {
@@ -45,14 +44,14 @@ exports.authMiddleware = async (req, res, next) => {
 	}
 };
 
-exports.mgmtAuthorizationMiddleware = async (req, res, next) => {
+exports.mgmtAuthorizationMiddleware = (req, res, next) => {
 	if (req.user.accountType === ACCOUNT_TYPES.MANAGER) {
 		return next();
 	}
 	return res.render('404');
 };
 
-exports.userAuthorizationMiddleware = async (req, res, next) => {
+exports.userAuthorizationMiddleware = (req, res, next) => {
 	if (req.user.accountType === ACCOUNT_TYPES.USER) {
 		return next();
 	}
@@ -60,38 +59,10 @@ exports.userAuthorizationMiddleware = async (req, res, next) => {
 	return res.render('404');
 };
 
-exports.authAdminMiddleware = async (req, res, next) => {
-	if (req.session.account) {
-		return next();
-	}
-
-	// if remember me (logged in admin)
-	const { username } = req.signedCookies;
-
-	// if cookie not found -> redirect login
-	if (!username) return res.redirect('/auth-admin/login');
-
-	try {
-		// check account in database
-		const account = await AdminAccount.findOne({
-			where: { username },
-			raw: true,
-		});
-
-		// if cookie un invalid -> redirect login
-		if (!account) return res.redirect('/auth-admin/login');
-
-		// else next
-		req.session.account = { username };
-		return next();
-	} catch (error) {
-		console.log('Middleware authAdminMidleware Error: ', error);
-		return res.render('404');
-	}
-};
-
 exports.adminAuthorizationMiddleware = async (req, res, next) => {
-	if (req.session.account) return next();
+	if (req.user.accountType === ACCOUNT_TYPES.ADMIN) {
+		return next();
+	}
 
 	return res.render('404');
 };

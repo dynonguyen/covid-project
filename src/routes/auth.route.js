@@ -1,6 +1,6 @@
 const authRoute = require('express').Router();
 const authController = require('../controllers/auth.controller');
-require('../middlewares/passport.middleware');
+require('../middleware/passport.middleware');
 
 authRoute.get('/login', authController.getLogin);
 authRoute.get('/logout', authController.getLogout);

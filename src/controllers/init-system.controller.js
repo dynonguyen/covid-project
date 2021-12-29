@@ -1,20 +1,24 @@
+const { ACCOUNT_TYPES } = require('../constants/index.constant');
 const { hashPassword } = require('../helpers/index.helpers');
-const AdminAccount = require('../models/admin-account.model');
+const Account = require('../models/account.model');
 
 exports.postCreateAdminAccount = async (req, res) => {
 	const { username, password } = req.body;
 	try {
 		// check if an admin account exists
-		const countAdminAccount = await AdminAccount.count({});
+		const countAdminAccount = await Account.count({
+			where: { accountType: ACCOUNT_TYPES.ADMIN },
+		});
 		if (countAdminAccount) {
 			return res.redirect('/');
 		}
 
 		// create an account
 		const hashPwd = await hashPassword(password);
-		const adminAccount = await AdminAccount.create({
+		const adminAccount = await Account.create({
 			username,
 			password: hashPwd,
+			accountType: ACCOUNT_TYPES.ADMIN,
 		});
 
 		// create successfully

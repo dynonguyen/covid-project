@@ -2,7 +2,7 @@ const Account = require('../models/account.model');
 const { hashPassword, jwtEncode } = require('../helpers/index.helpers');
 const passport = require('passport');
 const { JWT_COOKIE_KEY, MAX } = require('../constants/index.constant');
-require('../middlewares/passport.middleware');
+require('../middleware/passport.middleware');
 
 exports.getLogin = (req, res) => {
 	if (req.isAuthenticated()) {

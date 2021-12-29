@@ -1,4 +1,3 @@
-/// <reference path="D:\typings\jquery\globals\jquery\index.d.ts" />
 const DEFAULT = {
 	PAGE_SIZE: 8,
 };

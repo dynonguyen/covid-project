@@ -1,4 +1,5 @@
-const AdminAccount = require('../models/admin-account.model');
+const { ACCOUNT_TYPES } = require('../constants/index.constant');
+const Account = require('../models/account.model');
 
 exports.checkInitSystemMiddleware = async (req, res, next) => {
 	try {
@@ -13,7 +14,9 @@ exports.checkInitSystemMiddleware = async (req, res, next) => {
 		}
 
 		// check database
-		const existAdmin = await AdminAccount.count({});
+		const existAdmin = await Account.count({
+			where: { accountType: ACCOUNT_TYPES.ADMIN },
+		});
 		if (existAdmin === 0) {
 			return res.render('init-system.pug');
 		}

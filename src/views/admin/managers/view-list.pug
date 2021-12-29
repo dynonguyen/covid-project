@@ -1,6 +1,9 @@
 extends ../../templates/admin.template.pug
 include ../../mixins/no-result.mixin.pug
 
+block title
+  title Xem danh sách quản trị viên | Admin
+
 block addStyle
   link(rel="stylesheet", href="/vendors/selectize/selectize.min.css")
   link(rel="stylesheet", href="/css/admin/manager-list.css")

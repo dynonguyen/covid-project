@@ -311,3 +311,10 @@ exports.jwtEncode = (data, isRemember = true) => {
 		JWT_SECRET
 	);
 };
+
+exports.formatCurrency = (money = 0) => {
+	return new Intl.NumberFormat('vi-VN', {
+		style: 'currency',
+		currency: 'VND',
+	}).format(money);
+};

@@ -63,3 +63,26 @@ exports.getProductList = async (req, res) => {
 		});
 	}
 };
+
+exports.deleteProduct = async (req, res) => {
+	const productId = parseInt(req.params.productId);
+	if (!productId || isNaN(productId)) {
+		return res.status(400).json({});
+	}
+
+	try {
+		const nRowAffected = await Product.destroy({
+			where: { productId },
+			cascade: true,
+		});
+
+		if (nRowAffected) {
+			return res.status(200).json({});
+		}
+
+		return res.status(409).json({});
+	} catch (error) {
+		console.error('Function deleteProduct Error: ', error);
+		return res.status(409).json({});
+	}
+};

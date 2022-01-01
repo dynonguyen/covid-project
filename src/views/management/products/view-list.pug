@@ -12,7 +12,7 @@ block addContent
     .wrapper
       if products && products.length > 0
         each product in products
-          - const { productName, price, unit, photos, thumbnail } = product;
+          - const { productName, price, unit, photos, thumbnail, productId } = product;
           .product-card
             img.card-top(src=thumbnail, alt="Product Photo")
             .card-body
@@ -25,9 +25,9 @@ block addContent
                 .product-price #[span= helpers.formatCurrency(price)] / #[span= unit]
               .card-bottom
                 button.btn.btn-primary.mr-2 Sửa #[i.bi.bi-pencil-fill]
-                button.btn.btn-danger Xoá #[i.bi.bi-trash-fill]
+                button.delete-btn.btn.btn-danger(data-id=productId) Xoá #[i.bi.bi-trash-fill]
       else
-        +no-result
+        +noResult
 
     #pagination.mt-4
   .photo-preview-wrapper
@@ -36,6 +36,7 @@ block addContent
     .photo-preview
       img(src="", alt="Photo")
 
+  #toastMsg.toast-msg
 block addScript
   script.
     const pageSize = parseInt("#{pageSize}");

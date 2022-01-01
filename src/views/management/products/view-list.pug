@@ -13,7 +13,7 @@ block addContent
       if products && products.length > 0
         each product in products
           - const { productName, price, unit, photos, thumbnail, productId } = product;
-          .product-card
+          .product-card(data-id=productId)
             img.card-top(src=thumbnail, alt="Product Photo")
             .card-body
               if photos && photos.length > 0
@@ -22,9 +22,9 @@ block addContent
                     img(src=photo, alt="Photo")
               .card-content
                 h4.product-name= productName
-                .product-price #[span= helpers.formatCurrency(price)] / #[span= unit]
+                .product-price #[span.price(data-price=price)= helpers.formatCurrency(price)] / #[span.unit= unit]
               .card-bottom
-                button.btn.btn-primary.mr-2 Sửa #[i.bi.bi-pencil-fill]
+                button.edit-btn.btn.btn-primary.mr-2(data-toggle="modal", data-target="#editModal", data-id=productId) Sửa #[i.bi.bi-pencil-fill]
                 button.delete-btn.btn.btn-danger(data-id=productId) Xoá #[i.bi.bi-trash-fill]
       else
         +noResult
@@ -36,7 +36,23 @@ block addContent
     .photo-preview
       img(src="", alt="Photo")
 
+  .modal.fade#editModal(tabindex="-1", aria-labelledby="editModal", aria-hidden="true")
+    .modal-dialog.modal-dialog-centered
+      .modal-content
+        .modal-header
+          h5.modal-title#exampleModalLabel Chỉnh sửa sản phẩm
+          button.close(type="button", data-dismiss="modal", aria-label="Close")
+            span(aria-hidden="true") ×
+        .modal-body
+          input.field.w-100(type="text", name="productName", placeholder="Nhập tên sản phẩm", required, maxLength="40")
+          input.field.w-100.my-3(type="number", name="price", placeholder="Nhập giá sản phẩm", min="0", max="100000000")
+          input.field.w-100(type="text", name="unit", placeholder="Nhập định lượng cho 1 sản phẩm", maxLength="10")
+        .modal-footer
+          button.btn.btn-secondary(type="button", data-dismiss="modal") Đóng
+          button#editProductInfoBtn.btn.btn-primary(type="button") Cập nhật
+
   #toastMsg.toast-msg
+
 block addScript
   script.
     const pageSize = parseInt("#{pageSize}");

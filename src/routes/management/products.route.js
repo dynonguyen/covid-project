@@ -9,4 +9,6 @@ productMgmtRoute.get('/list', productMgmtController.getProductList);
 
 productMgmtRoute.delete('/:productId', productMgmtController.deleteProduct);
 
+productMgmtRoute.put('/:productId', productMgmtController.putUpdateProductInfo);
+
 module.exports = productMgmtRoute;

@@ -86,3 +86,28 @@ exports.deleteProduct = async (req, res) => {
 		return res.status(409).json({});
 	}
 };
+
+exports.putUpdateProductInfo = async (req, res) => {
+	const productId = parseInt(req.params.productId);
+	const { name, price, unit } = req.body;
+
+	if (!productId || isNaN(productId)) {
+		return res.status(400).json({});
+	}
+
+	try {
+		const updateRes = await Product.update(
+			{ productName: name, price, unit },
+			{ where: { productId } }
+		);
+
+		if (updateRes) {
+			return res.status(200).json({ msg: 'successfully' });
+		}
+
+		return res.status(400).json({});
+	} catch (error) {
+		console.error('Function putUpdateProductInfo Error: ', error);
+		return res.status(400).json({});
+	}
+};

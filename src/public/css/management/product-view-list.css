@@ -1,6 +1,6 @@
 .wrapper {
 	display: grid;
-	grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+	grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
 	grid-gap: 1.5rem;
 }
 
@@ -30,6 +30,8 @@
 
 .photos {
 	width: 100%;
+	height: 48px;
+	flex-shrink: 0;
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -38,6 +40,7 @@
 
 .photos img {
 	width: calc(20% - 10px);
+	height: 100%;
 	margin-left: 10px;
 	cursor: pointer;
 	transition: all 0.5s;
@@ -110,10 +113,33 @@
 	color: #fff;
 	font-size: 2rem;
 	cursor: pointer;
+	transition: all 0.35s;
 }
 
-.photo-preview-close-icon:hover i {
-	color: var(--light-gray);
+.photo-preview-close-icon i:hover {
+	color: var(--gray);
+}
+
+.photo-preview-wrapper .arrow {
+	color: #fff;
+	font-size: 3.5rem;
+	cursor: pointer;
+	position: fixed;
+	top: 50%;
+	transform: translateY(-50%);
+	transition: all 0.35s;
+}
+
+.photo-preview-wrapper .arrow:hover {
+	color: var(--gray);
+}
+
+.photo-preview-wrapper .arrow.next {
+	right: 75px;
+}
+
+.photo-preview-wrapper .arrow.previous {
+	left: 75px;
 }
 
 #editModal .field {

@@ -1,3 +1,39 @@
+.search .field {
+	box-shadow: var(--sm-box-shadow);
+	border-top-left-radius: 8px;
+	border-top-right-radius: 0px;
+	border-bottom-left-radius: 8px;
+	border-bottom-right-radius: 0px;
+	background-color: #fff !important;
+}
+
+.search .btn {
+	box-shadow: var(--sm-box-shadow);
+	border-top-left-radius: 0px;
+	border-top-right-radius: 8px;
+	border-bottom-left-radius: 0px;
+	border-bottom-right-radius: 8px;
+}
+
+.sort-filter .field {
+	background-color: #fff !important;
+	box-shadow: var(--sm-box-shadow);
+	border-radius: 8px;
+	height: 40px;
+}
+
+.search .field {
+	min-width: 300px;
+}
+
+.sort .field {
+	min-width: 250px;
+}
+
+.filter .field {
+	max-width: 180px;
+}
+
 .wrapper {
 	display: grid;
 	grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));

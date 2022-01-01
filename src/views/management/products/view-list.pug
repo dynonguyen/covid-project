@@ -9,6 +9,42 @@ block addStyle
 
 block addContent
   .p-4.flex-grow-1
+    //- Search, sort, filter
+    .search.d-flex.mb-4
+      input#search.field(type="text", placeholder="Nhập tên sản phẩm cần tìm")
+      button#searchBtn.btn.btn-info #[i.bi.bi-search]
+    if search
+      h5.my-3.text-info Kết quả tìm kiếm cho: #[b.mx-3= search] #[i.bi.bi-x-square-fill.text-danger.cur-pointer#destroySearch]
+
+    .d-flex.flex-wrap.my-4.sort-filter
+      mixin renderOption(name, value, selected)
+        if value == selected
+          option(value=value, selected="selected")= name
+        else
+          option(value=value)= name
+
+      .mb-3.sort
+        label.d-block.pl-2.text-gray Sắp xếp theo giá
+        select#sortByPrice.field
+          +renderOption("Không sắp xếp", -1, sortByPrice)
+          +renderOption("Giảm dần", 0, sortByPrice)
+          +renderOption("Tăng dần", 1, sortByPrice)
+
+      .mb-3.mx-3.mx-lg-5.sort
+        label.d-block.pl-2.text-gray Sắp xếp tên
+        select#sortByName.field
+          +renderOption("Không sắp xếp", -1, sortByName)
+          +renderOption("Giảm dần", 0, sortByName)
+          +renderOption("Tăng dần", 1, sortByName)
+
+      .filter
+        label.pl-2.text-gray Lọc theo giá
+        .d-flex.align-items-center
+          input#priceFrom.field(type="number", min="0", max="1000000000", placeholder="Thấp nhất", value=priceFrom||"")
+          b.mx-2 -
+          input#priceTo.field(type="number", min="0", max="1000000000", placeholder="Cao nhất", value=priceTo||"")
+          button#filterBtn.btn.btn-success.ml-2 Lọc
+
     .wrapper
       if products && products.length > 0
         each product in products
@@ -27,7 +63,7 @@ block addContent
                 button.edit-btn.btn.btn-primary.mr-2(data-toggle="modal", data-target="#editModal", data-id=productId) Sửa #[i.bi.bi-pencil-fill]
                 button.delete-btn.btn.btn-danger(data-id=productId) Xoá #[i.bi.bi-trash-fill]
       else
-        +noResult
+        +noResult("","/management/products/list?page=1")
 
     #pagination.mt-4
   .photo-preview-wrapper
@@ -57,9 +93,10 @@ block addContent
 
 block addScript
   script.
-    const pageSize = parseInt("#{pageSize}");
-    const total = parseInt("#{total}");
-    const currentPage = parseInt("#{currentPage}");
+    const pageSize = parseInt("#{pageSize}") || 0;
+    const total = parseInt("#{total}") || 0;
+    const currentPage = parseInt("#{currentPage}") || 1;
+    const search = "#{search}" || "";
 
   script(src="/vendors/pagination.min.js")
   script(src="/js/management/product-view-list.js")

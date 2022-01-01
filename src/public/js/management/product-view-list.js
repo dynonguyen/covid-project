@@ -1,4 +1,3 @@
-/// <reference path="D:\typings\jquery\globals\jquery\index.d.ts" />
 const ROOT_URL = '/management/products';
 let photoSlides = [];
 let currentSlide = 0;
@@ -45,6 +44,28 @@ function getPhotoSlideSrc(productId, curSrc) {
 	});
 }
 
+function getQuery(page = currentPage, searchBy = search) {
+	const sortByPrice = Number($('#sortByPrice').val());
+	const sortByName = Number($('#sortByName').val());
+	let priceFrom = Number($('#priceFrom').val());
+	let priceTo = Number($('#priceTo').val());
+
+	if (priceFrom > priceTo && priceTo !== 0) {
+		[priceFrom, priceTo] = [priceTo, priceFrom];
+	}
+
+	// currentPage & search get from server
+	const searchQuery = searchBy !== '' ? `&search=${searchBy}` : '';
+	const pageQuery = page ? `?page=${page}` : '';
+	const sortByNameQuery = sortByName !== -1 ? `&sortByName=${sortByName}` : '';
+	const sortByPriceQuery =
+		sortByPrice !== -1 ? `&sortByPrice=${sortByPrice}` : '';
+	const priceFromQuery = priceFrom > 0 ? `&priceFrom=${priceFrom}` : '';
+	const priceToQuery = priceTo > 0 ? `&priceTo=${priceTo}` : '';
+
+	return `${ROOT_URL}/list${pageQuery}${searchQuery}${sortByNameQuery}${sortByPriceQuery}${priceFromQuery}${priceToQuery}`;
+}
+
 $(document).ready(function () {
 	const photoPreviewWrap = $('.photo-preview-wrapper');
 	const photoPreview = $('.photo-preview img');
@@ -59,7 +80,7 @@ $(document).ready(function () {
 			$('#pagination li:not(.disabled)').click(async function () {
 				const page = $(this).attr('data-num');
 				if (page == currentPage) return;
-				location.href = `${ROOT_URL}/list?page=${page}`;
+				location.href = getQuery(page, search);
 			});
 		},
 	});
@@ -192,5 +213,33 @@ $(document).ready(function () {
 			currentSlide--;
 		}
 		photoPreview.attr('src', photoSlides[currentSlide]);
+	});
+
+	$('#searchBtn').click(function () {
+		const searchValue = $('#search').val()?.trim();
+		if (searchValue === '') return;
+		location.href = getQuery(1, searchValue);
+	});
+
+	$('#sortByName').change(function () {
+		location.href = getQuery(currentPage, search);
+	});
+
+	$('#sortByPrice').change(function () {
+		location.href = getQuery(currentPage, search);
+	});
+
+	$('#filterBtn').click(function () {
+		const priceTo = Number($('#priceTo').val());
+		const priceFrom = Number($('#priceFrom').val());
+		if (priceTo === 0 && priceFrom === 0) {
+			return;
+		}
+
+		location.href = getQuery(1, search);
+	});
+
+	$('#destroySearch').click(function () {
+		location.href = getQuery(1, '');
 	});
 });

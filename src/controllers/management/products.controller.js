@@ -3,6 +3,7 @@ const ProductImage = require('../../models/product-image.model');
 const Product = require('../../models/product.model');
 const { Op } = require('../../configs/db.config');
 const { Sequelize } = require('sequelize');
+const { uploadProductPhoto } = require('../../helpers/upload.helper');
 
 function generateProductQuery(query) {
 	let {
@@ -173,11 +174,87 @@ exports.getNewProduct = (req, res) => {
 };
 
 exports.postNewProduct = async (req, res) => {
-	console.log(req.body);
+	let { productName, price, unit } = req.body;
+	const { thumbnail = [], photos = [] } = req.files;
+
+	price = Number(price);
+	if (isNaN(price) || !price) {
+		return res.render('./management/products/new-product.pug', {
+			productName,
+			msg: 'Vui lòng nhập giá sản phẩm',
+		});
+	}
+
+	if (!thumbnail || thumbnail.length === 0 || !photos || photos.length === 0) {
+		return res.render('./management/products/new-product.pug', {
+			productName,
+			msg: 'Vui lòng thêm hình ảnh cho sản phẩm',
+		});
+	}
+
 	try {
+		// check product existence
+		const isProdExist = await Product.findOne({
+			raw: true,
+			attributes: ['productId'],
+			where: {
+				productName: Sequelize.where(
+					Sequelize.fn('LOWER', Sequelize.col('productName')),
+					productName.toLowerCase()
+				),
+			},
+		});
+
+		if (isProdExist) {
+			return res.render('./management/products/new-product.pug', {
+				productName,
+				msg: 'Sản phẩm đã tồn tại',
+			});
+		}
+
+		// Create a product
+		const product = await Product.create({
+			productName,
+			price,
+			unit,
+		});
+
+		if (!product) {
+			throw new Error('Failed to create a product');
+		}
+
+		const { productId } = product;
+
+		// upload image
+		const promises = [];
+
+		promises.push(
+			uploadProductPhoto(
+				thumbnail[0],
+				`${productName}_thumbnail`,
+				productId,
+				true
+			)
+		);
+
+		photos.forEach((photo, index) => {
+			promises.push(
+				uploadProductPhoto(photo, `${productName}-${index}`, productId, false)
+			);
+		});
+
+		await Promise.all(promises);
+		return res.render('./management/products/new-product.pug', {
+			productName,
+			isSuccess: true,
+			msg: 'Thêm sản phẩm thành công',
+		});
 	} catch (error) {
 		console.error('Function postNewProduct Error: ', error);
-		return res.render('404');
+		return res.render('./management/products/new-product.pug', {
+			productName,
+			msg: 'Thêm sản phẩm thất bại ! Thử lại',
+		});
 	}
 };
 

@@ -10,6 +10,7 @@ const Product = db.define(
 		},
 		productName: {
 			type: DataTypes.STRING(50),
+			unique: true,
 			allowNull: false,
 		},
 		price: {

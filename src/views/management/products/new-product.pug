@@ -10,7 +10,12 @@ block append addStyle
   link(rel="stylesheet", href="/vendors/file-input/fileinput.min.css")
 
 block addContent
-  #toastMsg.toast-msg
+  if msg
+    #toastMsg.toast-msg.show(class=isSuccess?'success':'danger')= msg
+      .close-icon x
+  else
+    #toastMsg.toast-msg
+      .close-icon x
 
   .p-4.flex-grow-1
     .flex-center
@@ -18,7 +23,7 @@ block addContent
         .form-title
           h1.title.text-center.mb-4 Thêm nhu yếu phẩm
         .d-flex.flex-column
-          input#productName.field.mb-3(type="text", name="productName", maxLength="40", required, placeholder="Nhập tên sản phẩm", autofocus, value=productName ? productName: '')
+          input#productName.field.mb-3(type="text", name="productName", maxLength="40", required, placeholder="Nhập tên sản phẩm", autofocus, value=productName && !isSuccess ? productName: '')
           input#price.field.mb-3(type="number", name="price", placeholder="Nhập giá sản phẩm", min="0", max="1000000000")
           input#unit.field.mb-3(type="text", name="unit", placeholder="Nhập đơn vị tính", maxLength="10")
 

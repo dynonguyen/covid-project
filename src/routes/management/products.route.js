@@ -1,5 +1,17 @@
 const productMgmtRoute = require('express').Router();
 const productMgmtController = require('../../controllers/management/products.controller');
+const multer = require('multer');
+const upload = multer();
+const customUpload = upload.fields([
+	{
+		name: 'thumbnail',
+		maxCount: 1,
+	},
+	{
+		name: 'photos',
+		maxCount: 5,
+	},
+]);
 
 productMgmtRoute.get('/', (req, res) =>
 	res.redirect('/management/products/list')
@@ -9,7 +21,11 @@ productMgmtRoute.get('/new', productMgmtController.getNewProduct);
 
 productMgmtRoute.delete('/:productId', productMgmtController.deleteProduct);
 
-productMgmtRoute.post('/new', productMgmtController.postNewProduct);
+productMgmtRoute.post(
+	'/new',
+	customUpload,
+	productMgmtController.postNewProduct
+);
 
 productMgmtRoute.put('/:productId', productMgmtController.putUpdateProductInfo);
 

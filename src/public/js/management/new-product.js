@@ -12,8 +12,10 @@ const fileinputCommonOptions = {
 	msgProcessing: 'Đang xử lý ...',
 	msgFileRequired: 'Vui lòng chọn hình ảnh cho sản phẩm !',
 
-	resizeImageQuality: 0.85,
-	maxFileSize: 1024 * 3, // 3 MB,
+	disableImageResize: false,
+	imageForceResize: true,
+	resizeImageQuality: 0.7,
+	resizeIfSizeMoreThan: 1024,
 
 	uploadUrl: '',
 };
@@ -22,11 +24,13 @@ $(document).ready(function () {
 	$('#thumbnail').fileinput({
 		...fileinputCommonOptions,
 		maxFileCount: 1,
+		maxFileSize: 1024, // 1 MB,
 	});
 
 	$('#photos').fileinput({
 		...fileinputCommonOptions,
 		maxFileCount: 5,
+		maxFileSize: 2 * 1024, // 2 MB,
 	});
 
 	$('#form').submit(function (e) {

@@ -27,6 +27,8 @@ productMgmtRoute.post(
 	productMgmtController.postNewProduct
 );
 
+// PUT method because send "url" from body
+productMgmtRoute.put('/del-photo', productMgmtController.deleteProductPhoto);
 productMgmtRoute.put('/:productId', productMgmtController.putUpdateProductInfo);
 
 module.exports = productMgmtRoute;

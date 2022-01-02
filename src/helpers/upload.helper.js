@@ -39,6 +39,20 @@ const cloudinaryUploadStream = (file, folder = CLOUDINARY_FOLDER, fileName) => {
 	});
 };
 
+const getCloudinaryPublicId = (url = '') => {
+	const isCloudinary = url.includes('res.cloudinary.com');
+	if (!isCloudinary) {
+		return '';
+	}
+
+	const index = url.indexOf(`${CLOUDINARY_FOLDER}/`);
+	if (index === -1) return '';
+
+	const publicIdSplit = url.substring(index).split('.');
+	publicIdSplit.pop();
+	return publicIdSplit.join('');
+};
+
 exports.uploadProductPhoto = async (
 	file,
 	fileName,
@@ -71,15 +85,28 @@ exports.deleteProductPhoto = async (productId) => {
 	});
 };
 
-exports.cloudinaryOptimize = (src = '', option = '') => {
+exports.cloudinaryOptimize = (url = '', option = '') => {
 	if (!option) {
-		return src;
+		return url;
 	}
 
-	const isCloudinary = src.includes('res.cloudinary.com');
+	const isCloudinary = url.includes('res.cloudinary.com');
 	if (!isCloudinary) {
-		return src;
+		return url;
 	}
 	const separator = 'image/upload';
-	return src.replace(separator, separator + '/' + option);
+	return url.replace(separator, separator + '/' + option);
+};
+
+exports.cloudinaryDeletePhoto = (url = '') => {
+	return new Promise((resolve, reject) => {
+		const publicId = getCloudinaryPublicId(url);
+		if (!publicId) {
+			resolve(false);
+		}
+		cloudinary.uploader.destroy(publicId, (err, result) => {
+			if (err) return resolve(false);
+			resolve(true);
+		});
+	});
 };

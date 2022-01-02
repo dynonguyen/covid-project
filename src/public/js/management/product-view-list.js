@@ -39,15 +39,16 @@ function getPhotoSlideSrc(productId, curSrc) {
 		`.product-card[data-id="${productId}"] img.card-top`
 	).attr('src');
 	photoSlides.push(getOriginSrcCloudinary(thumbnail));
+	currentSlide = 0;
 
 	const photos = $(`.product-card[data-id="${productId}"] .photos img`);
 
 	photos.each(function (index) {
 		const src = $(this).attr('src');
-		photoSlides.push(getOriginSrcCloudinary(src));
 		if (src === curSrc) {
-			currentSlide = index;
+			currentSlide = index + 1;
 		}
+		photoSlides.push(getOriginSrcCloudinary(src));
 	});
 }
 
@@ -248,5 +249,26 @@ $(document).ready(function () {
 
 	$('#destroySearch').click(function () {
 		location.href = getQuery(1, '');
+	});
+
+	$('.delete-photo').click(async function () {
+		const photo = $(this).siblings('.photo-item img');
+		if (photo) {
+			const url = getOriginSrcCloudinary(photo.attr('src'));
+			const apiRes = await fetch(`${ROOT_URL}/del-photo`, {
+				method: 'PUT',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({ url }),
+			});
+
+			if (apiRes.status === 200) {
+				showToastMsg(toastMsg, 'Xoá ảnh thành công', 'success');
+				return $(this).parents('.photo-item')?.remove();
+			}
+
+			return showToastMsg(toastMsg, 'Xoá ảnh thất bại, thử lại', 'danger');
+		}
 	});
 });

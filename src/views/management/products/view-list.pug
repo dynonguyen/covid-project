@@ -55,11 +55,14 @@ block addContent
               if photos && photos.length > 0
                 .photos
                   each photo in photos
-                    img(src=photo, alt="Photo")
+                    .photo-item
+                      img(src=photo, alt="Photo")
+                      i.delete-photo.bi.bi-x-circle-fill
               .card-content
                 h4.product-name= productName
                 .product-price #[span.price(data-price=price)= helpers.formatCurrency(price)] / #[span.unit= unit]
               .card-bottom
+                button.edit-btn.btn.btn-info.mr-2(data-toggle="modal", data-target="#editPhotoModal") Thay Avt #[i.bi.bi-image-fill]
                 button.edit-btn.btn.btn-primary.mr-2(data-toggle="modal", data-target="#editModal", data-id=productId) Sửa #[i.bi.bi-pencil-fill]
                 button.delete-btn.btn.btn-danger(data-id=productId) Xoá #[i.bi.bi-trash-fill]
       else
@@ -78,7 +81,7 @@ block addContent
     .modal-dialog.modal-dialog-centered
       .modal-content
         .modal-header
-          h5.modal-title#exampleModalLabel Chỉnh sửa sản phẩm
+          h5.modal-title Chỉnh sửa sản phẩm
           button.close(type="button", data-dismiss="modal", aria-label="Close")
             span(aria-hidden="true") ×
         .modal-body

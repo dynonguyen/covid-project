@@ -7,6 +7,7 @@ const {
 	uploadProductPhoto,
 	deleteProductPhoto,
 	cloudinaryOptimize,
+	cloudinaryDeletePhoto,
 } = require('../../helpers/upload.helper');
 
 function generateProductQuery(query) {
@@ -140,8 +141,8 @@ exports.getProductList = async (req, res) => {
 					}).then((proImgList) => {
 						const thumbnail =
 							proImgList.find((i) => i.isThumbnail === true)?.src ||
-							proImgList[0].src;
-						p.thumbnail = cloudinaryOptimize(thumbnail, 'w_350,h_150,q_80');
+							proImgList[0]?.src;
+						p.thumbnail = cloudinaryOptimize(thumbnail, 'w_350,h_180,q_80');
 
 						p.photos = [
 							...proImgList
@@ -289,6 +290,22 @@ exports.deleteProduct = async (req, res) => {
 	} catch (error) {
 		console.error('Function deleteProduct Error: ', error);
 		return res.status(409).json({});
+	}
+};
+
+exports.deleteProductPhoto = async (req, res) => {
+	const { url = '' } = req.body;
+	if (!url) throw new Error();
+	try {
+		const isDeleteSuccess = await cloudinaryDeletePhoto(url);
+		const deletePhotoDb = await ProductImage.destroy({ where: { src: url } });
+		if (isDeleteSuccess && deletePhotoDb) {
+			return res.status(200).json({});
+		}
+		return res.status(400).json({});
+	} catch (error) {
+		console.error('Function deleteProductPhoto Error: ', error);
+		return res.status(400).json({});
 	}
 };
 

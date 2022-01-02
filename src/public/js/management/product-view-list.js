@@ -33,11 +33,18 @@ function updateProductCard(productId, info) {
 }
 
 function getPhotoSlideSrc(productId, curSrc) {
-	const photos = $(`.product-card[data-id="${productId}"] .photos img`);
 	photoSlides = [];
+
+	const thumbnail = $(
+		`.product-card[data-id="${productId}"] img.card-top`
+	).attr('src');
+	photoSlides.push(getOriginSrcCloudinary(thumbnail));
+
+	const photos = $(`.product-card[data-id="${productId}"] .photos img`);
+
 	photos.each(function (index) {
 		const src = $(this).attr('src');
-		photoSlides.push(src);
+		photoSlides.push(getOriginSrcCloudinary(src));
 		if (src === curSrc) {
 			currentSlide = index;
 		}
@@ -85,7 +92,7 @@ $(document).ready(function () {
 		},
 	});
 
-	$('.photos img').click(function () {
+	$('.photos img, img.card-top').click(function () {
 		const productId = $(this)
 			.parents('.product-card')[0]
 			.getAttribute('data-id');
@@ -93,7 +100,7 @@ $(document).ready(function () {
 		const imgSrc = $(this).attr('src');
 		getPhotoSlideSrc(productId, imgSrc);
 
-		photoPreview.attr('src', imgSrc);
+		photoPreview.attr('src', photoSlides[currentSlide]);
 		photoPreviewWrap.fadeIn(150).css('display', 'flex');
 	});
 

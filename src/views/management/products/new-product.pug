@@ -36,7 +36,9 @@ block addContent
               label Thêm các ảnh khác
               input#photos(type="file",  name="photos", multiple, accept="image/*")
 
-        button#submitBtn.w-100.submit-btn.btn.btn-primary(type="submit") Thêm
+        button#submitBtn.w-100.submit-btn.btn.btn-primary(type="submit")
+          span#loading.d-none.spinner-border.spinner-border-sm.text-border.mr-2(role="status")
+          span Thêm
 
 block append addScript
   script(src="/vendors/file-input/plugins/piexif.min.js")

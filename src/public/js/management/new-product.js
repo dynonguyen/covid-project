@@ -2,7 +2,9 @@ const fileinputCommonOptions = {
 	language: 'vi',
 	showBrowse: false,
 	showUpload: false,
+	showRemove: true,
 	required: true,
+	initialPreviewShowDelete: true,
 	browseOnZoneClick: true,
 
 	allowedFileTypes: ['image'],
@@ -12,12 +14,8 @@ const fileinputCommonOptions = {
 	msgProcessing: 'Đang xử lý ...',
 	msgFileRequired: 'Vui lòng chọn hình ảnh cho sản phẩm !',
 
-	disableImageResize: false,
-	imageForceResize: true,
-	resizeImageQuality: 0.7,
-	resizeIfSizeMoreThan: 1024,
-
 	uploadUrl: '',
+	deleteUrl: '',
 };
 
 $(document).ready(function () {
@@ -81,6 +79,7 @@ $(document).ready(function () {
 		if (!isPhotosSelected) return;
 
 		$('#submitBtn').addClass('disabled');
+		$('#loading').removeClass('d-none');
 
 		this.submit();
 	});

@@ -70,3 +70,16 @@ exports.deleteProductPhoto = async (productId) => {
 		cloudinary.api.delete_folder(path);
 	});
 };
+
+exports.cloudinaryOptimize = (src = '', option = '') => {
+	if (!option) {
+		return src;
+	}
+
+	const isCloudinary = src.includes('res.cloudinary.com');
+	if (!isCloudinary) {
+		return src;
+	}
+	const separator = 'image/upload';
+	return src.replace(separator, separator + '/' + option);
+};

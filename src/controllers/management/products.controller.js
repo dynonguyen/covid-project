@@ -6,6 +6,7 @@ const { Sequelize } = require('sequelize');
 const {
 	uploadProductPhoto,
 	deleteProductPhoto,
+	cloudinaryOptimize,
 } = require('../../helpers/upload.helper');
 
 function generateProductQuery(query) {
@@ -137,10 +138,16 @@ exports.getProductList = async (req, res) => {
 							productId: p.productId,
 						},
 					}).then((proImgList) => {
-						p.thumbnail =
+						const thumbnail =
 							proImgList.find((i) => i.isThumbnail === true)?.src ||
 							proImgList[0].src;
-						p.photos = [...proImgList.map((i) => i.src)];
+						p.thumbnail = cloudinaryOptimize(thumbnail, 'w_350,h_150,q_80');
+
+						p.photos = [
+							...proImgList
+								.slice(1, 6)
+								.map((i) => cloudinaryOptimize(i.src, 'w_50,h_50,q_80')),
+						];
 					})
 				);
 			}

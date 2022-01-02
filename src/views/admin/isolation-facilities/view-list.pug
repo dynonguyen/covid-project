@@ -2,47 +2,48 @@ extends ../../templates/admin.template.pug
 include ../../mixins/no-result.mixin.pug
 
 block title
-  title Xem danh sách quản trị viên | Admin
+  title Xem danh sách nơi điều trị | Admin
 
 block addStyle
   link(rel="stylesheet", href="/vendors/selectize/selectize.min.css")
-  link(rel="stylesheet", href="/css/admin/manager-list.css")
+  link(rel="stylesheet", href="/css/admin/ilf-list.css")
 
 block addContent
   .p-3.flex-grow-1
     .search.d-flex.mb-4
-      input#searchInput.field.bg-white(type="text", placeholder="Nhập Username cần tìm")
+      input#searchInput.field.bg-white(type="text", placeholder="Nhập Tên Khu điều trị cần tìm")
       button#searchBtn.btn.btn-info #[i.bi.bi-search]
 
     if search
-      h5.my-3.text-info Kết quả tìm kiếm cho: #[b.mx-3= search] #[a(href=`/admin/managers/list?page=${currentPage}`) #[i.bi.bi-x-square-fill.text-danger.cur-pointer#destroySearch]]
+      h5.my-3.text-info Kết quả tìm kiếm cho: #[b.mx-3= search] #[a(href=`/admin/isolation-facilities/list?page=${currentPage}`) #[i.bi.bi-x-square-fill.text-danger.cur-pointer#destroySearch]]
 
-    if managerList && managerList.length > 0
+    if ilfList && ilfList.length > 0
       table.table.table-striped.table-light.table-bordered
         thead.thead-dark
           tr
             th(scope="col")
-              .has-icon #[span Username] #[i.bi.sort-icon(data-sort="username")]
+              .has-icon #[span Tên khu điều trị] #[i.bi.sort-icon(data-sort="isolationFacilityName")]
             th(scope="col")
-              .has-icon #[span Trạng thái khóa] #[i.bi.sort-icon(data-sort="isLocked")]
+              .has-icon #[span Sức chứa tối đa] #[i.bi.sort-icon(data-sort="capacity")]
             th(scope="col")
-              .has-icon #[span Số lần login sai] #[i.bi.sort-icon(data-sort="failedLoginTime")]
+              .has-icon #[span Số lượng chứa hiện tại] #[i.bi.sort-icon(data-sort="currentQuantity")]
+            th(scope="col") Địa chỉ
             th(scope="col") Hành động
         tbody
-          each manager in managerList
+          each ilf in ilfList
             tr
-              td= manager.username
-              td= manager.isLocked
-              td= manager.failedLoginTime
+              td= ilf.isolationFacilityName
+              td= ilf.capacity
+              td= ilf.currentQuantity
+              td= ilf.address
               td.text-center
                 i.mgmt-icon.edit-icon.bi.bi-pencil-fill.px-2()
                 i.mgmt-icon.info-icon.bi.bi-info-circle-fill.px-2()
       #pagination
     else
-      +noResult('w-80', '/admin/managers/list')
+      +noResult('w-80', '/admin/isolation-facilities/list')
 
   .toast-msg#toastMsg
-
 block addScript
   script.
     const pageSize = parseInt("#{pageSize}");
@@ -54,4 +55,4 @@ block addScript
 
   script(src="/vendors/selectize/selectize.min.js")
   script(src="/vendors/pagination.min.js")
-  script(src="/js/admin/manager-list.js")
+  script(src="/js/admin/ilf-list.js")

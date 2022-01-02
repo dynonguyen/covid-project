@@ -1,9 +1,8 @@
-const ROOT_URL = '/admin/managers/list';
+const ROOT_URL = '/admin/isolation-facilities/list';
 
 $(document).ready(function () {
 	// pagination
 	const paginationContainer = $('#pagination');
-
 	if (paginationContainer.length) {
 		pagination(paginationContainer, total, pageSize, currentPage, {
 			showGoInput: true,

@@ -3,7 +3,10 @@ const ProductImage = require('../../models/product-image.model');
 const Product = require('../../models/product.model');
 const { Op } = require('../../configs/db.config');
 const { Sequelize } = require('sequelize');
-const { uploadProductPhoto } = require('../../helpers/upload.helper');
+const {
+	uploadProductPhoto,
+	deleteProductPhoto,
+} = require('../../helpers/upload.helper');
 
 function generateProductQuery(query) {
 	let {
@@ -231,7 +234,7 @@ exports.postNewProduct = async (req, res) => {
 		promises.push(
 			uploadProductPhoto(
 				thumbnail[0],
-				`${productName}_thumbnail`,
+				`${productId}_thumbnail`,
 				productId,
 				true
 			)
@@ -239,7 +242,7 @@ exports.postNewProduct = async (req, res) => {
 
 		photos.forEach((photo, index) => {
 			promises.push(
-				uploadProductPhoto(photo, `${productName}-${index}`, productId, false)
+				uploadProductPhoto(photo, `${productId}_${index + 1}`, productId, false)
 			);
 		});
 
@@ -269,6 +272,7 @@ exports.deleteProduct = async (req, res) => {
 			where: { productId },
 			cascade: true,
 		});
+		deleteProductPhoto(productId);
 
 		if (nRowAffected) {
 			return res.status(200).json({});

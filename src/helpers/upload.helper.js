@@ -62,3 +62,11 @@ exports.uploadProductPhoto = async (
 		return false;
 	}
 };
+
+exports.deleteProductPhoto = async (productId) => {
+	const path = `${CLOUDINARY_FOLDER}/products/${productId}/`;
+	cloudinary.api.delete_resources_by_prefix(path, function (err, result) {
+		if (err) console.log('deleteProductPhotoError: ', err);
+		cloudinary.api.delete_folder(path);
+	});
+};

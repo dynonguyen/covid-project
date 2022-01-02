@@ -33,14 +33,22 @@ function updateProductCard(productId, info) {
 }
 
 function getPhotoSlideSrc(productId, curSrc) {
-	const photos = $(`.product-card[data-id="${productId}"] .photos img`);
 	photoSlides = [];
+
+	const thumbnail = $(
+		`.product-card[data-id="${productId}"] img.card-top`
+	).attr('src');
+	photoSlides.push(getOriginSrcCloudinary(thumbnail));
+	currentSlide = 0;
+
+	const photos = $(`.product-card[data-id="${productId}"] .photos img`);
+
 	photos.each(function (index) {
 		const src = $(this).attr('src');
-		photoSlides.push(src);
 		if (src === curSrc) {
-			currentSlide = index;
+			currentSlide = index + 1;
 		}
+		photoSlides.push(getOriginSrcCloudinary(src));
 	});
 }
 
@@ -74,6 +82,28 @@ $(document).ready(function () {
 	const productNameInput = $('input[name="productName"]');
 	const productPriceInput = $('input[name="price"]');
 	const productUnitInput = $('input[name="unit"]');
+	const photoModal = $('#photoModal');
+
+	$('#addPhotoInput').fileinput({
+		language: 'vi',
+		showBrowse: false,
+		showUpload: false,
+		showRemove: true,
+		showClose: false,
+		required: true,
+		initialPreviewShowDelete: true,
+		browseOnZoneClick: true,
+
+		allowedFileTypes: ['image'],
+		allowedFileExtensions: ['png', 'jpg', 'jpeg', 'webp'],
+
+		previewClass: 'flex-center',
+		msgProcessing: 'Đang xử lý ...',
+		msgFileRequired: 'Vui lòng chọn hình ảnh cho sản phẩm !',
+
+		maxFileCount: 1,
+		maxFileSize: 1024, // 1 MB,
+	});
 
 	pagination($('#pagination'), total, pageSize, currentPage, {
 		callback: () => {
@@ -85,7 +115,7 @@ $(document).ready(function () {
 		},
 	});
 
-	$('.photos img').click(function () {
+	$('.photos img, img.card-top').click(function () {
 		const productId = $(this)
 			.parents('.product-card')[0]
 			.getAttribute('data-id');
@@ -93,7 +123,7 @@ $(document).ready(function () {
 		const imgSrc = $(this).attr('src');
 		getPhotoSlideSrc(productId, imgSrc);
 
-		photoPreview.attr('src', imgSrc);
+		photoPreview.attr('src', photoSlides[currentSlide]);
 		photoPreviewWrap.fadeIn(150).css('display', 'flex');
 	});
 
@@ -241,5 +271,54 @@ $(document).ready(function () {
 
 	$('#destroySearch').click(function () {
 		location.href = getQuery(1, '');
+	});
+
+	$('.delete-photo').click(async function () {
+		const photo = $(this).siblings('.photo-item img');
+		if (photo) {
+			const url = getOriginSrcCloudinary(photo.attr('src'));
+			const apiRes = await fetch(`${ROOT_URL}/del-photo`, {
+				method: 'PUT',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({ url }),
+			});
+
+			if (apiRes.status === 200) {
+				showToastMsg(toastMsg, 'Xoá ảnh thành công', 'success');
+				const photItem = $(this).parents('.photo-item');
+				photItem.siblings('.add-photo-btn').removeClass('d-none');
+				return photItem?.remove();
+			}
+
+			return showToastMsg(toastMsg, 'Xoá ảnh thất bại, thử lại', 'danger');
+		}
+	});
+
+	$('.add-photo-btn').click(function () {
+		photoModal.modal('show');
+		photoModal.find('.modal-title').text('Thêm ảnh cho sản phẩm');
+		const productId = $(this).parents('.product-card').attr('data-id');
+		$('#addPhotoBtn').text('Thêm');
+		$('#photoModalForm').attr({
+			method: 'POST',
+			action: '/management/products/photo/' + productId,
+		});
+	});
+
+	$('.change-avt-btn').click(function () {
+		photoModal.modal('show');
+		photoModal.find('.modal-title').text('Thay đổi ảnh đại diện cho sản phẩm');
+		const productId = $(this).parents('.product-card').attr('data-id');
+		$('#addPhotoBtn').text('Cập nhật');
+		$('#photoModalForm').attr({
+			method: 'POST',
+			action: '/management/products/change-avt/' + productId,
+		});
+	});
+
+	$('#photoModalForm').submit(function (e) {
+		$('#addPhotoBtn').addClass('disabled');
 	});
 });

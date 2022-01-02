@@ -3,6 +3,12 @@ const ProductImage = require('../../models/product-image.model');
 const Product = require('../../models/product.model');
 const { Op } = require('../../configs/db.config');
 const { Sequelize } = require('sequelize');
+const {
+	uploadProductPhoto,
+	deleteProductPhoto,
+	cloudinaryOptimize,
+	cloudinaryDeletePhoto,
+} = require('../../helpers/upload.helper');
 
 function generateProductQuery(query) {
 	let {
@@ -77,7 +83,7 @@ exports.getProductList = async (req, res) => {
 	if (isNaN(page)) {
 		page = 1;
 	}
-	const pageSize = 8;
+	const pageSize = 10;
 
 	sortByName = parseInt(sortByName);
 	if (isNaN(sortByName)) {
@@ -133,10 +139,16 @@ exports.getProductList = async (req, res) => {
 							productId: p.productId,
 						},
 					}).then((proImgList) => {
-						p.thumbnail =
+						const thumbnail =
 							proImgList.find((i) => i.isThumbnail === true)?.src ||
-							proImgList[0].src;
-						p.photos = [...proImgList.map((i) => i.src)];
+							proImgList[0]?.src;
+						p.thumbnail = cloudinaryOptimize(thumbnail, 'w_350,h_180,q_80');
+
+						p.photos = [
+							...proImgList
+								.slice(1, 6)
+								.map((i) => cloudinaryOptimize(i.src, 'w_50,h_50,q_80')),
+						];
 					})
 				);
 			}
@@ -168,6 +180,117 @@ exports.getProductList = async (req, res) => {
 	}
 };
 
+exports.getNewProduct = (req, res) => {
+	return res.render('./management/products/new-product.pug');
+};
+
+exports.postNewProduct = async (req, res) => {
+	let { productName, price, unit } = req.body;
+	const { thumbnail = [], photos = [] } = req.files;
+
+	price = Number(price);
+	if (isNaN(price) || !price) {
+		return res.render('./management/products/new-product.pug', {
+			productName,
+			msg: 'Vui lòng nhập giá sản phẩm',
+		});
+	}
+
+	if (!thumbnail || thumbnail.length === 0 || !photos || photos.length === 0) {
+		return res.render('./management/products/new-product.pug', {
+			productName,
+			msg: 'Vui lòng thêm hình ảnh cho sản phẩm',
+		});
+	}
+
+	try {
+		// check product existence
+		const isProdExist = await Product.findOne({
+			raw: true,
+			attributes: ['productId'],
+			where: {
+				productName: Sequelize.where(
+					Sequelize.fn('LOWER', Sequelize.col('productName')),
+					productName.toLowerCase()
+				),
+			},
+		});
+
+		if (isProdExist) {
+			return res.render('./management/products/new-product.pug', {
+				productName,
+				msg: 'Sản phẩm đã tồn tại',
+			});
+		}
+
+		// Create a product
+		const product = await Product.create({
+			productName,
+			price,
+			unit,
+		});
+
+		if (!product) {
+			throw new Error('Failed to create a product');
+		}
+
+		const { productId } = product;
+
+		// upload image
+		const promises = [];
+
+		promises.push(
+			uploadProductPhoto(
+				thumbnail[0],
+				`${productId}_thumbnail`,
+				productId,
+				true
+			)
+		);
+
+		photos.forEach((photo, index) => {
+			promises.push(
+				uploadProductPhoto(photo, `${productId}_${index + 1}`, productId, false)
+			);
+		});
+
+		await Promise.all(promises);
+		return res.render('./management/products/new-product.pug', {
+			productName,
+			isSuccess: true,
+			msg: 'Thêm sản phẩm thành công',
+		});
+	} catch (error) {
+		console.error('Function postNewProduct Error: ', error);
+		return res.render('./management/products/new-product.pug', {
+			productName,
+			msg: 'Thêm sản phẩm thất bại ! Thử lại',
+		});
+	}
+};
+
+exports.postAddProductPhoto = async (req, res) => {
+	const { productId } = req.params;
+	try {
+		const countPhoto = await ProductImage.count({
+			where: { productId, isThumbnail: false },
+		});
+		if (countPhoto >= 5) {
+			return res.redirect('back');
+		}
+		await uploadProductPhoto(
+			req.file,
+			`${productId}_${Date.now()}`,
+			productId,
+			false
+		);
+		return res.redirect('back');
+	} catch (error) {
+		console.error('Function postAddProductPhoto Error: ', error);
+		return res.redirect('back');
+	}
+};
+
 exports.deleteProduct = async (req, res) => {
 	const productId = parseInt(req.params.productId);
 	if (!productId || isNaN(productId)) {
@@ -179,6 +302,7 @@ exports.deleteProduct = async (req, res) => {
 			where: { productId },
 			cascade: true,
 		});
+		deleteProductPhoto(productId);
 
 		if (nRowAffected) {
 			return res.status(200).json({});
@@ -188,6 +312,22 @@ exports.deleteProduct = async (req, res) => {
 	} catch (error) {
 		console.error('Function deleteProduct Error: ', error);
 		return res.status(409).json({});
+	}
+};
+
+exports.deleteProductPhoto = async (req, res) => {
+	const { url = '' } = req.body;
+	if (!url) throw new Error();
+	try {
+		const isDeleteSuccess = await cloudinaryDeletePhoto(url);
+		const deletePhotoDb = await ProductImage.destroy({ where: { src: url } });
+		if (isDeleteSuccess && deletePhotoDb) {
+			return res.status(200).json({});
+		}
+		return res.status(400).json({});
+	} catch (error) {
+		console.error('Function deleteProductPhoto Error: ', error);
+		return res.status(400).json({});
 	}
 };
 
@@ -213,5 +353,37 @@ exports.putUpdateProductInfo = async (req, res) => {
 	} catch (error) {
 		console.error('Function putUpdateProductInfo Error: ', error);
 		return res.status(400).json({});
+	}
+};
+
+exports.postChangeProductAvt = async (req, res) => {
+	const { productId } = req.params;
+
+	try {
+		const oldAvt = await ProductImage.findOne({
+			raw: true,
+			where: {
+				productId,
+				isThumbnail: true,
+			},
+		});
+
+		await cloudinaryDeletePhoto(oldAvt.src);
+
+		await uploadProductPhoto(
+			req.file,
+			`${productId}_thumbnail`,
+			productId,
+			true
+		);
+
+		await ProductImage.destroy({
+			where: { productImageId: oldAvt.productImageId },
+		});
+
+		return res.redirect('back');
+	} catch (error) {
+		console.error('Function putChangeProductAvt Error: ', error);
+		return res.redirect('back');
 	}
 };

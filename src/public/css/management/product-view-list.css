@@ -34,6 +34,11 @@
 	max-width: 180px;
 }
 
+#filterBtn {
+	height: 40px;
+	border-radius: 8px;
+}
+
 .wrapper {
 	display: grid;
 	grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -42,6 +47,7 @@
 
 .product-card {
 	width: 100%;
+	max-width: 365px;
 	background-color: #fff;
 	box-shadow: rgba(0, 0, 0, 0.1) 0px 10px 15px -3px,
 		rgba(0, 0, 0, 0.05) 0px 4px 6px -2px;
@@ -54,11 +60,17 @@
 
 .card-top {
 	width: 100%;
-	height: 150px;
+	height: 11rem;
+	cursor: pointer;
+	transition: all 0.35s;
+}
+
+.card-top:hover {
+	transform: scale(1.05);
 }
 
 .card-body {
-	padding: 1.5rem 1.25rem;
+	padding: 1.5rem 0.75rem;
 	flex-grow: 1;
 	display: flex;
 	flex-direction: column;
@@ -74,21 +86,59 @@
 	flex-wrap: wrap;
 }
 
-.photos img {
+.photo-item {
 	width: calc(20% - 10px);
 	height: 100%;
 	margin-left: 10px;
 	cursor: pointer;
-	transition: all 0.5s;
 	margin-bottom: 8px;
+	position: relative;
 }
 
-.photos img:first-child {
+.photo-item img {
+	width: 100%;
+	height: 100%;
+}
+
+.photo-item .delete-photo {
+	position: absolute;
+	top: -10px;
+	right: -5px;
+	z-index: 99;
+	transition: all 0.35s;
+	opacity: 0;
+	visibility: hidden;
+}
+
+.photo-item .delete-photo:hover {
+	color: var(--danger);
+}
+
+.photo-item:hover {
+	border: solid 1px var(--gray);
+}
+
+.photo-item:hover .delete-photo {
+	opacity: 1;
+	visibility: visible;
+}
+
+.photo-item:first-child {
 	margin-left: 0;
 }
 
-.photos img:hover {
-	transform: scale(1.1);
+.add-photo-btn {
+	border: dashed 1px var(--gray) !important;
+	cursor: pointer;
+}
+
+.add-photo-btn i {
+	font-size: 1.25rem;
+	color: var(--gray);
+}
+
+.add-photo-btn:hover {
+	border-width: 2px !important;
 }
 
 .card-content {

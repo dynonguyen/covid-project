@@ -1,0 +1,45 @@
+
+extends ../../templates/management.template.pug
+include ../../mixins/no-result.mixin.pug
+include ../../mixins/toast-msg.mixin.pug
+
+block title
+  title Thêm nhu yếu phẩm | Người quản trị
+
+block append addStyle
+  link(rel="stylesheet", href="/css/management/new-product.css")
+  link(rel="stylesheet", href="/vendors/file-input/fileinput.min.css")
+
+block addContent
+  +toastMsg(msg,isSuccess)
+
+  .p-4.flex-grow-1
+    .flex-center
+      form#form.bg-white.p-4.m-0-auto(action="/management/products/new", method="POST", enctype="multipart/form-data")
+        .form-title
+          h1.title.text-center.mb-4 Thêm nhu yếu phẩm
+        .d-flex.flex-column
+          input#productName.field.mb-3(type="text", name="productName", maxLength="40", required, placeholder="Nhập tên sản phẩm", autofocus, value=productName && !isSuccess ? productName: '')
+          input#price.field.mb-3(type="number", name="price", placeholder="Nhập giá sản phẩm", min="0", max="1000000000")
+          input#unit.field.mb-3(type="text", name="unit", placeholder="Nhập đơn vị tính", maxLength="10")
+
+          .d-flex.mb-4
+            .mr-2
+              label Chọn ảnh đại diện
+              input#thumbnail(type="file", name="thumbnail", accept="image/*")
+
+            div
+              label Thêm các ảnh khác
+              input#photos(type="file", name="photos", multiple, accept="image/*")
+
+        button#submitBtn.w-100.submit-btn.btn.btn-primary(type="submit")
+          span#loading.d-none.spinner-border.spinner-border-sm.text-border.mr-2(role="status")
+          span Thêm
+
+block append addScript
+  script(src="/vendors/file-input/plugins/piexif.min.js")
+  script(src="/vendors/file-input/plugins/sortable.min.js")
+  script(src="/vendors/file-input/fileinput.min.js")
+  script(src="/vendors/file-input/plugins/vi.js")
+  script(src="/js/management/new-product.js")
+

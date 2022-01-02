@@ -32,4 +32,7 @@ module.exports = {
 	JWT_SECRET: process.env.JWT_SECRET || 'JWT_Covid_Project',
 	JWT_AUTHOR: 'Covid Project System',
 	JWT_COOKIE_KEY: 'access_token',
+
+	CLOUDINARY_FOLDER: 'covid-project',
+	CLOUDINARY_UPLOAD_PRESET: 'ml_default',
 };

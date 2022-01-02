@@ -126,4 +126,128 @@ $(document).ready(function () {
 			);
 		}
 	});
+
+	// show edit package modal
+	$('select').selectize({
+		shortField: 'text',
+	});
+
+	$('.edit-icon').click(async function () {
+		const modal = $('#editModal');
+
+		modal.removeClass('d-none');
+		modal.fadeIn(200).modal('show');
+
+		const productPackageId = $(this).attr('data-productPackageId');
+		const productPackageName = $(this).attr('data-productPackageName');
+		const limitedProducts = $(this).attr('data-limitedProducts');
+		const limitedInDay = $(this).attr('data-limitedInDay');
+		const limitedInWeek = $(this).attr('data-limitedInWeek');
+		const limitedInMonth = $(this).attr('data-limitedInMonth');
+
+		$('#currentPackageName').text(`( Hiện tại: ${productPackageName} )`);
+		$('#currentLP').text(`( Hiện tại: ${limitedProducts} )`);
+		$('#currentLID').text(`( Hiện tại: ${limitedInDay} )`);
+		$('#currentLIW').text(`( Hiện tại: ${limitedInWeek} )`);
+		$('#currentLIM').text(`( Hiện tại: ${limitedInMonth} )`);
+
+		modal.attr('data-productPackageId', productPackageId);
+		modal.attr('data-productPackageName', productPackageName);
+		modal.attr('data-limitedProducts', limitedProducts);
+		modal.attr('data-limitedInDay', limitedInDay);
+		modal.attr('data-limitedInWeek', limitedInWeek);
+		modal.attr('data-limitedInMonth', limitedInMonth);
+	});
+
+	$('#updateBtn').click(async function () {
+		const toast = $('#toastMsg');
+		const editModal = $('#editModal');
+
+		const productPackageId = Number(editModal.attr('data-productPackageId'));
+		console.log('productPackageId', productPackageId);
+
+		const oldPackageName = editModal.attr('data-statusf');
+		const newPackageName = $('#newPackageName').val();
+
+		const oldLP = editModal.attr('data-limitedProducts');
+		const newLP = $('#newLP').val();
+
+		const oldLID = editModal.attr('data-limitedInDay');
+		const newLID = $('#newLID').val();
+
+		const oldLIW = editModal.attr('data-limitedInWeek');
+		const newLIW = $('#newLIW').val();
+
+		const oldLIM = editModal.attr('data-limitedInMonth');
+		const newLIM = $('#newLIM').val();
+
+		if (
+			newPackageName === '' ||
+			newLP === '' ||
+			newLID === '' ||
+			newLIW === '' ||
+			newLIM === ''
+		) {
+			showToastMsg(
+				toast,
+				'Cần nhập đầy đủ thông tin để cập nhật',
+				'danger',
+				4000
+			);
+			return;
+		}
+		// if (
+		// 	(oldStatusF == newStatusF || newStatusF == '') &&
+		// 	(oldIF == newIF || newIF == '') &&
+		// 	oldIsLocked == newIsLocked
+		// ) {
+		// 	return;
+		// }
+
+		// if (newStatusF > oldStatusF) {
+		// 	showToastMsg(
+		// 		toast,
+		// 		'Không thể chuyển trạng thái từ cấp cao về cấp thấp hơn',
+		// 		'danger',
+		// 		4000
+		// 	);
+		// 	return;
+		// }
+
+		// if (newStatusF == -1 && oldStatusF != 0) {
+		// 	showToastMsg(
+		// 		toast,
+		// 		'Chỉ cập nhật trạng thái "Khỏi bệnh" cho bệnh nhân F0',
+		// 		'danger',
+		// 		4000
+		// 	);
+		// 	return;
+		// }
+
+		$(this).addClass('disabled');
+
+		const resJSON = await fetch('/management/product-packages/update', {
+			method: 'PUT',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({
+				productPackageId,
+				newPackageName,
+				newLP,
+				newLID,
+				newLIW,
+				newLIM,
+			}),
+		});
+
+		if (resJSON.status === 200) {
+			showToastMsg(toast, 'Cập nhật thành công', 'success', 1000);
+			location.reload();
+		} else {
+			const { msg } = await resJSON.json();
+			$(this).removeClass('disabled');
+			showToastMsg(toast, msg || 'Cập nhật thất bại', 'danger', 3000);
+		}
+	});
 });

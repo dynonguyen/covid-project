@@ -10,4 +10,9 @@ productPackageMgmtRoute.get(
 	productPackageMgmtController.getPackageDetail
 );
 
+productPackageMgmtRoute.put(
+	'/update',
+	productPackageMgmtController.putUpdatePackage
+);
+
 module.exports = productPackageMgmtRoute;

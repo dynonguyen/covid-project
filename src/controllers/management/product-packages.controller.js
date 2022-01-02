@@ -96,3 +96,51 @@ exports.getPackageDetail = async (req, res) => {
 		return res.render('404');
 	}
 };
+
+exports.putUpdatePackage = async (req, res) => {
+	try {
+		let { productPackageId, newPackageName, newLP, newLID, newLIW, newLIM } =
+			req.body;
+
+		const package = await ProductPackage.findOne({
+			raw: true,
+			where: { productPackageId },
+		});
+		if (!package) {
+			return res.status(400).json({ msg: 'Gói nhu yếu phẩm không tồn tại' });
+		}
+
+		// update package name
+		ProductPackage.update(
+			{ productPackageName: newPackageName },
+			{ where: { productPackageId } }
+		);
+
+		// update limited product
+		ProductPackage.update(
+			{ limitedProducts: newLP },
+			{ where: { productPackageId } }
+		);
+
+		// update limited in day
+		ProductPackage.update(
+			{ limitedInDay: newLID },
+			{ where: { productPackageId } }
+		);
+		// update limited in week
+		ProductPackage.update(
+			{ limitedInWeek: newLIW },
+			{ where: { productPackageId } }
+		);
+		// update limited in month
+		ProductPackage.update(
+			{ limitedInMonth: newLIM },
+			{ where: { productPackageId } }
+		);
+
+		return res.status(200).json({});
+	} catch (error) {
+		console.error('Function putUpdatePackage Error: ', error);
+		return res.status(400).json({ msg: 'Cập nhật thất bại !' });
+	}
+};

@@ -1,7 +1,7 @@
 extends ./general.template.pug
 
 block append style
-  link(rel="stylesheet", href="/css/management/mgmt-template.css")
+  link(rel="stylesheet", href="/css/admin/admin-template.css")
   style.
       :root {
         --primary: #D79018 !important;
@@ -38,7 +38,7 @@ block content
                           menuTitle: 'Địa điểm điều trị cách ly',
                           icon: 'bi bi-box-seam',
                           list: [
-                            { title: 'Xem danh sách', to: '/' },
+                            { title: 'Xem danh sách', to: '/isolation-facilities/list' },
                             { title: 'Thêm địa điểm mới', to: '' },
                           ],
                         },

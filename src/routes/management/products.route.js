@@ -4,10 +4,12 @@ const productMgmtController = require('../../controllers/management/products.con
 productMgmtRoute.get('/', (req, res) =>
 	res.redirect('/management/products/list')
 );
-
 productMgmtRoute.get('/list', productMgmtController.getProductList);
+productMgmtRoute.get('/new', productMgmtController.getNewProduct);
 
 productMgmtRoute.delete('/:productId', productMgmtController.deleteProduct);
+
+productMgmtRoute.post('/new', productMgmtController.postNewProduct);
 
 productMgmtRoute.put('/:productId', productMgmtController.putUpdateProductInfo);
 

@@ -1,0 +1,30 @@
+form {
+	border-radius: 16px;
+	box-shadow: var(--sm-box-shadow);
+}
+
+.title {
+	font-size: 2rem;
+	font-weight: 600;
+	color: var(--gray-dark);
+	text-transform: uppercase;
+}
+
+.submit-btn {
+	border-radius: 25px;
+}
+
+.field,
+.submit-btn {
+	height: 2.8rem;
+}
+
+label {
+	font-weight: 500;
+	font-size: 1.1rem;
+	color: var(--gray);
+}
+
+.file-drop-zone-title {
+	font-size: 1.2rem !important;
+}

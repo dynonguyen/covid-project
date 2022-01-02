@@ -77,7 +77,7 @@ exports.getProductList = async (req, res) => {
 	if (isNaN(page)) {
 		page = 1;
 	}
-	const pageSize = 8;
+	const pageSize = 10;
 
 	sortByName = parseInt(sortByName);
 	if (isNaN(sortByName)) {
@@ -165,6 +165,19 @@ exports.getProductList = async (req, res) => {
 			pageSize: 0,
 			products: [],
 		});
+	}
+};
+
+exports.getNewProduct = (req, res) => {
+	return res.render('./management/products/new-product.pug');
+};
+
+exports.postNewProduct = async (req, res) => {
+	console.log(req.body);
+	try {
+	} catch (error) {
+		console.error('Function postNewProduct Error: ', error);
+		return res.render('404');
 	}
 };
 

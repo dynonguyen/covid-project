@@ -1,6 +1,7 @@
 
 extends ../../templates/management.template.pug
 include ../../mixins/no-result.mixin.pug
+include ../../mixins/toast-msg.mixin.pug
 
 block title
   title Thêm nhu yếu phẩm | Người quản trị
@@ -10,12 +11,7 @@ block append addStyle
   link(rel="stylesheet", href="/vendors/file-input/fileinput.min.css")
 
 block addContent
-  if msg
-    #toastMsg.toast-msg.show(class=isSuccess?'success':'danger')= msg
-      .close-icon x
-  else
-    #toastMsg.toast-msg
-      .close-icon x
+  +toastMsg(msg,isSuccess)
 
   .p-4.flex-grow-1
     .flex-center
@@ -34,7 +30,7 @@ block addContent
 
             div
               label Thêm các ảnh khác
-              input#photos(type="file",  name="photos", multiple, accept="image/*")
+              input#photos(type="file", name="photos", multiple, accept="image/*")
 
         button#submitBtn.w-100.submit-btn.btn.btn-primary(type="submit")
           span#loading.d-none.spinner-border.spinner-border-sm.text-border.mr-2(role="status")

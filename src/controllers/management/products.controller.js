@@ -269,6 +269,28 @@ exports.postNewProduct = async (req, res) => {
 	}
 };
 
+exports.postAddProductPhoto = async (req, res) => {
+	const { productId } = req.params;
+	try {
+		const countPhoto = await ProductImage.count({
+			where: { productId, isThumbnail: false },
+		});
+		if (countPhoto >= 5) {
+			return res.redirect('back');
+		}
+		await uploadProductPhoto(
+			req.file,
+			`${productId}_${Date.now()}`,
+			productId,
+			false
+		);
+		return res.redirect('back');
+	} catch (error) {
+		console.error('Function postAddProductPhoto Error: ', error);
+		return res.redirect('back');
+	}
+};
+
 exports.deleteProduct = async (req, res) => {
 	const productId = parseInt(req.params.productId);
 	if (!productId || isNaN(productId)) {
@@ -331,5 +353,37 @@ exports.putUpdateProductInfo = async (req, res) => {
 	} catch (error) {
 		console.error('Function putUpdateProductInfo Error: ', error);
 		return res.status(400).json({});
+	}
+};
+
+exports.postChangeProductAvt = async (req, res) => {
+	const { productId } = req.params;
+
+	try {
+		const oldAvt = await ProductImage.findOne({
+			raw: true,
+			where: {
+				productId,
+				isThumbnail: true,
+			},
+		});
+
+		await cloudinaryDeletePhoto(oldAvt.src);
+
+		await uploadProductPhoto(
+			req.file,
+			`${productId}_thumbnail`,
+			productId,
+			true
+		);
+
+		await ProductImage.destroy({
+			where: { productImageId: oldAvt.productImageId },
+		});
+
+		return res.redirect('back');
+	} catch (error) {
+		console.error('Function putChangeProductAvt Error: ', error);
+		return res.redirect('back');
 	}
 };

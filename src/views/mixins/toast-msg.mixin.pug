@@ -1,0 +1,7 @@
+mixin toastMsg(msg, isSuccess)
+  if msg
+    #toastMsg.toast-msg.show(class=isSuccess?'success':'danger')= msg
+      .close-icon x
+  else
+    #toastMsg.toast-msg
+      .close-icon x

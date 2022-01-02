@@ -34,6 +34,11 @@
 	max-width: 180px;
 }
 
+#filterBtn {
+	height: 40px;
+	border-radius: 8px;
+}
+
 .wrapper {
 	display: grid;
 	grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -120,6 +125,20 @@
 
 .photo-item:first-child {
 	margin-left: 0;
+}
+
+.add-photo-btn {
+	border: dashed 1px var(--gray) !important;
+	cursor: pointer;
+}
+
+.add-photo-btn i {
+	font-size: 1.25rem;
+	color: var(--gray);
+}
+
+.add-photo-btn:hover {
+	border-width: 2px !important;
 }
 
 .card-content {

@@ -82,6 +82,28 @@ $(document).ready(function () {
 	const productNameInput = $('input[name="productName"]');
 	const productPriceInput = $('input[name="price"]');
 	const productUnitInput = $('input[name="unit"]');
+	const photoModal = $('#photoModal');
+
+	$('#addPhotoInput').fileinput({
+		language: 'vi',
+		showBrowse: false,
+		showUpload: false,
+		showRemove: true,
+		showClose: false,
+		required: true,
+		initialPreviewShowDelete: true,
+		browseOnZoneClick: true,
+
+		allowedFileTypes: ['image'],
+		allowedFileExtensions: ['png', 'jpg', 'jpeg', 'webp'],
+
+		previewClass: 'flex-center',
+		msgProcessing: 'Đang xử lý ...',
+		msgFileRequired: 'Vui lòng chọn hình ảnh cho sản phẩm !',
+
+		maxFileCount: 1,
+		maxFileSize: 1024, // 1 MB,
+	});
 
 	pagination($('#pagination'), total, pageSize, currentPage, {
 		callback: () => {
@@ -265,10 +287,38 @@ $(document).ready(function () {
 
 			if (apiRes.status === 200) {
 				showToastMsg(toastMsg, 'Xoá ảnh thành công', 'success');
-				return $(this).parents('.photo-item')?.remove();
+				const photItem = $(this).parents('.photo-item');
+				photItem.siblings('.add-photo-btn').removeClass('d-none');
+				return photItem?.remove();
 			}
 
 			return showToastMsg(toastMsg, 'Xoá ảnh thất bại, thử lại', 'danger');
 		}
+	});
+
+	$('.add-photo-btn').click(function () {
+		photoModal.modal('show');
+		photoModal.find('.modal-title').text('Thêm ảnh cho sản phẩm');
+		const productId = $(this).parents('.product-card').attr('data-id');
+		$('#addPhotoBtn').text('Thêm');
+		$('#photoModalForm').attr({
+			method: 'POST',
+			action: '/management/products/photo/' + productId,
+		});
+	});
+
+	$('.change-avt-btn').click(function () {
+		photoModal.modal('show');
+		photoModal.find('.modal-title').text('Thay đổi ảnh đại diện cho sản phẩm');
+		const productId = $(this).parents('.product-card').attr('data-id');
+		$('#addPhotoBtn').text('Cập nhật');
+		$('#photoModalForm').attr({
+			method: 'POST',
+			action: '/management/products/change-avt/' + productId,
+		});
+	});
+
+	$('#photoModalForm').submit(function (e) {
+		$('#addPhotoBtn').addClass('disabled');
 	});
 });

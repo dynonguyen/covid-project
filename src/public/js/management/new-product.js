@@ -3,6 +3,7 @@ const fileinputCommonOptions = {
 	showBrowse: false,
 	showUpload: false,
 	showRemove: true,
+	showClose: false,
 	required: true,
 	initialPreviewShowDelete: true,
 	browseOnZoneClick: true,

@@ -26,6 +26,16 @@ productMgmtRoute.post(
 	customUpload,
 	productMgmtController.postNewProduct
 );
+productMgmtRoute.post(
+	'/change-avt/:productId',
+	upload.single('photo'),
+	productMgmtController.postChangeProductAvt
+);
+productMgmtRoute.post(
+	'/photo/:productId',
+	upload.single('photo'),
+	productMgmtController.postAddProductPhoto
+);
 
 // PUT method because send "url" from body
 productMgmtRoute.put('/del-photo', productMgmtController.deleteProductPhoto);

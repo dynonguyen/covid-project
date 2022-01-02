@@ -1,13 +1,17 @@
 extends ../../templates/management.template.pug
 include ../../mixins/no-result.mixin.pug
+include ../../mixins/toast-msg.mixin.pug
 
 block title
   title Xem danh sách nhu yếu phẩm | Người quản trị
 
 block addStyle
   link(rel="stylesheet", href="/css/management/product-view-list.css")
+  link(rel="stylesheet", href="/vendors/file-input/fileinput.min.css")
 
 block addContent
+  +toastMsg(msg,isSuccess)
+
   .p-4.flex-grow-1
     //- Search, sort, filter
     .search.d-flex.mb-4
@@ -52,17 +56,20 @@ block addContent
           .product-card(data-id=productId)
             img.card-top(src=thumbnail, alt="Product Photo")
             .card-body
-              if photos && photos.length > 0
-                .photos
+              .photos
+                if photos && photos.length > 0
                   each photo in photos
                     .photo-item
                       img(src=photo, alt="Photo")
                       i.delete-photo.bi.bi-x-circle-fill
+
+                .photo-item.flex-center.add-photo-btn(class=photos && photos.length < 5?'':'d-none')
+                  i.bi.bi-plus
               .card-content
                 h4.product-name= productName
                 .product-price #[span.price(data-price=price)= helpers.formatCurrency(price)] / #[span.unit= unit]
               .card-bottom
-                button.edit-btn.btn.btn-info.mr-2(data-toggle="modal", data-target="#editPhotoModal") Thay Avt #[i.bi.bi-image-fill]
+                button.change-avt-btn.btn.btn-info.mr-2 Thay Avt #[i.bi.bi-image-fill]
                 button.edit-btn.btn.btn-primary.mr-2(data-toggle="modal", data-target="#editModal", data-id=productId) Sửa #[i.bi.bi-pencil-fill]
                 button.delete-btn.btn.btn-danger(data-id=productId) Xoá #[i.bi.bi-trash-fill]
       else
@@ -92,7 +99,18 @@ block addContent
           button.btn.btn-secondary(type="button", data-dismiss="modal") Đóng
           button#editProductInfoBtn.btn.btn-primary(type="button") Cập nhật
 
-  #toastMsg.toast-msg
+  .modal.fade#photoModal(tabindex="-1", aria-labelledby="photoModal", aria-hidden="true")
+    .modal-dialog.modal-dialog-centered
+      form#photoModalForm.modal-content(enctype="multipart/form-data")
+        .modal-header
+          h5.modal-title Chỉnh sửa hình ảnh
+          button.close(type="button", data-dismiss="modal", aria-label="Close")
+            span(aria-hidden="true") ×
+        .modal-body
+          input#addPhotoInput(type="file", name="photo", accept="image/*")
+        .modal-footer
+          button.btn.btn-secondary(type="button", data-dismiss="modal") Đóng
+          button#addPhotoBtn.btn.btn-primary(type="submit") Cập nhật
 
 block addScript
   script.
@@ -103,4 +121,8 @@ block addScript
 
   script(src="/vendors/pagination.min.js")
   script(src="/js/helpers/cloudinary.js")
+  script(src="/vendors/file-input/plugins/piexif.min.js")
+  script(src="/vendors/file-input/plugins/sortable.min.js")
+  script(src="/vendors/file-input/fileinput.min.js")
+  script(src="/vendors/file-input/plugins/vi.js")
   script(src="/js/management/product-view-list.js")

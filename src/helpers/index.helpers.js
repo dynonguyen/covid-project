@@ -17,6 +17,8 @@ const { v4: uuidv4 } = require('uuid');
 const IsolationFacility = require('../models/isolation-facility.model');
 const TreatmentHistory = require('../models/treatment-history.model');
 const jwt = require('jsonwebtoken');
+const { createPaymentAccount } = require('../payment-api');
+const { db } = require('../configs/db.config');
 
 // Hash password with bcrypt
 exports.hashPassword = (password = '') => {
@@ -225,35 +227,55 @@ exports.addNewAddress = async (details, wardId) => {
 };
 
 exports.createUser = async (user) => {
+	const tx = await db.transaction();
+
 	try {
 		const { fullname, peopleId, DOB, addressId, statusF, managerId } = user;
-		const account = await Account.create({
-			username: peopleId,
-			password: '',
-			accountType: ACCOUNT_TYPES.USER,
-			isLocked: false,
-			failedLoginTime: 0,
-		});
+		const account = await Account.create(
+			{
+				username: peopleId,
+				password: '',
+				accountType: ACCOUNT_TYPES.USER,
+				isLocked: false,
+				failedLoginTime: 0,
+			},
+			{ transaction: tx }
+		);
 
 		if (account) {
-			const newUser = await User.create({
-				uuid: uuidv4(),
-				fullname,
-				peopleId,
-				DOB: new Date(DOB),
-				statusF: Number(statusF),
-				managerId,
-				addressId,
-				accountId: account.accountId,
+			const newUser = await User.create(
+				{
+					uuid: uuidv4(),
+					fullname,
+					peopleId,
+					DOB: new Date(DOB),
+					statusF: Number(statusF),
+					managerId,
+					addressId,
+					accountId: account.accountId,
+				},
+				{ transaction: tx }
+			);
+
+			// create an account in payment system
+			const createPaymentAccountSuccess = await createPaymentAccount({
+				username: peopleId,
+				userId: newUser.userId,
 			});
 
+			if (!createPaymentAccountSuccess) {
+				throw new Error();
+			}
+
+			await tx.commit();
 			return newUser;
 		}
 
-		return null;
+		throw new Error();
 	} catch (error) {
 		console.error('Function newUser Error: ', error);
-		return null;
+		await tx.rollback();
+		return {};
 	}
 };
 

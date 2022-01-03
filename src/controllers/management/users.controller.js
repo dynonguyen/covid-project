@@ -231,7 +231,7 @@ exports.postNewUser = async (req, res) => {
 		// Get manager Id
 		const manager = await Account.findOne({
 			raw: true,
-			where: { username: req.session?.account?.username },
+			where: { username: req.user.username },
 			attributes: ['accountId'],
 		});
 
@@ -245,8 +245,8 @@ exports.postNewUser = async (req, res) => {
 			managerId: manager.accountId,
 		});
 
-		// add treament history
-		const { error, msg: treamentMsg } = await addNewTreatmentHistory(
+		// add treatment history
+		const { error, msg: treatmentMsg } = await addNewTreatmentHistory(
 			Number(isolationFacility),
 			newUser.userId,
 			statusF
@@ -256,7 +256,7 @@ exports.postNewUser = async (req, res) => {
 			User.destroy({ where: { userId: newUser.userId } });
 			Account.destroy({ where: { username: peopleId } });
 			Address.destroy({ where: { addressId } });
-			return res.status(400).json({ msg: treamentMsg });
+			return res.status(400).json({ msg: treatmentMsg });
 		}
 
 		// add related user if status-f # f0
@@ -286,7 +286,7 @@ exports.postNewUser = async (req, res) => {
 				managerId: manager.accountId,
 			});
 
-			const { error: u1Error, msg: u1TreamentMsg } =
+			const { error: u1Error, msg: u1TreatmentMsg } =
 				await addNewTreatmentHistory(
 					Number(u1.isolationFacility),
 					u1NewUser.userId,
@@ -295,7 +295,7 @@ exports.postNewUser = async (req, res) => {
 			if (u1Error) {
 				User.destroy({ where: { userId: u1NewUser.userId } });
 				Address.destroy({ where: { addressId: u1AddressId } });
-				return res.status(400).json({ msg: u1TreamentMsg });
+				return res.status(400).json({ msg: u1TreatmentMsg });
 			}
 
 			RelatedUser.create({
@@ -316,7 +316,7 @@ exports.postNewUser = async (req, res) => {
 					managerId: manager.accountId,
 				});
 
-				const { error: u2Error, msg: u2TreamentMsg } =
+				const { error: u2Error, msg: u2TreatmentMsg } =
 					await addNewTreatmentHistory(
 						Number(u2.isolationFacility),
 						u2NewUser.userId,
@@ -325,7 +325,7 @@ exports.postNewUser = async (req, res) => {
 				if (u2Error) {
 					User.destroy({ where: { userId: u2NewUser.userId } });
 					Address.destroy({ where: { addressId: u2AddressId } });
-					return res.status(400).json({ msg: u2TreamentMsg });
+					return res.status(400).json({ msg: u2TreatmentMsg });
 				}
 
 				RelatedUser.create({
@@ -346,7 +346,7 @@ exports.postNewUser = async (req, res) => {
 						managerId: manager.accountId,
 					});
 
-					const { error: u3Error, msg: u3TreamentMsg } =
+					const { error: u3Error, msg: u3TreatmentMsg } =
 						await addNewTreatmentHistory(
 							Number(u3.isolationFacility),
 							u3NewUser.userId,
@@ -355,7 +355,7 @@ exports.postNewUser = async (req, res) => {
 					if (u3Error) {
 						User.destroy({ where: { userId: u3NewUser.userId } });
 						Address.destroy({ where: { addressId: u3AddressId } });
-						return res.status(400).json({ msg: u3TreamentMsg });
+						return res.status(400).json({ msg: u3TreatmentMsg });
 					}
 
 					RelatedUser.create({

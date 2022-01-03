@@ -35,4 +35,8 @@ module.exports = {
 
 	CLOUDINARY_FOLDER: 'covid-project',
 	CLOUDINARY_UPLOAD_PRESET: 'ml_default',
+
+	PAYMENT_SYS_URL: process.env.PAYMENT_URL,
+	PAYMENT_SYS_AUTH_HEADER: 'covid-token',
+	PAYMENT_SYS_AUTH_PRIVATE_KEY: process.env.PAYMENT_PRIVATE_KEY,
 };

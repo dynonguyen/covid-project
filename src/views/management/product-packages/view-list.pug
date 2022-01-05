@@ -68,15 +68,15 @@ block addContent
               //-   span.sr-only Đang tải dữ liệu ...
             #editModalBody
               label(for="#productPackageName").text-gray.font-weight-bold Tên gói #[span#currentPackageName.font-weight-normal]
-              input#newPackageName.form-control(type="text", required)
+              input#newPackageName.form-control(type="text")
               label(for="#limitedProducts").text-gray.font-weight-bold Giới hạn SL sản phẩm #[span#currentLP.font-weight-normal]
-              input#newLP.form-control(type="number", required)
+              input#newLP.form-control(type="number", min="1", max="1000")
               label(for="#limitedInDay").text-gray.font-weight-bold Giới hạn SL gói/ngày #[span#currentLID.font-weight-normal]
-              input#newLID.form-control(type="number", required)
+              input#newLID.form-control(type="number", min="1", max="1000")
               label(for="#limitedInWeek").text-gray.font-weight-bold Giới hạn SL gói/tuần #[span#currentLIW.font-weight-normal]
-              input#newLIW.form-control(type="number", required)
+              input#newLIW.form-control(type="number", min="1",max="1000")
               label(for="#limitedInMonth").text-gray.font-weight-bold Giới hạn số lượng gói/tháng #[span#currentLIM.font-weight-normal]
-              input#newLIM.form-control(type="number", required)
+              input#newLIM.form-control(type="number", min="1", max="1000")
           .modal-footer
             button.btn.btn-secondary(type="button", data-dismiss="modal") Đóng
             button#updateBtn.btn.btn-warning(type="button") Cập nhật

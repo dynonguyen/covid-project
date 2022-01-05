@@ -166,63 +166,108 @@ $(document).ready(function () {
 		const productPackageId = Number(editModal.attr('data-productPackageId'));
 		console.log('productPackageId', productPackageId);
 
-		const oldPackageName = editModal.attr('data-statusf');
-		const newPackageName = $('#newPackageName').val();
+		let oldPackageName = editModal.attr('data-statusf');
+		let newPackageName = $('#newPackageName').val();
 
-		const oldLP = editModal.attr('data-limitedProducts');
-		const newLP = $('#newLP').val();
+		let oldLP = editModal.attr('data-limitedProducts');
+		let newLP = $('#newLP').val();
 
-		const oldLID = editModal.attr('data-limitedInDay');
-		const newLID = $('#newLID').val();
+		let oldLID = editModal.attr('data-limitedInDay');
+		let newLID = $('#newLID').val();
 
-		const oldLIW = editModal.attr('data-limitedInWeek');
-		const newLIW = $('#newLIW').val();
+		let oldLIW = editModal.attr('data-limitedInWeek');
+		let newLIW = $('#newLIW').val();
 
-		const oldLIM = editModal.attr('data-limitedInMonth');
-		const newLIM = $('#newLIM').val();
+		let oldLIM = editModal.attr('data-limitedInMonth');
+		let newLIM = $('#newLIM').val();
 
-		if (
-			newPackageName === '' ||
-			newLP === '' ||
-			newLID === '' ||
-			newLIW === '' ||
-			newLIM === ''
-		) {
+		// Update mot so thuoc tính
+		if (newPackageName === '') {
+			newPackageName = oldPackageName;
+		}
+		if (newLP === '') {
+			newLP = oldLP;
+		}
+		if (newLID === '') {
+			newLID = oldLID;
+		}
+		if (newLIW === '') {
+			newLIW = oldLIW;
+		}
+		if (newLIM === '') {
+			newLIM = oldLIM;
+		}
+
+		// Update Limit Product
+		if (newLP !== '' && Number(newLP) > 1000) {
 			showToastMsg(
 				toast,
-				'Cần nhập đầy đủ thông tin để cập nhật',
+				'Giới hạn SL sản phẩm không được quá 1000',
 				'danger',
 				4000
 			);
 			return;
 		}
-		// if (
-		// 	(oldStatusF == newStatusF || newStatusF == '') &&
-		// 	(oldIF == newIF || newIF == '') &&
-		// 	oldIsLocked == newIsLocked
-		// ) {
-		// 	return;
-		// }
 
-		// if (newStatusF > oldStatusF) {
-		// 	showToastMsg(
-		// 		toast,
-		// 		'Không thể chuyển trạng thái từ cấp cao về cấp thấp hơn',
-		// 		'danger',
-		// 		4000
-		// 	);
-		// 	return;
-		// }
+		if (newLID !== '' && Number(newLID) > Number(newLIW)) {
+			showToastMsg(
+				toast,
+				'Giới hạn SL sản phẩm ngày không được nhiều hơn tuần',
+				'danger',
+				4000
+			);
+			return;
+		}
 
-		// if (newStatusF == -1 && oldStatusF != 0) {
-		// 	showToastMsg(
-		// 		toast,
-		// 		'Chỉ cập nhật trạng thái "Khỏi bệnh" cho bệnh nhân F0',
-		// 		'danger',
-		// 		4000
-		// 	);
-		// 	return;
-		// }
+		if (newLID !== '' && Number(newLID) < 1) {
+			showToastMsg(
+				toast,
+				'Giới hạn SL sản phẩm ngày không được nhỏ hơn 1',
+				'danger',
+				4000
+			);
+			return;
+		}
+
+		if (newLIW !== '' && Number(newLIW) > Number(newLIM)) {
+			showToastMsg(
+				toast,
+				'Giới hạn SL sản phẩm tuần không được nhiều hơn tháng',
+				'danger',
+				4000
+			);
+			return;
+		}
+
+		if (newLIW !== '' && Number(newLIW) < 1) {
+			showToastMsg(
+				toast,
+				'Giới hạn SL sản phẩm tuần không được nhỏ hơn 1',
+				'danger',
+				4000
+			);
+			return;
+		}
+
+		if (newLIM !== '' && Number(newLIM) > Number(newLP)) {
+			showToastMsg(
+				toast,
+				'Giới hạn SL sản phẩm tháng không được nhiều hơn tổng Giới hạn',
+				'danger',
+				4000
+			);
+			return;
+		}
+
+		if (newLIM !== '' && Number(newLIM) < 1) {
+			showToastMsg(
+				toast,
+				'Giới hạn SL sản phẩm tháng không được nhỏ hơn 1',
+				'danger',
+				4000
+			);
+			return;
+		}
 
 		$(this).addClass('disabled');
 

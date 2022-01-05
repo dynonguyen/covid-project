@@ -111,29 +111,29 @@ exports.putUpdatePackage = async (req, res) => {
 		}
 
 		// update package name
-		ProductPackage.update(
+		await ProductPackage.update(
 			{ productPackageName: newPackageName },
 			{ where: { productPackageId } }
 		);
 
 		// update limited product
-		ProductPackage.update(
+		await ProductPackage.update(
 			{ limitedProducts: newLP },
 			{ where: { productPackageId } }
 		);
 
 		// update limited in day
-		ProductPackage.update(
+		await ProductPackage.update(
 			{ limitedInDay: newLID },
 			{ where: { productPackageId } }
 		);
 		// update limited in week
-		ProductPackage.update(
+		await ProductPackage.update(
 			{ limitedInWeek: newLIW },
 			{ where: { productPackageId } }
 		);
 		// update limited in month
-		ProductPackage.update(
+		await ProductPackage.update(
 			{ limitedInMonth: newLIM },
 			{ where: { productPackageId } }
 		);

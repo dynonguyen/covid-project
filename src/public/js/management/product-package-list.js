@@ -181,6 +181,11 @@ $(document).ready(function () {
 		let oldLIM = editModal.attr('data-limitedInMonth');
 		let newLIM = $('#newLIM').val();
 
+		// Xu ly khi nhap khoang trang
+		if (newPackageName.match(/ /)) {
+			newPackageName = oldPackageName;
+		}
+
 		// Update mot so thuoc tính
 		if (newPackageName === '') {
 			newPackageName = oldPackageName;

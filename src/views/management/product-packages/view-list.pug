@@ -68,7 +68,7 @@ block addContent
               //-   span.sr-only Đang tải dữ liệu ...
             #editModalBody
               label(for="#productPackageName").text-gray.font-weight-bold Tên gói #[span#currentPackageName.font-weight-normal]
-              input#newPackageName.form-control(type="text")
+              input#newPackageName.form-control(type="text", maxLength="100")
               label(for="#limitedProducts").text-gray.font-weight-bold Giới hạn SL sản phẩm #[span#currentLP.font-weight-normal]
               input#newLP.form-control(type="number", min="1", max="1000")
               label(for="#limitedInDay").text-gray.font-weight-bold Giới hạn SL gói/ngày #[span#currentLID.font-weight-normal]

@@ -214,7 +214,7 @@
 - Thanh toán dư nợ theo hạn mức tối thiểu (có kiểm tra số dư từ Hệ thống thanh toán
 - Liên kết sang Hệ thống thanh toán để nạp tiền
 
-## 2 Hệ thống Quản lý Thanh toán
+## 2 Hệ thống Quản lý Thanh toán `(Tuấn)`
 
 ### 2.1 Khởi tạo hệ thống
 

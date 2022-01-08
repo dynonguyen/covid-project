@@ -1,4 +1,44 @@
-/// <reference path="D:\typings\jquery\globals\jquery\index.d.ts" />
+function renderChartTitle(start, end) {
+	if (!start && !end) {
+		return 'Tất cả các giai đoạn';
+	}
+
+	let title = '';
+	if (start) {
+		title += ` Bắt đầu từ ${formatDateToStr(start)} `;
+	}
+	if (end) {
+		title += ` Kết thúc ${formatDateToStr(end)} `;
+	}
+	return title;
+}
+
+function fillChartData(chartData = []) {
+	if (chartData.length === 5) return chartData;
+	if (chartData.length > 5) return chartData.slice(0, 5);
+
+	const newChartData = new Array(5).fill(0);
+	chartData.forEach((item, index) => (newChartData[index] = item));
+
+	return newChartData;
+}
+
+function renderChart() {
+	const chartCanvas = document.getElementById('chart');
+	const ctx = chartCanvas.getContext('2d');
+
+	if (chartData && chartData.length > 0) {
+		new Chart(chartCanvas, config);
+	} else {
+		ctx.font = '1.25rem Montserrat';
+		ctx.textAlign = 'center';
+		ctx.fillText(
+			'Không tìm thấy dữ liệu',
+			chartCanvas.width / 2,
+			chartCanvas.height / 2
+		);
+	}
+}
 
 const config = {
 	type: 'pie',
@@ -6,7 +46,7 @@ const config = {
 		labels: ['Khỏi bệnh', 'F0', 'F1', 'F2', 'F3'],
 		datasets: [
 			{
-				data: chartData,
+				data: fillChartData(chartData),
 				backgroundColor: [
 					'rgb(255, 99, 132)',
 					'rgb(54, 162, 235)',
@@ -22,7 +62,7 @@ const config = {
 		plugins: {
 			title: {
 				display: true,
-				text: 'Toàn quốc',
+				text: renderChartTitle(start, end),
 				font: {
 					size: 18,
 				},
@@ -32,20 +72,20 @@ const config = {
 };
 
 $(document).ready(function () {
-	const chartCanvas = document.getElementById('chart');
-	const ctx = chartCanvas.getContext('2d');
+	renderChart();
+	$('#statisticBtn').click(function () {
+		let startDate = $('#startDate').val();
+		let endDate = $('#endDate').val();
+		if (!startDate && !endDate) return;
+		if (new Date(endDate) < new Date(startDate)) {
+			[startDate, endDate] = [endDate, startDate];
+		}
 
-	if (chartData && chartData.length > 0) {
-		new Chart(chartCanvas, config);
-	} else {
-		ctx.font = '1.25rem Montserrat';
-		ctx.textAlign = 'center';
-		ctx.fillText(
-			'Không tìm thấy dữ liệu',
-			chartCanvas.width / 2,
-			chartCanvas.height / 2
-		);
-	}
+		const { pathname } = window.location;
+		location.href = `${pathname}?start=${startDate}&end=${endDate}`;
+	});
 
-	$('#province').selectize();
+	$('#resetBtn').click(() => {
+		location.href = location.pathname;
+	});
 });

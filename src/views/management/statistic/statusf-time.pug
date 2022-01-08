@@ -5,52 +5,63 @@ block title
   title Thống kê trạng thái theo từng giai đoạn | Covid Project
 
 block append addStyle
-  link(rel="stylesheet", href="/vendors/selectize/selectize.min.css")
   style.
     .wrapper .field, .selectize-input{
-      box-shadow: var(--sm-box-shadow) !important;
-      background-color: #fff !important;
-      border-radius: 25px;
-      height: 2.5rem !important;
-      color: var(--gray) !important;
+      box-shadow: var(--sm-box-shadow);
+      background-color: #fff;
+      height: 2.5rem;
+      color: var(--gray);
     }
 
     .chart-wrap {
       max-width: 30rem;
       max-height: 30rem;
-      margin: 3.5rem auto 0;
+      margin: 2.5rem auto;
     }
 
-    .selectize-input {
-      min-width: 15rem;
+    .statistic-btn {
+      height: 2.5rem;
+      align-self: flex-end;
+      border-radius: 25px;
+      box-shadow: var(--sm-box-shadow) !important;
+    }
+
+    .text-stats {
+      font-size: 1.2rem;
     }
 
 block addContent
   .p-3.flex-grow-1.wrapper
     h1.title.mt-3 Thống kê trạng thái theo từng giai đoạn
-    .center-vertical.my-4
+    .flex-center.my-4
       .d-flex.flex-column
         label.pl-2.text-gray(for="startDate") Ngày bắt đầu
-        input.field#startDate(type="date", placeholder="Ngày bắt đầu")
-      .d-flex.flex-column.mx-4
+        input.field#startDate(type="date", placeholder="Ngày bắt đầu", value=start?start:'')
+      .d-flex.flex-column.mx-3
         label.pl-2.text-gray(for="endDate") Ngày kết thúc
-        input.field#endDate(type="date", placeholder="Ngày kết thúc")
-      .d-flex.flex-column
-        label.pl-2.text-gray(for="province") Chọn tỉnh thành
-        select#province
-          option(value="0",selected) Phạm vi toàn quốc
-          if provinces
-            each p in provinces
-              option(value=p.id)= p.name
+        input.field#endDate(type="date", placeholder="Ngày kết thúc", value=end?end:'')
+      button.btn.btn-primary.statistic-btn#statisticBtn Thống kê
+      button.btn.btn-danger.statistic-btn.ml-3#resetBtn Đặt lại
 
     .chart-wrap
       canvas#chart.w-100.h-100
+
+    - const total = chartData?.reduce((sum, item)=> sum+item, 0);
+    p.text-stats.text-center.text-monospace
+      |#[b.text-info Tổng số]: #[b= total]&nbsp;&nbsp;
+      |Khỏi bệnh: #[b= chartData[0] || 0]&nbsp;&nbsp;
+      |F0: #[b= chartData[1] || 0]&nbsp;&nbsp;
+      |F1: #[b= chartData[2] || 0]&nbsp;&nbsp;
+      |F2: #[b= chartData[3] || 0]&nbsp;&nbsp;
+      |F3: #[b= chartData[4] || 0]
+
 block append addScript
-  script(src="/vendors/selectize/selectize.min.js")
   +chartjsScript
 
   script.
     const chartDataRaw = "#{chartData}";
-    const chartData = chartDataRaw ? chartDataRaw.split(',').map(i=>Number(i)) : []
+    const chartData = chartDataRaw ? chartDataRaw.split(',').map(i=>Number(i)) : [];
+    const start = "#{start}"
+    const end = "#{end}"
 
   script(src="/js/management/statusf-time.js")

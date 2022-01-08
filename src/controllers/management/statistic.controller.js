@@ -1,20 +1,35 @@
 const { Sequelize } = require('sequelize');
-const Province = require('../../models/province.model');
 const TreatmentHistory = require('../../models/treatment-history.model');
+const { Op } = require('../../configs/db.config');
 
 exports.getStatusfTimeStatistic = async (req, res) => {
-	try {
-		const provinces = await Province.findAll({
-			raw: true,
-			attributes: { exclude: ['code'] },
+	const { start, end } = req.query;
+	const andOps = [];
+	start &&
+		andOps.push({
+			startDate: {
+				[Op.gte]: new Date(start),
+			},
+		});
+	end &&
+		andOps.push({
+			startDate: {
+				[Op.lte]: new Date(end),
+			},
 		});
 
+	const where = {
+		[Op.and]: andOps,
+	};
+
+	try {
 		const statusCount = await TreatmentHistory.findAll({
 			raw: true,
 			attributes: [
 				[Sequelize.fn('count', Sequelize.col('statusF')), 'count'],
 				'statusF',
 			],
+			where,
 			group: 'statusF',
 		});
 
@@ -23,8 +38,9 @@ exports.getStatusfTimeStatistic = async (req, res) => {
 			.map((i) => Number(i.count));
 
 		return res.render('./management/statistic/statusf-time.pug', {
-			provinces,
 			chartData: statusCountSort,
+			start,
+			end,
 		});
 	} catch (error) {
 		console.error('Function getStatusfTimeStatistic Error: ', error);

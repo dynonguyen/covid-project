@@ -17,6 +17,7 @@ const {
 	authMiddleware,
 	adminAuthorizationMiddleware,
 	mgmtAuthorizationMiddleware,
+  userAuthorizationMiddleware,
 } = require('./middleware/auth.middleware');
 const { passSidebarStatus } = require('./middleware/mgmt-session.middleware');
 
@@ -29,6 +30,7 @@ const apiRoute = require('./routes/api.route');
 const { MAX } = require('./constants/index.constant');
 const { unlessRoute } = require('./middleware/unless.middleware');
 const adminRoute = require('./routes/admin/index.route');
+const userRoute = require('./routes/user/index.route');
 
 /* ============== Config =============== */
 app.use(express.static(path.join(__dirname, 'public')));
@@ -63,13 +65,23 @@ app.use(unlessRoute(['/auth', '/init-system'], authMiddleware));
 app.use('/init-system', initSystemRoute);
 app.use('/api', apiRoute);
 app.use('/auth', authRoute);
-app.use('/admin', adminAuthorizationMiddleware, passSidebarStatus, adminRoute);
+app.use('/admin',
+  adminAuthorizationMiddleware,
+  passSidebarStatus,
+  adminRoute
+);
 app.use(
 	'/management',
 	mgmtAuthorizationMiddleware,
 	passSidebarStatus,
 	managementRoute
 );
+app.use(
+  '/user',
+  userAuthorizationMiddleware,
+  passSidebarStatus,
+  userRoute
+)
 app.use('/', homeRoute);
 
 // 404 Not found redirect

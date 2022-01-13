@@ -19,6 +19,10 @@ const TreatmentHistory = require('../models/treatment-history.model');
 const jwt = require('jsonwebtoken');
 const { createPaymentAccount } = require('../payment-api');
 const { db } = require('../configs/db.config');
+const ProductPackage = require('../models/product-package.model');
+const ProductInPackage = require('../models/product-in-package.model');
+const Product = require('../models/product.model');
+const ProductImage = require('../models/product-image.model');
 
 // Hash password with bcrypt
 exports.hashPassword = (password = '') => {
@@ -339,4 +343,78 @@ exports.formatCurrency = (money = 0) => {
 		style: 'currency',
 		currency: 'VND',
 	}).format(money);
+};
+
+exports.randomFakeDiscount = (price = 0) => {
+	const isDiscount = Math.random() > 0.65 ? true : false;
+	if (!isDiscount) {
+		return false;
+	}
+	const rate = ~~(Math.random() * 19 + 1);
+	return Math.round(price + price * (rate / 100));
+};
+
+exports.getPackageList = async (page = 1, pageSize = 12) => {
+	try {
+		const packageAndCount = await ProductPackage.findAndCountAll({
+			raw: true,
+			limit: pageSize,
+			attributes: ['productPackageId', 'productPackageName'],
+			offset: (page - 1) * pageSize,
+			order: ['productPackageId'],
+		});
+
+		const total = packageAndCount.count;
+		const packages = packageAndCount.rows;
+
+		const promises = [];
+		const productImagePromises = [];
+
+		packages.forEach((pp) => {
+			promises.push(
+				// Find all products in the package
+				ProductInPackage.findAll({
+					raw: true,
+					where: {
+						productPackageId: pp.productPackageId,
+					},
+					include: {
+						model: Product,
+						attributes: [],
+					},
+					attributes: [
+						[Sequelize.col('Product.productId'), 'productId'],
+						[Sequelize.col('Product.productName'), 'productName'],
+						[Sequelize.col('Product.price'), 'productPrice'],
+						[Sequelize.col('Product.unit'), 'productUnit'],
+					],
+				}).then((data) => {
+					// Add product list into the package
+					pp.products = [...data];
+
+					// Find a thumbnail for the package by the first product
+					productImagePromises.push(
+						ProductImage.findOne({
+							raw: true,
+							where: {
+								productId: data[0].productId,
+								isThumbnail: true,
+							},
+							attributes: ['src'],
+						}).then(
+							(productImgSrc) => (pp.thumbnail = productImgSrc?.src || '')
+						)
+					);
+				})
+			);
+		});
+
+		await Promise.all(promises);
+		await Promise.all(productImagePromises);
+
+		return { total, page, pageSize, packages };
+	} catch (error) {
+		console.log('getPackageList ERROR: ', error);
+		return { total: 0, page, pageSize, packages: [] };
+	}
 };

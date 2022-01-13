@@ -17,17 +17,19 @@ block content
 
       .container.py-5
         .product-list
-          - const products = [{productName: "Sản phấm 1", price: 12345, unit: "Ký"}, {productName: "Sản phấm 2", price: 23211, unit: "Cái"}];
-          each i in new Array(24).fill(0)
-            .px-2
+          if packages
+            each productPackage in packages
+              - const { productPackageId, productPackageName, thumbnail, products } = productPackage;
+              - const totalPrice = helpers.totalPrice(products), discount = helpers.randomFakeDiscount(totalPrice);
+              - const badge = discount ? "Khuyến mãi" : "";
               +packageCard(
-              1,
-              "Nấm mỡ trắng Yoshi tươi hộp 150g",
-              "https://cdn.tgdd.vn/Products/Images/8779/233788/bhx/nam-mo-trang-hop-150g-202101292221292506_300x300.jpg",
-              "53.000vnd",
+              productPackageId,
+              productPackageName,
+              thumbnail,
+              helpers.formatCurrency(totalPrice),
               products,
-              "Khuyến mãi",
-              "54.000vnd"
+              badge,
+              discount,
               )
         p#viewMore.view-more.mt-5 Xem thêm gói sản phẩm #[i.bi.bi-chevron-double-down]
     +footer

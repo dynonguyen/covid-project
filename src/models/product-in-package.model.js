@@ -15,11 +15,6 @@ const ProductInPackage = db.define(
 			allowNull: false,
 			defaultValue: 1,
 		},
-		quantity: {
-			type: DataTypes.SMALLINT,
-			allowNull: false,
-			defaultValue: 1,
-		},
 	},
 	{ tableName: 'ProductInPackage', timestamps: false, initialAutoIncrement: 1 }
 );

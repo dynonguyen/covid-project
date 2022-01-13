@@ -40,7 +40,7 @@ const packageCard = ({
       </p>
     </div>
     <div class="package-card__bottom">
-      <button class="btn btn-primary w-100">
+      <button class="add-cart-btn btn btn-primary w-100" data-id=${productPackageId}>
         Thêm giỏ hàng
         <i class="bi bi-cart-plus"></i>
       </button>
@@ -48,11 +48,29 @@ const packageCard = ({
   </div>`;
 };
 
+const onAddCartItem = () => {
+	$('#packageList').on('click', '.add-cart-btn', function () {
+		const packageId = Number($(this).attr('data-id'));
+		if (!packageId || isNaN(packageId)) return;
+
+		addToCart(packageId);
+
+		$(this)
+			.removeClass('btn-primary')
+			.addClass('disabled btn-success')
+			.html('Đã thêm <i class="bi bi-cart-check"></i>');
+	});
+};
+
 $(document).ready(function () {
 	const viewMoreBtn = $('#viewMore');
 	const packageList = $('#packageList');
 	const loading = $('#loading');
 	const search = $('#search');
+
+	loadCart();
+	onAddCartItem();
+	checkCartAddedBtn();
 
 	viewMoreBtn.click(async function () {
 		viewMoreBtn.addClass('disabled');
@@ -76,6 +94,8 @@ $(document).ready(function () {
 			packages.forEach((package) => {
 				packageList.append(packageCard(package));
 			});
+
+			checkCartAddedBtn();
 
 			if (page >= Math.ceil(total / pageSize)) {
 				viewMoreBtn.remove();

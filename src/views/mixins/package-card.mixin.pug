@@ -12,4 +12,4 @@ mixin packageCard(packageId, packageName, thumbnail, packagePrice, products)
             li.product-item #[span= product.productName] #[span.text-gray #{helpers.formatCurrency(product.productPrice)} / #{product.productUnit}]
       p.mt-auto.package-card__price #[span.price= packagePrice]
     .package-card__bottom
-      button.btn.btn-primary.w-100 Thêm giỏ hàng #[i.bi.bi-cart-plus]
+      button.btn.btn-primary.w-100.add-cart-btn(data-id=packageId) Thêm giỏ hàng #[i.bi.bi-cart-plus]

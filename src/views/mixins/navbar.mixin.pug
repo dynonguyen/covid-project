@@ -30,5 +30,4 @@ mixin navbar
         .cart-wrap.flex-center
           a(href="/cart")
             i.bi.bi-cart-fill.cart.position-relative
-              if cartTotal
-                span.cart-total= cartTotal
+              span.d-none.cart-total#cartTotal

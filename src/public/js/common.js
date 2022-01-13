@@ -10,6 +10,8 @@ const STATUS_F = {
 	F3: 3,
 };
 
+const CART_KEY = 'cp_cart';
+
 // show & hide toast message
 function showToastMsg(toast, message = 'Message', type = '', timeout = 3000) {
 	if (toast) {

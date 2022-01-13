@@ -70,6 +70,7 @@ app.use(
 	passSidebarStatus,
 	managementRoute
 );
+app.get('/user', (req, res) => res.render('user/home.pug'));
 app.use('/', homeRoute);
 
 // 404 Not found redirect

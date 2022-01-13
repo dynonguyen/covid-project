@@ -16,25 +16,28 @@ block content
       .navbar-break
 
       .container.py-5
-        .product-list
+        .product-list#packageList
           if packages
             each productPackage in packages
               - const { productPackageId, productPackageName, thumbnail, products } = productPackage;
-              - const totalPrice = helpers.totalPrice(products), discount = helpers.randomFakeDiscount(totalPrice);
-              - const badge = discount ? "Khuyến mãi" : "";
+              - const totalPrice = helpers.totalPrice(products);
               +packageCard(
               productPackageId,
               productPackageName,
               thumbnail,
               helpers.formatCurrency(totalPrice),
-              products,
-              badge,
-              discount,
+              products
               )
-        p#viewMore.view-more.mt-5 Xem thêm gói sản phẩm #[i.bi.bi-chevron-double-down]
+
+        .mt-5.flex-center.d-none#loading
+          .spinner-border.mr-3(role="status")
+            span.sr-only Đang tải dữ liệu ...
+          b Đang tải dữ liệu ...
+        #viewMore.view-more.mt-5 Xem thêm gói sản phẩm #[i.bi.bi-chevron-double-down]
     +footer
     +scrollTop
 
 block append script
   script(src="/js/scroll-top.js")
+  script(src="/js/helpers/utils.js")
   script(src="/js/user/home.js")

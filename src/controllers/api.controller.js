@@ -1,3 +1,4 @@
+const { getPackageList } = require('../helpers/index.helpers');
 const District = require('../models/district.model');
 const IsolationFacility = require('../models/isolation-facility.model');
 const Province = require('../models/province.model');
@@ -74,5 +75,18 @@ exports.getAllIsolationFacilities = async (req, res) => {
 	} catch (error) {
 		console.error('Function getAllIsolationFacilities Error: ', error);
 		return res.status(200).json([]);
+	}
+};
+
+exports.getProductPackages = async (req, res) => {
+	let { page = 1, pageSize = 12 } = req.query;
+	[page, pageSize] = [Number(page), Number(pageSize)];
+
+	try {
+		const packages = await getPackageList(page, pageSize);
+		return res.status(200).json(packages);
+	} catch (error) {
+		console.error('Function getProductPackages Error: ', error);
+		return res.status(400).json({});
 	}
 };

@@ -1,7 +1,6 @@
 const {
 	formatCurrency,
 	getPackageList,
-	randomFakeDiscount,
 } = require('../../helpers/index.helpers');
 
 exports.getHomePage = async (req, res) => {
@@ -13,7 +12,6 @@ exports.getHomePage = async (req, res) => {
 			packages,
 			helpers: {
 				formatCurrency,
-				randomFakeDiscount,
 				totalPrice: (products = []) =>
 					products.reduce((sum, p) => p.productPrice + sum, 0),
 			},

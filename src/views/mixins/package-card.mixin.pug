@@ -1,20 +1,15 @@
 //- required: link(rel="stylesheet", href="/css/package-card.css")
 //- helpers.formatCurrency
-mixin packageCard(packageId, packageName, thumbnail, packagePrice, products, badge, discount)
+mixin packageCard(packageId, packageName, thumbnail, packagePrice, products)
   .package-card
     a.package-card__top(href=`/user/package/${packageId}`)
       img.thumbnail(src=thumbnail, alt=packageName, onerror="this.onerror=null;this.src='https://res.cloudinary.com/tuan-cloudinary/image/upload/v1642031448/smarket/no-img.png'")
     .package-card__body
-      a.package-card__title(href=`/product/${id}`)= packageName
+      a.package-card__title(href=`/user/package/${packageId}`)= packageName
       if products
         ul.p-0
           each product in products
             li.product-item #[span= product.productName] #[span.text-gray #{helpers.formatCurrency(product.productPrice)} / #{product.productUnit}]
-      .mt-auto
-        if discount
-          p.package-card__discount= helpers.formatCurrency(discount)
-        p.package-card__price #[span.price= packagePrice]
+      p.mt-auto.package-card__price #[span.price= packagePrice]
     .package-card__bottom
       button.btn.btn-primary.w-100 Thêm giỏ hàng #[i.bi.bi-cart-plus]
-    if badge
-      .package-card__badge= badge

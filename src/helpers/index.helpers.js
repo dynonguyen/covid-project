@@ -345,15 +345,6 @@ exports.formatCurrency = (money = 0) => {
 	}).format(money);
 };
 
-exports.randomFakeDiscount = (price = 0) => {
-	const isDiscount = Math.random() > 0.65 ? true : false;
-	if (!isDiscount) {
-		return false;
-	}
-	const rate = ~~(Math.random() * 19 + 1);
-	return Math.round(price + price * (rate / 100));
-};
-
 exports.getPackageList = async (page = 1, pageSize = 12) => {
 	try {
 		const packageAndCount = await ProductPackage.findAndCountAll({

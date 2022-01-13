@@ -93,24 +93,6 @@
 	border-radius: 6px;
 }
 
-.view-more {
-	cursor: pointer;
-	text-align: center;
-	font-weight: 600;
-	font-size: 1.15rem;
-	color: var(--pink);
-	transition: all 0.25s;
-}
-
-.view-more:hover {
-	-webkit-filter: brightness(0.8);
-	filter: brightness(0.8);
-}
-
-.view-more.disabled {
-	color: var(--gray);
-}
-
 @media only screen and (max-width: 420px) {
 	.package-card {
 		max-width: 100%;

@@ -3,6 +3,7 @@ include ../mixins/navbar.mixin.pug
 include ../mixins/footer.mixin.pug
 include ../mixins/package-card.mixin.pug
 include ../mixins/scroll-top.mixin.pug
+include ../mixins/no-result.mixin.pug
 
 block append style
   link(rel="stylesheet", href="/css/user/package-card.css")
@@ -16,8 +17,8 @@ block content
       .navbar-break
 
       .container.py-5
-        .product-list#packageList
-          if packages
+        if packages && packages.length > 0
+          .product-list#packageList
             each productPackage in packages
               - const { productPackageId, productPackageName, thumbnail, products } = productPackage;
               - const totalPrice = helpers.totalPrice(products);
@@ -28,16 +29,21 @@ block content
               helpers.formatCurrency(totalPrice),
               products
               )
+        else
+          +noResult('', '/user')
 
-        .mt-5.flex-center.d-none#loading
-          .spinner-border.mr-3(role="status")
-            span.sr-only Đang tải dữ liệu ...
-          b Đang tải dữ liệu ...
-        #viewMore.view-more.mt-5 Xem thêm gói sản phẩm #[i.bi.bi-chevron-double-down]
+        if packages && packages.length > 0
+          .mt-5.flex-center.d-none#loading
+            .spinner-border.mr-3(role="status")
+              span.sr-only Đang tải dữ liệu ...
+            b Đang tải dữ liệu ...
+          #viewMore.view-more.mt-5 Xem thêm gói sản phẩm #[i.bi.bi-chevron-double-down]
     +footer
     +scrollTop
 
 block append script
   script(src="/js/scroll-top.js")
   script(src="/js/helpers/utils.js")
+  script.
+    const searchKeyword = "#{searchKeyword}";
   script(src="/js/user/home.js")

@@ -6,23 +6,23 @@ const {
 	JWT_SECRET,
 	JWT_AUTHOR,
 } = require('../constants/index.constant');
+const { createPaymentAccount } = require('../payment-api');
+const { db, Op } = require('../configs/db.config');
+const { v4: uuidv4 } = require('uuid');
+const Account = require('../models/account.model');
 const Address = require('../models/address.model');
 const bcrypt = require('bcryptjs');
 const District = require('../models/district.model');
-const Province = require('../models/province.model');
-const Ward = require('../models/ward.model');
-const User = require('../models/user.model');
-const Account = require('../models/account.model');
-const { v4: uuidv4 } = require('uuid');
 const IsolationFacility = require('../models/isolation-facility.model');
-const TreatmentHistory = require('../models/treatment-history.model');
 const jwt = require('jsonwebtoken');
-const { createPaymentAccount } = require('../payment-api');
-const { db } = require('../configs/db.config');
-const ProductPackage = require('../models/product-package.model');
-const ProductInPackage = require('../models/product-in-package.model');
 const Product = require('../models/product.model');
 const ProductImage = require('../models/product-image.model');
+const ProductInPackage = require('../models/product-in-package.model');
+const ProductPackage = require('../models/product-package.model');
+const Province = require('../models/province.model');
+const TreatmentHistory = require('../models/treatment-history.model');
+const User = require('../models/user.model');
+const Ward = require('../models/ward.model');
 
 // Hash password with bcrypt
 exports.hashPassword = (password = '') => {
@@ -345,12 +345,24 @@ exports.formatCurrency = (money = 0) => {
 	}).format(money);
 };
 
-exports.getPackageList = async (page = 1, pageSize = 12) => {
+exports.getPackageList = async (page = 1, pageSize = 12, search = '') => {
 	try {
+		let packageWhere = {};
+		if (search) {
+			packageWhere = {
+				productPackageName: Sequelize.where(
+					Sequelize.fn('LOWER', Sequelize.col('productPackageName')),
+					'LIKE',
+					`%${search.toLowerCase()}%`
+				),
+			};
+		}
+
 		const packageAndCount = await ProductPackage.findAndCountAll({
 			raw: true,
-			limit: pageSize,
+			where: packageWhere,
 			attributes: ['productPackageId', 'productPackageName'],
+			limit: pageSize,
 			offset: (page - 1) * pageSize,
 			order: ['productPackageId'],
 		});

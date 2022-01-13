@@ -79,11 +79,11 @@ exports.getAllIsolationFacilities = async (req, res) => {
 };
 
 exports.getProductPackages = async (req, res) => {
-	let { page = 1, pageSize = 12 } = req.query;
+	let { page = 1, pageSize = 12, keyword = '' } = req.query;
 	[page, pageSize] = [Number(page), Number(pageSize)];
 
 	try {
-		const packages = await getPackageList(page, pageSize);
+		const packages = await getPackageList(page, pageSize, keyword);
 		return res.status(200).json(packages);
 	} catch (error) {
 		console.error('Function getProductPackages Error: ', error);

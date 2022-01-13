@@ -52,13 +52,14 @@ $(document).ready(function () {
 	const viewMoreBtn = $('#viewMore');
 	const packageList = $('#packageList');
 	const loading = $('#loading');
+	const search = $('#search');
 
 	viewMoreBtn.click(async function () {
 		viewMoreBtn.addClass('disabled');
 		loading.removeClass('d-none');
 
 		const apiRes = await fetch(
-			`${PACKAGE_URL}?page=${++page}&pageSize=${pageSize}`,
+			`${PACKAGE_URL}?page=${++page}&pageSize=${pageSize}&keyword=${searchKeyword}`,
 			{
 				headers: {
 					'Content-Type': 'application/json',
@@ -80,5 +81,11 @@ $(document).ready(function () {
 				viewMoreBtn.remove();
 			}
 		}
+	});
+
+	search.click(function () {
+		const keyword = $('#searchInput').val()?.trim();
+		if (!keyword) return;
+		location.href = `${location.pathname}?keyword=${keyword}`;
 	});
 });

@@ -32,7 +32,6 @@ const homeRoute = require('./routes/home.route');
 const initSystemRoute = require('./routes/init-system.route');
 const managementRoute = require('./routes/management/index.route');
 const userRoute = require('./routes/user/index.route');
-const ConsumptionPIP = require('./models/consumption-pip.model');
 
 /* ============== Config =============== */
 app.use(express.static(path.join(__dirname, 'public')));

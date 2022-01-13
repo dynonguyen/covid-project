@@ -9,13 +9,10 @@ mixin navbar
             i.bi.bi-facebook
           a.header-item(href="https://instagram.com", target="_blank")
             i.bi.bi-instagram
-        .header-auth
-          if !user
-            a.header-item(href="/auth/signup") Đăng ký
-            a.header-item(href="/auth/login") Đăng nhập
-          else
+        if user
+          .header-auth
             a.header-item(href="/auth/logout") Đăng xuất
-            a.header-item(href="/customer/" + user.username)= user.username
+            a.header-item(href="/user/info/" + user.username)= user.username
 
       .flex-grow-1.center-vertical.justify-content-between
         //- Logo

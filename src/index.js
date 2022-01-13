@@ -17,18 +17,21 @@ const {
 	authMiddleware,
 	adminAuthorizationMiddleware,
 	mgmtAuthorizationMiddleware,
+	userAuthorizationMiddleware,
 } = require('./middleware/auth.middleware');
 const { passSidebarStatus } = require('./middleware/mgmt-session.middleware');
+const passVariableMiddleware = require('./middleware/pass-variable.middleware');
 
 /* ============== Import routes =============== */
-const authRoute = require('./routes/auth.route');
-const initSystemRoute = require('./routes/init-system.route');
-const homeRoute = require('./routes/home.route');
-const managementRoute = require('./routes/management/index.route');
-const apiRoute = require('./routes/api.route');
 const { MAX } = require('./constants/index.constant');
 const { unlessRoute } = require('./middleware/unless.middleware');
 const adminRoute = require('./routes/admin/index.route');
+const apiRoute = require('./routes/api.route');
+const authRoute = require('./routes/auth.route');
+const homeRoute = require('./routes/home.route');
+const initSystemRoute = require('./routes/init-system.route');
+const managementRoute = require('./routes/management/index.route');
+const userRoute = require('./routes/user/index.route');
 
 /* ============== Config =============== */
 app.use(express.static(path.join(__dirname, 'public')));
@@ -58,6 +61,7 @@ app.use(morgan('tiny'));
 /* ============== Global Middleware =============== */
 app.use(unlessRoute([], checkInitSystemMiddleware));
 app.use(unlessRoute(['/auth', '/init-system'], authMiddleware));
+app.use(unlessRoute([], passVariableMiddleware));
 
 /* ============== Routes =============== */
 app.use('/init-system', initSystemRoute);
@@ -70,14 +74,7 @@ app.use(
 	passSidebarStatus,
 	managementRoute
 );
-const { formatCurrency } = require('./helpers/index.helpers');
-app.get('/user', (req, res) =>
-	res.render('user/home.pug', {
-		helpers: {
-			formatCurrency,
-		},
-	})
-);
+app.use('/user', userAuthorizationMiddleware, userRoute);
 app.use('/', homeRoute);
 
 // 404 Not found redirect

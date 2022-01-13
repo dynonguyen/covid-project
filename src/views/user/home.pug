@@ -1,0 +1,42 @@
+extends ../templates/general.template.pug
+include ../mixins/navbar.mixin.pug
+include ../mixins/footer.mixin.pug
+include ../mixins/product-card.mixin.pug
+include ../mixins/scroll-top.mixin.pug
+
+block append style
+  link(rel="stylesheet", type="text/css", href="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css")
+  link(rel="stylesheet", href="/css/user/product-card.css")
+  link(rel="stylesheet", href="/css/user/home.css")
+
+block content
+  .page-container
+    section.content-wrap
+      +navbar
+      .navbar-break
+
+      .container.py-4
+        //- categories
+        each a in new Array(5).fill(2)
+          .product-list.mt-5
+            h3.product-list__title.d-flex.justify-content-between
+              span Sản phẩm mới
+              a.view-more(href=`/categories/1`) Xem thêm #[i.bi.bi-chevron-double-right]
+            .products-slider
+              each i in new Array(10).fill(0)
+                .px-2
+                  +productCard(
+                  1,
+                  "Nấm mỡ trắng Yoshi tươi hộp 150g",
+                  "https://cdn.tgdd.vn/Products/Images/8779/233788/bhx/nam-mo-trang-hop-150g-202101292221292506_300x300.jpg",
+                  "53.000vnd",
+                  "Kg",
+                  "Khuyến mãi",
+                  "54.000vnd"
+                  )
+    +footer
+    +scrollTop
+
+block append script
+  script(type="text/javascript", src="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js")
+  script(src="/js/user/home.js")

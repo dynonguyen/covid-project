@@ -1,0 +1,14 @@
+//- required: link(rel="stylesheet", href="/css/product-card.css")
+mixin productCard(id, name, thumbnail, price, unit, badge, discount)
+  .product-card
+    a.product-card__top(href=`/product/${id}`)  
+      img.thumbnail(src=thumbnail, alt=name)
+    .product-card__body
+      a.product-card__title(href=`/product/${id}`)= name
+      if discount
+        p.product-card__discount= discount
+      p.product-card__price #[span.price= price]#[span.unit &nbsp;/&nbsp;#{unit}]
+    .product-card__bottom
+      button.btn.btn-primary.w-100 Thêm giỏ hàng #[i.bi.bi-cart-plus]
+    if badge
+      .product-card__badge= badge

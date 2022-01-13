@@ -1,0 +1,17 @@
+mixin scrollTop
+  style.
+    #scrollTop{
+      position: fixed;
+      bottom: 15px;
+      right: 15px;
+      font-size: 2.25rem;
+      cursor: pointer;
+      transition: all 0.25s;
+      color: var(--secondary);
+      z-index: 999;
+    }
+    #scrollTop:hover {
+      transform: scale(1.1);
+    }
+
+  i#scrollTop.bi.bi-arrow-up-circle-fill

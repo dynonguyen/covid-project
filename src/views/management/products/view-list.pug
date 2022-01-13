@@ -54,7 +54,7 @@ block addContent
         each product in products
           - const { productName, price, unit, photos, thumbnail, productId } = product;
           .product-card(data-id=productId)
-            img.card-top(src=thumbnail, alt="Product Photo")
+            img.card-top(src=thumbnail, alt="Product Photo", onerror="this.onerror=null;this.src='https://res.cloudinary.com/tuan-cloudinary/image/upload/v1642031448/smarket/no-img.png'")
             .card-body
               .photos
                 if photos && photos.length > 0

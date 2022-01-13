@@ -70,7 +70,14 @@ app.use(
 	passSidebarStatus,
 	managementRoute
 );
-app.get('/user', (req, res) => res.render('user/home.pug'));
+const { formatCurrency } = require('./helpers/index.helpers');
+app.get('/user', (req, res) =>
+	res.render('user/home.pug', {
+		helpers: {
+			formatCurrency,
+		},
+	})
+);
 app.use('/', homeRoute);
 
 // 404 Not found redirect

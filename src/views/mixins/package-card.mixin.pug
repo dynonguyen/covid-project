@@ -1,0 +1,20 @@
+//- required: link(rel="stylesheet", href="/css/package-card.css")
+//- helpers.formatCurrency
+mixin packageCard(id, name, thumbnail, price, products, badge, discount)
+  .package-card
+    a.package-card__top(href=`/product/${id}`)
+      img.thumbnail(src=thumbnail, alt=name)
+    .package-card__body
+      a.package-card__title(href=`/product/${id}`)= name
+      if products
+        ul.p-0
+          each product in products
+            li.product-item #[span= product.productName] #[span.text-gray #{helpers.formatCurrency(product.price)} / #{product.unit}]
+      .mt-auto
+        if discount
+          p.package-card__discount= discount
+        p.package-card__price #[span.price= price]
+    .package-card__bottom
+      button.btn.btn-primary.w-100 Thêm giỏ hàng #[i.bi.bi-cart-plus]
+    if badge
+      .package-card__badge= badge

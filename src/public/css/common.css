@@ -8,6 +8,7 @@
 	--transition: all ease-in-out 0.35s;
 	--sm-box-shadow: 0 5px 10px -5px rgba(0, 0, 0, 0.2);
 	--text-color: #1e1e1e;
+	--box-radius: 12px;
 }
 
 html,

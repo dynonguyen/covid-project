@@ -1,13 +1,4 @@
 mixin navbar
-  -
-    const navbarMenu = [
-      { label: 'Rau củ sạch', keyword: 'rau củ sạch' },
-      { label: 'Thịt tươi', keyword: 'thịt tươi' },
-      { label: 'Trái cây', keyword: 'trái cây' },
-      { label: 'Nước uống', keyword: 'Nước uống' },
-      { label: 'Gia vị', keyword: 'gia vị' },
-    ]
-
   link(rel="stylesheet", href="/css/user/navbar.css")
   .navbar-wrap
     .container.h-100.d-flex.flex-column
@@ -37,10 +28,6 @@ mixin navbar
           div.searchbar.position-relative
             input.field.w-100.bg-white(type="text", placeholder="Bạn muốn tìm gì ...")
             i.bi.bi-search.field-end-icon
-          ul.menu.center-vertical.mb-0.pl-2.mt-1
-            each menuItem in navbarMenu
-              li.menu-item
-                a(href="?keyword=" + menuItem.keyword)= menuItem.label
 
         //- Cart
         .cart-wrap.flex-center

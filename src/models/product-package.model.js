@@ -32,6 +32,11 @@ const ProductPackage = db.define(
 			allowNull: false,
 			defaultValue: 1,
 		},
+		totalPrice: {
+			type: DataTypes.INTEGER,
+			allowNull: false,
+			defaultValue: 0,
+		},
 	},
 	{ tableName: 'ProductPackage', timestamps: false, initialAutoIncrement: 1 }
 );

@@ -9,18 +9,57 @@ const ProductPackage = require('../../models/product-package.model');
 const Product = require('../../models/product.model');
 
 exports.getHomePage = async (req, res) => {
-	const { keyword = '' } = req.query;
+	let {
+		keyword = '',
+		sortByPrice = -1,
+		sortByName = -1,
+		priceFrom = 0,
+		priceTo = 0,
+	} = req.query;
+
+	sortByName = parseInt(sortByName);
+	if (isNaN(sortByName)) {
+		sortByName = -1;
+	}
+
+	sortByPrice = parseInt(sortByPrice);
+	if (isNaN(sortByPrice)) {
+		sortByPrice = -1;
+	}
+
+	priceFrom = parseInt(priceFrom);
+	if (isNaN(priceFrom)) {
+		priceFrom = 0;
+	}
+
+	priceTo = parseInt(priceTo);
+	if (isNaN(priceTo)) {
+		priceTo = 0;
+	}
+
+	if (priceFrom > priceTo && priceTo !== 0) {
+		[priceFrom, priceTo] = [priceTo, priceFrom];
+	}
+
 	try {
-		const packageData = await getPackageList(1, 12, keyword);
+		const packageData = await getPackageList(1, 12, {
+			keyword,
+			sortByName,
+			sortByPrice,
+			priceFrom,
+			priceTo,
+		});
 		const { packages } = packageData;
 
 		res.render('user/home.pug', {
 			packages,
 			searchKeyword: keyword,
+			sortByPrice,
+			sortByName,
+			priceFrom,
+			priceTo,
 			helpers: {
 				formatCurrency,
-				totalPrice: (products = []) =>
-					products.reduce((sum, p) => p.productPrice + sum, 0),
 			},
 		});
 	} catch (error) {
@@ -87,7 +126,6 @@ exports.getPackageDetail = async (req, res) => {
 		return res.render('./user/package-detail.pug', {
 			package,
 			products,
-			totalPrice: products.reduce((sum, p) => sum + p.productPrice, 0),
 			helpers: {
 				formatCurrency,
 			},

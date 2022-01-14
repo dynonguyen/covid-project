@@ -17,11 +17,43 @@ block content
       .navbar-break
 
       .container.py-5
+        if searchKeyword
+          h5.my-3.text-info Kết quả tìm kiếm cho: #[b.mx-3= searchKeyword] #[i.bi.bi-x-square-fill.text-danger.cur-pointer#destroySearch]
+
+        .d-flex.flex-wrap.my-4.sort-filter.justify-content-center
+          mixin renderOption(name, value, selected)
+            if value == selected
+              option(value=value, selected="selected")= name
+            else
+              option(value=value)= name
+
+          .mb-3.sort
+            label.d-block.pl-2.text-gray Sắp xếp theo giá
+            select#sortByPrice.field
+              +renderOption("Không sắp xếp", -1, sortByPrice)
+              +renderOption("Giảm dần", 0, sortByPrice)
+              +renderOption("Tăng dần", 1, sortByPrice)
+
+          .mb-3.mx-3.mx-lg-5.sort
+            label.d-block.pl-2.text-gray Sắp xếp tên
+            select#sortByName.field
+              +renderOption("Không sắp xếp", -1, sortByName)
+              +renderOption("Giảm dần", 0, sortByName)
+              +renderOption("Tăng dần", 1, sortByName)
+
+          .filter
+            label.pl-2.text-gray Lọc theo giá
+            .d-flex.align-items-center
+              input#priceFrom.field(type="number", min="0", max="1000000000", placeholder="Thấp nhất", value=priceFrom||"")
+              b.mx-2 -
+              input#priceTo.field(type="number", min="0", max="1000000000", placeholder="Cao nhất", value=priceTo||"")
+              button#filterBtn.btn.btn-success.ml-2 Lọc
+              button.btn.btn-danger.ml-2(style="border-radius:8px;height:40px") #[a.text-light(href="/user") Đặt lại]
+
         if packages && packages.length > 0
           .product-list#packageList
             each productPackage in packages
-              - const { productPackageId, productPackageName, thumbnail, products } = productPackage;
-              - const totalPrice = helpers.totalPrice(products);
+              - const { productPackageId, productPackageName, thumbnail, products, totalPrice } = productPackage;
               +packageCard(
               productPackageId,
               productPackageName,
@@ -38,6 +70,7 @@ block content
               span.sr-only Đang tải dữ liệu ...
             b Đang tải dữ liệu ...
           #viewMore.view-more.mt-5 Xem thêm gói sản phẩm #[i.bi.bi-chevron-double-down]
+
     +footer
     +scrollTop
 

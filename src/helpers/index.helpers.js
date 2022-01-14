@@ -346,26 +346,82 @@ exports.formatCurrency = (money = 0) => {
 	}).format(money);
 };
 
-exports.getPackageList = async (page = 1, pageSize = 12, search = '') => {
-	try {
-		let packageWhere = {};
-		if (search) {
-			packageWhere = {
-				productPackageName: Sequelize.where(
-					Sequelize.fn('LOWER', Sequelize.col('productPackageName')),
-					'LIKE',
-					`%${search.toLowerCase()}%`
-				),
+function generateProductPackageQuery(query) {
+	let {
+		keyword = '',
+		sortByName = -1,
+		sortByPrice = -1,
+		priceFrom,
+		priceTo,
+	} = query;
+
+	let result = {};
+	result.where = {};
+	result.order = [];
+
+	if (keyword) {
+		result.where = {
+			productPackageName: Sequelize.where(
+				Sequelize.fn('LOWER', Sequelize.col('productPackageName')),
+				'LIKE',
+				`%${keyword.toLowerCase()}%`
+			),
+		};
+	}
+
+	if (priceFrom && priceTo) {
+		result.where = {
+			...result.where,
+			totalPrice: {
+				[Op.and]: [{ [Op.gte]: priceFrom }, { [Op.lte]: priceTo }],
+			},
+		};
+	} else {
+		if (priceFrom) {
+			result.where = {
+				...result.where,
+				totalPrice: {
+					[Op.gte]: priceFrom,
+				},
 			};
 		}
+		if (priceTo) {
+			result.where = {
+				...result.where,
+				totalPrice: {
+					[Op.lte]: priceTo,
+				},
+			};
+		}
+	}
 
+	if (sortByPrice !== -1) {
+		if (sortByPrice === 0) {
+			result.order.push(['totalPrice', 'DESC']);
+		} else {
+			result.order.push(['totalPrice']);
+		}
+	}
+
+	if (sortByName !== -1) {
+		if (sortByName === 0) {
+			result.order.push(['productPackageName', 'DESC']);
+		} else {
+			result.order.push(['productPackageName']);
+		}
+	}
+
+	return result;
+}
+
+exports.getPackageList = async (page = 1, pageSize = 12, query) => {
+	try {
 		const packageAndCount = await ProductPackage.findAndCountAll({
 			raw: true,
-			where: packageWhere,
-			attributes: ['productPackageId', 'productPackageName'],
+			...generateProductPackageQuery(query),
+			attributes: ['productPackageId', 'productPackageName', 'totalPrice'],
 			limit: pageSize,
 			offset: (page - 1) * pageSize,
-			order: ['productPackageId'],
 		});
 
 		const total = packageAndCount.count;

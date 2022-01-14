@@ -33,21 +33,30 @@ function generateProductQuery(query) {
 		};
 	}
 
-	if (priceFrom) {
+	if (priceFrom && priceTo) {
 		result.where = {
 			...result.where,
 			price: {
-				[Op.gte]: priceFrom,
+				[Op.and]: [{ [Op.gte]: priceFrom }, { [Op.lte]: priceTo }],
 			},
 		};
-	}
-	if (priceTo) {
-		result.where = {
-			...result.where,
-			price: {
-				[Op.lte]: priceTo,
-			},
-		};
+	} else {
+		if (priceFrom) {
+			result.where = {
+				...result.where,
+				price: {
+					[Op.gte]: priceFrom,
+				},
+			};
+		}
+		if (priceTo) {
+			result.where = {
+				...result.where,
+				price: {
+					[Op.lte]: priceTo,
+				},
+			};
+		}
 	}
 
 	if (sortByPrice !== -1) {

@@ -9,7 +9,7 @@ block append style
   link(rel="stylesheet", href="/css/management/product-view-list.css")
   style.
     body {
-      background: #eeeeee;
+      background: #ddd;
     }
     h1 {
       font-size: 1.5rem;
@@ -32,7 +32,7 @@ block content
       .navbar-break
 
       .container.py-5
-        - const { productPackageName, limitedInDay, limitedInWeek, limitedInMonth } = package;
+        - const { productPackageName, limitedInDay, limitedInWeek, limitedInMonth, totalPrice } = package;
         h1.text-uppercase.text-left.mb-4 Chi tiết gói sản phẩm - #{productPackageName}
         .package-info
           p #[span.label Tên gói:] #{productPackageName}

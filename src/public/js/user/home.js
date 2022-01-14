@@ -1,14 +1,15 @@
 const PACKAGE_URL = '/api/packages';
+const ROOT_URL = '/user';
 let page = 1,
 	pageSize = 12;
 
 const packageCard = ({
 	productPackageId,
 	productPackageName,
+	totalPrice,
 	thumbnail,
 	products,
 }) => {
-	const totalPrice = products?.reduce((sum, p) => sum + p.productPrice, 0) || 0;
 	return `
   <div class="package-card">
     <a class="package-card__top" href="/user/package/${productPackageId}">
@@ -98,6 +99,30 @@ const onRemoveCartItem = () => {
 	});
 };
 
+function getQuery(searchBy = searchKeyword) {
+	const sortByPrice = Number($('#sortByPrice').val());
+	const sortByName = Number($('#sortByName').val());
+	let priceFrom = Number($('#priceFrom').val());
+	let priceTo = Number($('#priceTo').val());
+
+	if (priceFrom > priceTo && priceTo !== 0) {
+		[priceFrom, priceTo] = [priceTo, priceFrom];
+	}
+
+	// currentPage & search get from server
+	const searchQuery = searchBy !== '' ? `&search=${searchBy}` : '';
+	const sortByNameQuery = sortByName !== -1 ? `&sortByName=${sortByName}` : '';
+	const sortByPriceQuery =
+		sortByPrice !== -1 ? `&sortByPrice=${sortByPrice}` : '';
+	const priceFromQuery = priceFrom > 0 ? `&priceFrom=${priceFrom}` : '';
+	const priceToQuery = priceTo > 0 ? `&priceTo=${priceTo}` : '';
+
+	let url = `${ROOT_URL}?${searchQuery}${sortByNameQuery}${sortByPriceQuery}${priceFromQuery}${priceToQuery}`;
+	url = url.replace('?&', '?');
+
+	return url[url.length - 1] === '?' ? url.slice(0, url.length - 1) : url;
+}
+
 $(document).ready(function () {
 	const viewMoreBtn = $('#viewMore');
 	const packageList = $('#packageList');
@@ -111,9 +136,11 @@ $(document).ready(function () {
 	viewMoreBtn.click(async function () {
 		viewMoreBtn.addClass('disabled');
 		loading.removeClass('d-none');
+		let query = location.search?.replace('?', '');
+		if (query) query = `&${query}`;
 
 		const apiRes = await fetch(
-			`${PACKAGE_URL}?page=${++page}&pageSize=${pageSize}&keyword=${searchKeyword}`,
+			`${PACKAGE_URL}?page=${++page}&pageSize=${pageSize}${query}`,
 			{
 				headers: {
 					'Content-Type': 'application/json',
@@ -138,4 +165,28 @@ $(document).ready(function () {
 			}
 		}
 	});
+
+	$('#sortByName').change(function () {
+		location.href = getQuery(searchKeyword);
+	});
+
+	$('#sortByPrice').change(function () {
+		location.href = getQuery(searchKeyword);
+	});
+
+	$('#filterBtn').click(function () {
+		const priceTo = Number($('#priceTo').val());
+		const priceFrom = Number($('#priceFrom').val());
+		if (priceTo === 0 && priceFrom === 0) {
+			return;
+		}
+
+		location.href = getQuery(searchKeyword);
+	});
+
+	$('#destroySearch').click(function () {
+		location.href = getQuery('');
+	});
+
+	$('#destroySearch').click(function () {});
 });

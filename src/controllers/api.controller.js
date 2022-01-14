@@ -84,11 +84,48 @@ exports.getAllIsolationFacilities = async (req, res) => {
 };
 
 exports.getProductPackages = async (req, res) => {
-	let { page = 1, pageSize = 12, keyword = '' } = req.query;
+	let {
+		page = 1,
+		pageSize = 12,
+		keyword = '',
+		sortByPrice = -1,
+		sortByName = -1,
+		priceFrom = 0,
+		priceTo = 0,
+	} = req.query;
 	[page, pageSize] = [Number(page), Number(pageSize)];
+	sortByName = parseInt(sortByName);
+	if (isNaN(sortByName)) {
+		sortByName = -1;
+	}
+
+	sortByPrice = parseInt(sortByPrice);
+	if (isNaN(sortByPrice)) {
+		sortByPrice = -1;
+	}
+
+	priceFrom = parseInt(priceFrom);
+	if (isNaN(priceFrom)) {
+		priceFrom = 0;
+	}
+
+	priceTo = parseInt(priceTo);
+	if (isNaN(priceTo)) {
+		priceTo = 0;
+	}
+
+	if (priceFrom > priceTo && priceTo !== 0) {
+		[priceFrom, priceTo] = [priceTo, priceFrom];
+	}
 
 	try {
-		const packages = await getPackageList(page, pageSize, keyword);
+		const packages = await getPackageList(page, pageSize, {
+			keyword,
+			sortByName,
+			sortByPrice,
+			priceFrom,
+			priceTo,
+		});
 		return res.status(200).json(packages);
 	} catch (error) {
 		console.error('Function getProductPackages Error: ', error);

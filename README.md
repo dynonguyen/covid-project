@@ -202,7 +202,7 @@
 - Chỉ cho thay đổi mật khẩu (quy trình hợp lý)
 - Liên kết sang Hệ thống thanh toán để nạp tiền
 
-#### 1.4.3 Chọn mua gói Nhu yếu phẩm `(Phúc)`
+#### 1.4.3 Chọn mua gói Nhu yếu phẩm `(Tuấn)`
 
 - Xem danh sách các gói Nhu yếu phẩm
 - Tìm kiếm, sắp xếp, lọc

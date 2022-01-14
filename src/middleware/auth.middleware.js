@@ -31,7 +31,7 @@ exports.authMiddleware = async (req, res, next) => {
 		// if token invalid -> redirect login
 		if (!account) return res.redirect('/auth/login');
 
-		const user = { accountType, username };
+		const user = { accountType, username, accountId: account.accountId };
 		req.login(user, function (err) {
 			if (err) {
 				return res.redirect('/auth/login');

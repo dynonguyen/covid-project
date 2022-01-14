@@ -48,17 +48,41 @@ const packageCard = ({
   </div>`;
 };
 
+const checkLimitPackage = async (packageId) => {
+	const apiRes = await fetch(
+		`/api/check-limit-package?packageId=${packageId}`,
+		{
+			method: 'GET',
+			headers: {
+				ContentType: 'application/json',
+			},
+		}
+	);
+
+	if (apiRes.status === 200) {
+		return { isSuccess: true };
+	}
+
+	const { msg } = await apiRes.json();
+	return { isSuccess: false, msg };
+};
+
 const onAddCartItem = () => {
-	$('#packageList').on('click', '.add-cart-btn', function () {
+	$('#packageList').on('click', '.add-cart-btn', async function () {
 		const packageId = Number($(this).attr('data-id'));
 		if (!packageId || isNaN(packageId)) return;
 
-		addToCart(packageId);
+		const { isSuccess, msg } = await checkLimitPackage(packageId);
+		if (isSuccess) {
+			addToCart(packageId);
 
-		$(this)
-			.removeClass('btn-primary')
-			.addClass('disabled btn-success')
-			.html('Đã thêm <i class="bi bi-cart-check"></i>');
+			$(this)
+				.removeClass('btn-primary')
+				.addClass('disabled btn-success')
+				.html('Đã thêm <i class="bi bi-cart-check"></i>');
+		} else {
+			return showToastMsg($('#toastMsg'), msg, 'danger');
+		}
 	});
 };
 

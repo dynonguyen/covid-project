@@ -1,6 +1,11 @@
-const { getPackageList } = require('../helpers/index.helpers');
+const {
+	getPackageList,
+	countUserConsumePackage,
+} = require('../helpers/index.helpers');
+const Account = require('../models/account.model');
 const District = require('../models/district.model');
 const IsolationFacility = require('../models/isolation-facility.model');
+const ProductPackage = require('../models/product-package.model');
 const Province = require('../models/province.model');
 const User = require('../models/user.model');
 const Ward = require('../models/ward.model');
@@ -88,5 +93,56 @@ exports.getProductPackages = async (req, res) => {
 	} catch (error) {
 		console.error('Function getProductPackages Error: ', error);
 		return res.status(400).json({});
+	}
+};
+
+exports.getCheckUserLimitPackage = async (req, res) => {
+	const { packageId } = req.query;
+	try {
+		const { userId } = await User.findOne({
+			raw: true,
+			where: { accountId: req.user.accountId },
+			attributes: ['userId'],
+		});
+
+		const { limitedInDay, limitedInWeek, limitedInMonth } =
+			await ProductPackage.findOne({
+				raw: true,
+				where: { productPackageId: packageId },
+				attributes: ['limitedInDay', 'limitedInWeek', 'limitedInMonth'],
+			});
+
+		if (!userId || !limitedInDay) {
+			throw new Error();
+		}
+
+		const { day, week, month } = await countUserConsumePackage(
+			userId,
+			packageId
+		);
+
+		if (day >= limitedInDay) {
+			return res.status(400).json({
+				isSuccess: false,
+				msg: 'Bạn đã đạt giới hạn mua gói này trong ngày',
+			});
+		}
+		if (week >= limitedInWeek) {
+			return res.status(400).json({
+				isSuccess: false,
+				msg: 'Bạn đã đạt giới hạn mua gói này trong tuần',
+			});
+		}
+		if (month >= limitedInMonth) {
+			return res.status(400).json({
+				isSuccess: false,
+				msg: 'Bạn đã đạt giới hạn mua gói này trong tháng',
+			});
+		}
+
+		return res.status(200).json({ isSuccess: true });
+	} catch (error) {
+		console.error('Function getCheckUserLimitPackage Error: ', error);
+		return res.status(400).json({ isSuccess: false, msg: 'Kiểm tra thất bại' });
 	}
 };

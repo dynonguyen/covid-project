@@ -1,11 +1,4 @@
 const { Sequelize } = require('sequelize');
-const {
-	STATUS_F,
-	ACCOUNT_TYPES,
-	MAX,
-	JWT_SECRET,
-	JWT_AUTHOR,
-} = require('../constants/index.constant');
 const { createPaymentAccount } = require('../payment-api');
 const { db, Op } = require('../configs/db.config');
 const { v4: uuidv4 } = require('uuid');
@@ -23,6 +16,14 @@ const Province = require('../models/province.model');
 const TreatmentHistory = require('../models/treatment-history.model');
 const User = require('../models/user.model');
 const Ward = require('../models/ward.model');
+const {
+	STATUS_F,
+	ACCOUNT_TYPES,
+	MAX,
+	JWT_SECRET,
+	JWT_AUTHOR,
+} = require('../constants/index.constant');
+const ConsumptionHistory = require('../models/consumption-history.model');
 
 // Hash password with bcrypt
 exports.hashPassword = (password = '') => {
@@ -419,5 +420,76 @@ exports.getPackageList = async (page = 1, pageSize = 12, search = '') => {
 	} catch (error) {
 		console.log('getPackageList ERROR: ', error);
 		return { total: 0, page, pageSize, packages: [] };
+	}
+};
+
+const getFirstDayOfWeek = () => {
+	const now = new Date();
+	const day = now.getDay() ? now.getDay() - 1 : 6;
+	return new Date(now.getTime() - day * 86_400_000);
+};
+
+exports.countUserConsumePackage = async (userId, productPackageId) => {
+	const startWeek = getFirstDayOfWeek();
+	const date = new Date();
+	const [y, m, d] = [date.getFullYear(), date.getMonth(), date.getDate()];
+	const dateStr = `${y}-${m + 1}-${d}`;
+	const startMonth = new Date(y, m, 1);
+	const endMonth = new Date(y, m + 1, 0);
+
+	try {
+		let countInDay = 0,
+			countInWeek = 0,
+			countInMonth = 0;
+		const promises = [];
+
+		promises.push(
+			ConsumptionHistory.count({
+				where: {
+					userId,
+					productPackageId,
+					buyDate: {
+						[Op.and]: [
+							{ [Op.gte]: new Date(dateStr) },
+							{ [Op.lt]: new Date(new Date(dateStr).getTime() + 8_6400_000) },
+						],
+					},
+				},
+			}).then((count) => (countInDay = count))
+		);
+		promises.push(
+			ConsumptionHistory.count({
+				where: {
+					userId,
+					productPackageId,
+					buyDate: {
+						[Op.and]: [
+							{ [Op.gte]: startWeek },
+							{ [Op.lt]: new Date(new Date(dateStr).getTime() + 8_6400_000) },
+						],
+					},
+				},
+			}).then((count) => (countInWeek = count))
+		);
+		promises.push(
+			ConsumptionHistory.count({
+				where: {
+					userId,
+					productPackageId,
+					buyDate: {
+						[Op.and]: [{ [Op.gte]: startMonth }, { [Op.lt]: endMonth }],
+					},
+				},
+			}).then((count) => (countInMonth = count))
+		);
+
+		await Promise.all(promises);
+		return { day: countInDay, week: countInWeek, month: countInMonth };
+	} catch (error) {
+		return {
+			day: 0,
+			week: 0,
+			month: 0,
+		};
 	}
 };

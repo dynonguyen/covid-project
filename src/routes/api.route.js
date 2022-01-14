@@ -7,5 +7,6 @@ apiRoute.get('/ward/:districtId', apiController.getWardOfDistrict);
 apiRoute.get('/users/statusF/:statusF', apiController.getUserWithStatus);
 apiRoute.get('/iso-facilities', apiController.getAllIsolationFacilities);
 apiRoute.get('/packages', apiController.getProductPackages);
+apiRoute.get('/check-limit-package', apiController.getCheckUserLimitPackage);
 
 module.exports = apiRoute;

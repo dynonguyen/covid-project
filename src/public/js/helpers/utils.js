@@ -37,9 +37,20 @@ const checkCartAddedBtn = () => {
 	const cart = getCart();
 	cart.forEach((id) =>
 		$(`.add-cart-btn[data-id="${id}"]`)
-			.addClass('disabled')
-			.removeClass('btn-primary')
-			.addClass('disabled btn-success')
-			.html('Đã thêm <i class="bi bi-cart-check"></i>')
+			.removeClass('btn-primary add-cart-btn')
+			.addClass('btn-danger remove-cart-btn')
+			.html('Xoá khỏi giỏ hàng <i class="bi bi-cart-dash-fill"></i>')
 	);
+};
+
+const removeCartItem = (packageId) => {
+	const cart = getCart()?.filter((i) => i != packageId);
+	console.log(cart);
+	localStorage.setItem(CART_KEY, JSON.stringify(cart));
+
+	if (cart.length === 0) {
+		$('#cartTotal').addClass('d-none');
+	} else {
+		$('#cartTotal').text(cart.length);
+	}
 };

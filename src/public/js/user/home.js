@@ -41,7 +41,7 @@ const packageCard = ({
     </div>
     <div class="package-card__bottom">
       <button class="add-cart-btn btn btn-primary w-100" data-id=${productPackageId}>
-        Thêm giỏ hàng
+        Thêm vào giỏ hàng
         <i class="bi bi-cart-plus"></i>
       </button>
     </div>
@@ -77,12 +77,24 @@ const onAddCartItem = () => {
 			addToCart(packageId);
 
 			$(this)
-				.removeClass('btn-primary')
-				.addClass('disabled btn-success')
-				.html('Đã thêm <i class="bi bi-cart-check"></i>');
+				.removeClass('btn-primary add-cart-btn')
+				.addClass('btn-danger remove-cart-btn')
+				.html('Xoá khỏi giỏ hàng <i class="bi bi-cart-dash-fill"></i>');
 		} else {
 			return showToastMsg($('#toastMsg'), msg, 'danger');
 		}
+	});
+};
+
+const onRemoveCartItem = () => {
+	$('#packageList').on('click', '.remove-cart-btn', function () {
+		const packageId = Number($(this).attr('data-id'));
+		if (!packageId || isNaN(packageId)) return;
+		$(this)
+			.removeClass('btn-danger remove-cart-btn')
+			.addClass('btn-primary add-cart-btn')
+			.html('Thêm vào giỏ hàng <i class="bi bi-cart-plus-fill"></i>');
+		removeCartItem(packageId);
 	});
 };
 
@@ -93,8 +105,9 @@ $(document).ready(function () {
 	const search = $('#search');
 
 	loadCart();
-	onAddCartItem();
 	checkCartAddedBtn();
+	onAddCartItem();
+	onRemoveCartItem();
 
 	viewMoreBtn.click(async function () {
 		viewMoreBtn.addClass('disabled');

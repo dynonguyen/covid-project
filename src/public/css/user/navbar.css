@@ -6,7 +6,7 @@
 	left: 0;
 	width: 100%;
 	box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16);
-	z-index: 1000;
+	z-index: 3;
 }
 
 .navbar-break {
@@ -166,9 +166,12 @@
 		text-align: right;
 	}
 	.navbar-wrap .logo {
-		width: 8rem;
+		width: 3rem;
 	}
 	.location p {
+		display: none;
+	}
+	.navbar-wrap .logo-name {
 		display: none;
 	}
 }

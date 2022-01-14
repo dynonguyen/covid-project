@@ -102,7 +102,6 @@ $(document).ready(function () {
 	const viewMoreBtn = $('#viewMore');
 	const packageList = $('#packageList');
 	const loading = $('#loading');
-	const search = $('#search');
 
 	loadCart();
 	checkCartAddedBtn();
@@ -138,11 +137,5 @@ $(document).ready(function () {
 				viewMoreBtn.remove();
 			}
 		}
-	});
-
-	search.click(function () {
-		const keyword = $('#searchInput').val()?.trim();
-		if (!keyword) return;
-		location.href = `${location.pathname}?keyword=${keyword}`;
 	});
 });

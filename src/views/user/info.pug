@@ -1,4 +1,27 @@
 extends ../templates/user-info.template.pug
 
+block append style
+  style.
+    span.label {
+      color: var(--dark);
+      font-weight: 500;
+      text-transform: capitalize;
+    }
+    .account-info p {
+      font-size: 1.15rem;
+      letter-spacing: 0.5px;
+    }
+
 block addContent
   h1.user-info-title Thông tin tài khoản
+  .account-info
+    p #[span.label Họ tên:] #[span Nguyễn Văn A]
+    p #[span.label username:] #[span= user.username]
+    p #[span.label CMND/CCCD:] #[span 6810284721]
+    p #[span.label Ngày sinh:] #[span 19-10-1998]
+    p #[span.label Địa chỉ:] #[span Số 167/198, đường Thiên Hộ Dương, phường 15, huyện Bình Chánh, quận 2, TP.HCM]
+    p #[span.label username người quản lý:] #[span manager]
+    p #[span.label Trạng thái bệnh:] #[span F0]
+
+
+

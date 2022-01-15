@@ -52,4 +52,29 @@ body {
 	color: var(--gray-dark);
 	font-weight: bold;
 	margin-bottom: 14px;
+	position: relative;
+	padding-top: 8px;
+}
+
+.user-info-title::before {
+	content: '';
+	position: absolute;
+	top: -5px;
+	left: 0;
+	height: 5px;
+	width: 120px;
+	background-color: var(--info);
+	border-radius: 25px;
+}
+
+@media only screen and (max-width: 768px) {
+	html {
+		font-size: 80%;
+	}
+}
+
+@media only screen and (max-width: 480px) {
+	html {
+		font-size: 70%;
+	}
 }

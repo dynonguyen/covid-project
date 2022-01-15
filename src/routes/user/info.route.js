@@ -10,5 +10,6 @@ userInfoRoute.get(
 	'/consumption-history',
 	userInfoController.getConsumptionHistory
 );
+userInfoRoute.get('/payment-history', userInfoController.getPaymentHistory);
 
 module.exports = userInfoRoute;

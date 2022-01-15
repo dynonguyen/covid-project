@@ -24,3 +24,12 @@ exports.getConsumptionHistory = async (req, res) => {
 		return res.render('404');
 	}
 };
+
+exports.getPaymentHistory = async (req, res) => {
+	try {
+		return res.render('./user/payment-history.pug');
+	} catch (error) {
+		console.error('Function getPaymentHistory Error: ', error);
+		return res.render('404');
+	}
+};

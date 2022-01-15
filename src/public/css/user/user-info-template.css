@@ -24,6 +24,10 @@ body {
 	margin-bottom: 18px;
 }
 
+.sidebar-item:last-child {
+	margin-bottom: 0;
+}
+
 .sidebar-item * {
 	color: var(--gray-dark);
 }

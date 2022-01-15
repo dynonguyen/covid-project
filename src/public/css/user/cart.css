@@ -1,0 +1,100 @@
+body {
+	background-color: #e5e5e5;
+}
+
+.cart-header {
+	text-transform: uppercase;
+	color: var(--gray-dark);
+	font-size: 1.25rem;
+	font-weight: bold;
+	padding-bottom: 4px;
+	border-bottom: solid 3px var(--gray-dark);
+	margin-bottom: 1.2rem;
+}
+
+.package-box {
+	padding: 1.2rem;
+	border-radius: 8px;
+	background-color: #fff;
+	margin-bottom: 1.25rem;
+	box-shadow: var(--sm-box-shadow);
+}
+
+.package-name {
+	color: var(--info);
+	font-size: 1.2rem;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.total-price {
+	color: var(--danger);
+	font-size: 1.2rem;
+	letter-spacing: 0.75px;
+	font-weight: bold;
+	margin: 0.75rem 0;
+}
+
+.product {
+	font-size: 1rem;
+	color: var(--gray);
+	flex-wrap: wrap;
+	margin-bottom: 0.5rem;
+	padding-top: 0.5rem;
+	border-bottom: solid 1px #ddd;
+}
+
+.product-name {
+	margin-right: 0.9rem;
+	font-weight: 500;
+	color: var(--gray-dark);
+}
+
+.product-price {
+	color: var(--danger);
+	font-size: 1.15rem;
+}
+
+.product-unit {
+	font-size: 0.85rem;
+}
+
+.quantity-icon {
+	font-size: 1.2rem;
+	color: #fff;
+	background-color: var(--gray);
+	border-radius: 50%;
+	height: 22px;
+	width: 22px;
+	line-height: 1.25rem;
+	text-align: center;
+	cursor: pointer;
+	transition: all 0.25s;
+}
+
+.quantity-icon:hover {
+	background-color: var(--danger);
+}
+
+.payment .label {
+	font-size: 1rem;
+	text-transform: capitalize;
+	color: var(--gray-dark);
+}
+
+.payment .content {
+	text-transform: uppercase;
+	font-weight: 500;
+}
+
+#paymentTotal {
+	color: var(--danger);
+	font-weight: bold;
+	font-size: 1.25rem;
+	letter-spacing: 1px;
+}
+
+.payment-btn {
+	border-radius: 0;
+	text-transform: uppercase;
+}

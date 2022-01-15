@@ -135,3 +135,63 @@ exports.getPackageDetail = async (req, res) => {
 		return res.render('404');
 	}
 };
+
+exports.getCart = async (req, res) => {
+	const cart = JSON.parse(req.cookies.cart) || [];
+
+	try {
+		const packages = [];
+		const packagePromises = [];
+		const productPromises = [];
+
+		cart.forEach((packageId) => {
+			packagePromises.push(
+				ProductPackage.findOne({
+					raw: true,
+					where: { productPackageId: packageId },
+				}).then((package) => {
+					productPromises.push(
+						ProductInPackage.findAll({
+							raw: true,
+							where: {
+								productPackageId: packageId,
+							},
+							attributes: [
+								'maxQuantity',
+								[Sequelize.col('Product.productName'), 'productName'],
+								[Sequelize.col('Product.price'), 'productPrice'],
+								[Sequelize.col('Product.unit'), 'productUnit'],
+							],
+							include: {
+								model: Product,
+								attributes: [],
+							},
+						}).then((products) => {
+							package.products = products;
+							packages.push(package);
+						})
+					);
+				})
+			);
+		});
+
+		await Promise.all(packagePromises);
+		await Promise.all(productPromises);
+
+		return res.render('./user/cart.pug', {
+			packages,
+			paymentTotal: packages.reduce((sum, p) => sum + p.totalPrice, 0),
+			helpers: {
+				formatCurrency,
+			},
+		});
+	} catch (error) {
+		console.error('Function getCart Error: ', error);
+		return res.render('./user/cart.pug', {
+			packages: [],
+			helpers: {
+				formatCurrency,
+			},
+		});
+	}
+};

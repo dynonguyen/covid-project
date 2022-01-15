@@ -226,3 +226,19 @@ h1.title {
 	font-weight: 600;
 	text-transform: uppercase;
 }
+
+.page-container {
+	position: relative;
+	min-height: calc(100vh - 8rem);
+}
+
+.footer {
+	position: absolute;
+	bottom: 0;
+	width: 100%;
+	height: 14rem;
+}
+
+.content-wrap {
+	padding-bottom: 14rem;
+}

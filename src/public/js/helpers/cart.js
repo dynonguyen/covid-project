@@ -1,3 +1,10 @@
+function setCookie(name, value, expDay) {
+	const d = new Date();
+	d.setTime(d.getTime() + expDay * 24 * 60 * 60 * 1000);
+	let expires = 'expires=' + d.toUTCString();
+	document.cookie = name + '=' + value + ';' + expires + ';path=/';
+}
+
 const getCart = () => {
 	const cart = JSON.parse(localStorage.getItem(CART_KEY)) || [];
 	return cart;
@@ -15,6 +22,7 @@ const addToCart = (packageId) => {
 	if (!isExist) {
 		cart.push(packageId);
 		localStorage.setItem(CART_KEY, JSON.stringify(cart));
+		setCookie('cart', JSON.stringify(cart), 1);
 		$('#cartTotal').removeClass('d-none').text(cart.length);
 	}
 };
@@ -38,8 +46,8 @@ const checkCartAddedBtn = () => {
 
 const removeCartItem = (packageId) => {
 	const cart = getCart()?.filter((i) => i != packageId);
-	console.log(cart);
 	localStorage.setItem(CART_KEY, JSON.stringify(cart));
+	setCookie('cart', JSON.stringify(cart), 1);
 
 	if (cart.length === 0) {
 		$('#cartTotal').addClass('d-none');

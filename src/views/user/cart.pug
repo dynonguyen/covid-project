@@ -1,0 +1,74 @@
+extends ../templates/general.template.pug
+include ../mixins/navbar.mixin.pug
+include ../mixins/footer.mixin.pug
+include ../mixins/package-card.mixin.pug
+include ../mixins/scroll-top.mixin.pug
+include ../mixins/no-result.mixin.pug
+
+block append style
+  link(rel="stylesheet", href="/css/user/cart.css")
+
+block content
+  .toast-msg#toastMsg
+  .page-container
+    section.content-wrap
+      +navbar
+      .navbar-break
+
+      .container.py-4
+        h1.title.mb-4 Giỏ hàng của bạn
+        if packages && packages.length > 0
+          .row
+            .col.col-12.col-md-8
+              h3.cart-header Tổng cộng #{packages.length} sản phẩm
+              each pack in packages
+                - const { productPackageName, productPackageId, totalPrice, products } = pack;
+                .package-box
+                  h4.package-name= productPackageName
+                  .total-price= helpers.formatCurrency(totalPrice)
+                  each product in products
+                    - const { productName, productId, productUnit, productPrice, maxQuantity } = product;
+                    .center-vertical.justify-content-between.product
+                      .flex-grow-1
+                        span.product-name= productName
+                        span.product-price= helpers.formatCurrency(productPrice)
+                        span.product-unit= ` / ${productUnit}`
+                      if maxQuantity > 1
+                        .d-flex
+                          span.quantity-icon.minus -
+                          span.quantity.ml-2.mr-4 Tối đa: #{maxQuantity}
+                          span.mr-2 số lượng: 1
+                          span.quantity-icon.plus +
+                  .text-right.mt-3
+                    button.btn.btn-danger Xoá #[i.bi.bi-trash-fill]
+            .col.col-12.col-md-4
+              h3.cart-header Thanh toán
+              .package-box.payment
+                .flex-center-between.mb-2
+                  .label Tồng số gói
+                  .content= packages.length
+                .flex-center-between
+                  .label Chi phí vận chuyển
+                  .content Miễn phí
+                .my-3(style="border-top:solid 1px #ddd")
+                .flex-center-between
+                  .label Tổng phí
+                  .content#paymentTotal #{helpers.formatCurrency(paymentTotal)}
+                button.btn.btn-primary.w-100.mt-3.payment-btn#paymentBtn Thanh toán #[i.bi.bi-credit-card-fill.ml-2]
+
+        else
+          .text-center.mt-4
+            p.text-gray Bạn chưa có sản phẩm nào trong giỏ hàng
+            button.btn.btn-success #[a.text-light(href="/user") Quay lại]
+
+      +footer
+    +scrollTop
+
+block append script
+  script(src="/js/scroll-top.js")
+  script(src="/js/helpers/utils.js")
+  script(src="/js/helpers/cart.js")
+  script.
+    const searchKeyword = "#{searchKeyword}";
+  script(src="/js/user/search.js")
+  script(src="/js/user/cart.js")

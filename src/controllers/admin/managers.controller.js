@@ -17,7 +17,7 @@ exports.getManagerList = async (req, res) => {
 		const managers = await Account.findAndCountAll({
 			raw: true,
 			order,
-			attributes: ['username', 'isLocked', 'failedLoginTime'],
+			attributes: ['accountId', 'username', 'isLocked', 'failedLoginTime'],
 			where: {
 				[Op.and]: [
 					{ accountType: ACCOUNT_TYPES.MANAGER },
@@ -46,5 +46,52 @@ exports.getManagerList = async (req, res) => {
 	} catch (error) {
 		console.error('Function getManagerList Error: ', error);
 		return res.render('404');
+	}
+};
+
+exports.getManager = async (req, res) => {
+	const { accountId } = req.params;
+	if (!accountId)
+		return res.status(404).json({ message: 'Không tìm thấy người quản lý' });
+
+	try {
+		const manager = await Account.findOne({
+			raw: true,
+			attributes: ['username', 'isLocked', 'accountType', 'failedLoginTime'],
+			where: { accountId },
+			include: [{ model: Account, attributes: [] }],
+		});
+
+		if (!manager)
+			return res.status(404).json({ message: 'Không tìm thấy người quản lý' });
+
+		return res.status(200).json(manager);
+	} catch (error) {
+		console.error('Function getManager Error: ', error);
+		return res.status(404).json({ message: 'Không tìm thấy người quản lý' });
+	}
+};
+
+exports.putUpdateIsLocked = async (req, res) => {
+	let { accountId, newIsLocked } = req.body;
+	console.log('AccountId', accountId);
+	try {
+		const manager = await Account.findOne({
+			raw: true,
+			where: { accountId },
+		});
+		if (!manager) {
+			return res
+				.status(400)
+				.json({ msg: 'Tài khoản người quản lý không tồn tại' });
+		}
+
+		// update the account lock status
+		await Account.update({ isLocked: newIsLocked }, { where: { accountId } });
+
+		return res.status(200).json({});
+	} catch (error) {
+		console.error('Function putUpdateIsLocked Error: ', error);
+		return res.status(400).json({ msg: 'Cập nhật thất bại !' });
 	}
 };

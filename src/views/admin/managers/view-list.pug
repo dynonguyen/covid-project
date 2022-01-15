@@ -32,14 +32,49 @@ block addContent
           each manager in managerList
             tr
               td= manager.username
+                if manager.isLocked
+                  i.bi.bi-lock-fill.ml-2(style="color: var(--danger);")
               td= manager.isLocked
               td= manager.failedLoginTime
               td.text-center
-                i.mgmt-icon.edit-icon.bi.bi-pencil-fill.px-2()
-                i.mgmt-icon.info-icon.bi.bi-info-circle-fill.px-2()
+                i.mgmt-icon.edit-icon.bi.bi-pencil-fill.px-2(data-id=manager.accountId, data-locked=manager.isLocked ? "1": "0")
+                i.mgmt-icon.info-icon.bi.bi-info-circle-fill.px-2(data-id=manager.accountId)
       #pagination
     else
       +noResult('w-80', '/admin/managers/list')
+
+
+  .modal#userModal
+    .modal-dialog.modal-dialog-centered.modal-dialog-scrollable.m-0-auto
+      .modal-content
+        .modal-header.bg-info
+          h5.modal-title.text-light.text-capitalize Lịch sử hoạt động
+          button.close(type="button", data-dismiss="modal", aria-label="Close")
+            span.text-light(aria-hidden="true") ×
+        .modal-body
+          #loading.flex-center.py-4.d-none
+            .spinner-border.text-info(role="status")
+              span.sr-only Đang tải dữ liệu ...
+          #userModalBody.
+        .modal-footer
+          button.btn.btn-secondary(type="button", data-dismiss="modal") Đóng
+
+  .modal#editModal
+    .modal-dialog.modal-dialog-centered.modal-dialog-scrollable.m-0-auto
+      .modal-content
+        .modal-header.bg-warning
+          h5.modal-title.text-capitalize Khóa tài khoản
+          button.close(type="button", data-dismiss="modal", aria-label="Close")
+            span(aria-hidden="true") ×
+        .modal-body(style="padding:4rem 2rem")
+          #editModalBody
+            .d-flex.align-items-center
+              label(for="#isLocked").mb-0.mr-2.text-gray.font-weight-bold Khoá tài khoản #[span#currenLocked.font-weight-normal]
+              input#isLocked(type="checkbox", style="width:18px;height:18px")
+
+        .modal-footer
+          button.btn.btn-secondary(type="button", data-dismiss="modal") Đóng
+          button#updateBtn.btn.btn-warning(type="button") Cập nhật
 
   .toast-msg#toastMsg
 

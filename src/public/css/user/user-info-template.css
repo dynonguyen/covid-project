@@ -78,3 +78,9 @@ body {
 		font-size: 70%;
 	}
 }
+
+@media only screen and (max-width: 992px) {
+	.content-wrap .container {
+		max-width: 100%;
+	}
+}

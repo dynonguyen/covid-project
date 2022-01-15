@@ -1,0 +1,18 @@
+extends ../templates/user-info.template.pug
+
+block addContent
+  h1.user-info-title Lịch sử được quản lý
+  table.table.table-striped
+    thead.thead-dark
+      tr
+        th(scope="col") Khu cách ly
+        th(scope="col") Tình trạng
+        th(scope="col") Ngày bắt đầu
+        th(scope="col") Ngày kết thúc
+    tbody
+      each item in new Array(8).fill(1)
+        tr
+          td Khu cách ly quận 5, ĐH Y Dược
+          td F0
+          td 19-12-2021
+          td 25-12-2021

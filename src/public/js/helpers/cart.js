@@ -55,3 +55,8 @@ const removeCartItem = (packageId) => {
 		$('#cartTotal').text(cart.length);
 	}
 };
+
+const removeAllCartItems = () => {
+	localStorage.setItem(CART_KEY, JSON.stringify([]));
+	setCookie('cart', JSON.stringify([]), 1);
+};

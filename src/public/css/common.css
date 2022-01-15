@@ -229,7 +229,8 @@ h1.title {
 
 .page-container {
 	position: relative;
-	min-height: calc(100vh - 8rem);
+	min-height: calc(100vh);
+	overflow-y: hidden;
 }
 
 .footer {

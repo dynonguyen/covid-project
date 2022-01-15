@@ -20,33 +20,36 @@ block content
         if packages && packages.length > 0
           .row
             .col.col-12.col-md-8
-              h3.cart-header Tổng cộng #{packages.length} sản phẩm
+              h3.cart-header.flex-center-between
+                span Tổng cộng #[span#totalPackage.total-package(data-total=packages.length)= packages.length] sản phẩm
+                b.text-danger.cur-pointer#removeAll Xoá hết
               each pack in packages
                 - const { productPackageName, productPackageId, totalPrice, products } = pack;
-                .package-box
+                .package-box(data-id=productPackageId)
                   h4.package-name= productPackageName
-                  .total-price= helpers.formatCurrency(totalPrice)
+                  .total-price(data-price=totalPrice)= helpers.formatCurrency(totalPrice)
                   each product in products
-                    - const { productName, productId, productUnit, productPrice, maxQuantity } = product;
+                    - const { productName, productUnit, productPrice, maxQuantity, productInPackageId } = product;
                     .center-vertical.justify-content-between.product
                       .flex-grow-1
                         span.product-name= productName
                         span.product-price= helpers.formatCurrency(productPrice)
                         span.product-unit= ` / ${productUnit}`
                       if maxQuantity > 1
-                        .d-flex
-                          span.quantity-icon.minus -
-                          span.quantity.ml-2.mr-4 Tối đa: #{maxQuantity}
-                          span.mr-2 số lượng: 1
-                          span.quantity-icon.plus +
+                        .flex-center-between.flex-shrink-0(style="flex-basis: 16.5rem")
+                          span.quantity-icon.d-none.minus(data-id=productInPackageId, data-package-id=productPackageId) -
+                          .flex-grow-1.text-center
+                            span.ml-2.mr-4 Tối đa: #{maxQuantity}
+                            span.mr-2 số lượng: #[span.quantity(data-id=productInPackageId) 1]
+                          span.quantity-icon.plus(data-id=productInPackageId, data-package-id=productPackageId) +
                   .text-right.mt-3
-                    button.btn.btn-danger Xoá #[i.bi.bi-trash-fill]
+                    button.btn.btn-danger.remove-package(data-id=productPackageId) Xoá #[i.bi.bi-trash-fill]
             .col.col-12.col-md-4
               h3.cart-header Thanh toán
               .package-box.payment
                 .flex-center-between.mb-2
                   .label Tồng số gói
-                  .content= packages.length
+                  .content #[span.total-package= packages.length]
                 .flex-center-between
                   .label Chi phí vận chuyển
                   .content Miễn phí
@@ -70,5 +73,9 @@ block append script
   script(src="/js/helpers/cart.js")
   script.
     const searchKeyword = "#{searchKeyword}";
+    let paymentTotal = Number("#{paymentTotal}");
+    const packagesStr = "#{packagesStr}";
+    let packages = JSON.parse(packagesStr.replace(new RegExp('&quot;', 'g'), '"'));
+    if(isNaN(paymentTotal)) paymentTotal = 0;
   script(src="/js/user/search.js")
   script(src="/js/user/cart.js")

@@ -11,5 +11,7 @@ userInfoRoute.get(
 	userInfoController.getConsumptionHistory
 );
 userInfoRoute.get('/payment-history', userInfoController.getPaymentHistory);
+userInfoRoute.get('/change-password', userInfoController.getChangePassword);
 
+userInfoRoute.post('/change-password', userInfoController.postChangePassword);
 module.exports = userInfoRoute;

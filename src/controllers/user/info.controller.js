@@ -33,3 +33,17 @@ exports.getPaymentHistory = async (req, res) => {
 		return res.render('404');
 	}
 };
+
+exports.getChangePassword = (req, res) => {
+	return res.render('./user/change-password.pug');
+};
+
+exports.postChangePassword = async (req, res) => {
+	const { oldPassword, newPassword } = req.body;
+	console.log(req.user.accountId, oldPassword, newPassword);
+	try {
+	} catch (error) {
+		console.error('Function putChangePassword Error: ', error);
+		return res.render('404');
+	}
+};

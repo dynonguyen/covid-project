@@ -1,0 +1,19 @@
+extends ../templates/user-info.template.pug
+
+block addContent
+  h1.user-info-title Lịch sử tiêu thụ gói nhu yếu phẩm
+  .table-wrap
+    table.table.table-striped
+      thead.thead-dark
+        tr
+          th(scope="col") #
+          th(scope="col") Tên gói
+          th(scope="col") Ngày mua
+          th(scope="col") Tổng giá
+      tbody
+        each item, index in new Array(50).fill(1)
+          tr
+            td= index
+            td #[a(href="/user/package/8")] Gói sản phẩm #{index}
+            td 25-12-2021
+            td 254.000 đ

@@ -15,3 +15,12 @@ exports.getManagementHistory = async (req, res) => {
 		return res.render('404');
 	}
 };
+
+exports.getConsumptionHistory = async (req, res) => {
+	try {
+		return res.render('./user/consumption-history.pug');
+	} catch (error) {
+		console.error('Function getConsumptionHistory Error: ', error);
+		return res.render('404');
+	}
+};

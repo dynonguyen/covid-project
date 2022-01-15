@@ -10,7 +10,7 @@ body {
 	background-color: #fff;
 	box-shadow: var(--sm-box-shadow);
 	border-radius: 12px;
-	padding: 1.25rem;
+	padding: 1.75rem 1.5rem;
 }
 
 .menu {
@@ -65,6 +65,18 @@ body {
 	width: 120px;
 	background-color: var(--info);
 	border-radius: 25px;
+}
+
+.table-wrap {
+	max-height: 450px;
+	overflow-y: auto;
+	position: relative;
+}
+
+.table-wrap thead {
+	position: -webkit-sticky;
+	position: sticky;
+	top: -1px;
 }
 
 @media only screen and (max-width: 768px) {

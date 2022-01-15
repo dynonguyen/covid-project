@@ -6,5 +6,9 @@ userInfoRoute.get(
 	'/management-history',
 	userInfoController.getManagementHistory
 );
+userInfoRoute.get(
+	'/consumption-history',
+	userInfoController.getConsumptionHistory
+);
 
 module.exports = userInfoRoute;

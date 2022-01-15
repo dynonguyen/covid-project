@@ -1,0 +1,55 @@
+body {
+	background-color: #e5e5e5;
+}
+
+.sidebar {
+	margin-bottom: 24px;
+}
+
+.box {
+	background-color: #fff;
+	box-shadow: var(--sm-box-shadow);
+	border-radius: 12px;
+	padding: 1.25rem;
+}
+
+.menu {
+	padding: 0;
+	margin: 0;
+}
+
+.sidebar-item {
+	list-style: none;
+	font-size: 1.15rem;
+	margin-bottom: 18px;
+}
+
+.sidebar-item * {
+	color: var(--gray-dark);
+}
+
+.sidebar-item i {
+	margin-right: 12px;
+}
+
+.sidebar-item.active * {
+	color: var(--primary);
+	font-weight: bold;
+}
+
+.sidebar-item a {
+	transition: all 0.25s;
+}
+
+.sidebar-item a:hover {
+	letter-spacing: 1px;
+	color: var(--primary);
+}
+
+.user-info-title {
+	text-transform: uppercase;
+	font-size: 1.35rem;
+	color: var(--gray-dark);
+	font-weight: bold;
+	margin-bottom: 14px;
+}

@@ -98,3 +98,9 @@ body {
 	border-radius: 0;
 	text-transform: uppercase;
 }
+
+@media only screen and (max-width: 480px) {
+	html {
+		font-size: 70%;
+	}
+}

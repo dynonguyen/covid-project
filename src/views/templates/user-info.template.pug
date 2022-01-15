@@ -1,0 +1,60 @@
+extends ./general.template.pug
+include ../mixins/navbar.mixin.pug
+include ../mixins/footer.mixin.pug
+include ../mixins/package-card.mixin.pug
+include ../mixins/scroll-top.mixin.pug
+include ../mixins/no-result.mixin.pug
+
+block append style
+  link(rel="stylesheet", href="/css/user/user-info-template.css")
+
+block content
+  .toast-msg#toastMsg
+  .page-container
+    section.content-wrap
+      +navbar
+      .navbar-break
+
+      .container.py-5
+        .row
+          .col.col-12.col-md-4
+            .sidebar.box
+              ul.menu
+                li.sidebar-item
+                  i.bi.bi-person-circle
+                  a(href="/user/info") Thông tin tài khoản
+                li.sidebar-item
+                  i.bi.bi-person-badge-fill
+                  a(href="/user/info/management") Lịch sử được quản lý
+                li.sidebar-item
+                  i.bi.bi-box
+                  a(href="/user/info/consumption") Lịch sử tiêu thụ
+                li.sidebar-item
+                  i.bi.bi-currency-dollar
+                  a(href="/user/info/debit") Xem dư nợ
+                li.sidebar-item
+                  i.bi.bi-credit-card-fill
+                  a(href="/user/info/payment-history") Lịch sử thanh toán
+                li.sidebar-item
+                  i.bi.bi-key-fill
+                  a(href="/user/info/change-password") Thay đổi mật khẩu
+                li.sidebar-item
+                  i.bi.bi-bell-fill
+                  a(href="/user/info/notification") Thông báo
+
+          .col.col-12.col-md-8
+            .box
+              block addContent
+
+      +footer
+      +scrollTop
+
+block append script
+  script(src="/js/scroll-top.js")
+  script(src="/js/helpers/utils.js")
+  script(src="/js/helpers/cart.js")
+  script.
+    const searchKeyword = "#{searchKeyword}";
+  script(src="/js/user/search.js")
+  script(src="/js/user-info-template.js")
+  block addScript

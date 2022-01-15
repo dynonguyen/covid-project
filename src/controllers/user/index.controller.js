@@ -158,6 +158,8 @@ exports.getCart = async (req, res) => {
 							},
 							attributes: [
 								'maxQuantity',
+								'productInPackageId',
+								'productId',
 								[Sequelize.col('Product.productName'), 'productName'],
 								[Sequelize.col('Product.price'), 'productPrice'],
 								[Sequelize.col('Product.unit'), 'productUnit'],
@@ -181,6 +183,7 @@ exports.getCart = async (req, res) => {
 		return res.render('./user/cart.pug', {
 			packages,
 			paymentTotal: packages.reduce((sum, p) => sum + p.totalPrice, 0),
+			packagesStr: JSON.stringify(packages),
 			helpers: {
 				formatCurrency,
 			},
@@ -189,6 +192,7 @@ exports.getCart = async (req, res) => {
 		console.error('Function getCart Error: ', error);
 		return res.render('./user/cart.pug', {
 			packages: [],
+			packagesStr: '[]',
 			helpers: {
 				formatCurrency,
 			},

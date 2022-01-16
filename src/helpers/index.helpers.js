@@ -259,7 +259,7 @@ exports.createUser = async (user) => {
 					addressId,
 					accountId: account.accountId,
 				},
-				{ transaction: tx }
+				{ transaction: tx, raw: true }
 			);
 
 			// create an account in payment system
@@ -280,7 +280,7 @@ exports.createUser = async (user) => {
 	} catch (error) {
 		console.error('Function newUser Error: ', error);
 		await tx.rollback();
-		return {};
+		throw new Error();
 	}
 };
 

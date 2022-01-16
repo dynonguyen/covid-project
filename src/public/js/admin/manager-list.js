@@ -1,5 +1,37 @@
 const ROOT_URL = '/admin/managers/list';
 
+const renderAccountHistories = (actives) => {
+	if (actives.length === 0) {
+		return '<p class="text-center">Không có lịch sử hoạt động nào</p>';
+	}
+	let tableData = [];
+	for (let i = 0; i < actives.length; ++i) {
+		tableData.push(
+			`<tr>
+				<td>${actives[i].activity}</td>
+				<td>${actives[i].createdDate}</td>
+			</tr>
+      `
+		);
+	}
+
+	return (
+		`
+	  <table class="table table-striped table-light table-bordered w-100">
+	    <thead class="thead-dark">
+	      <tr>
+	        <th scope="col">Hoạt động</th>
+	        <th scope="col">Thời gian</th>
+	      </tr>
+	    </thead>
+	    <tbody> ` +
+		`${tableData}` +
+		`</tbody>
+	  </table>
+	`
+	);
+};
+
 $(document).ready(function () {
 	// pagination
 	const paginationContainer = $('#pagination');
@@ -54,9 +86,8 @@ $(document).ready(function () {
 	});
 
 	$('.info-icon').click(async function () {
-		// const uuid = $(this).attr('data-uuid');
-		// if (!uuid) return;
-
+		const accountId = $(this).attr('data-id');
+		if (!accountId) return;
 		const loading = $('#loading');
 		const modalBody = $('#userModalBody');
 		const modal = $('#userModal');
@@ -66,24 +97,24 @@ $(document).ready(function () {
 		modalBody.empty();
 		modal.fadeIn(200).modal('show');
 
-		// fetch this user by user's uuid
-		// const userRes = await fetch(`/admin/managers/${uuid}`, {
-		// 	method: 'GET',
-		// 	headers: {
-		// 		'Content-Type': 'application/json',
-		// 	},
-		// });
+		const historyRes = await fetch(`/admin/managers/${accountId}`, {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+		});
 
 		loading.addClass('d-none');
 
-		// if (userRes.status === 200) {
-		// 	const user = await userRes.json();
-		// 	modalBody.html(renderUserDetails(user));
-		// } else {
-		// 	modalBody.html(
-		// 		'<div class="alert alert-danger">Lấy dữ liệu thất bại. Thử lại !</div>'
-		// 	);
-		// }
+		if (historyRes.status === 200) {
+			const history = await historyRes.json();
+			console.log(history);
+			modalBody.html(renderAccountHistories(history));
+		} else {
+			modalBody.html(
+				'<div class="alert alert-danger">Lấy dữ liệu thất bại. Thử lại !</div>'
+			);
+		}
 	});
 
 	// show edit user modal

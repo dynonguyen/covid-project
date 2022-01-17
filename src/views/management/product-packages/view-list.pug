@@ -1,105 +1,7 @@
-//- extends ../../templates/management.template.pug
-//- include ../../mixins/no-result.mixin.pug
-
-//- block addStyle
-//-   link(rel="stylesheet", href="/vendors/selectize/selectize.min.css")
-//-   link(rel="stylesheet", href="/css/management/product-package-list.css")
-
-//- block addContent
-//-   .p-4.flex-grow-1
-//-     .search.d-flex.mb-4
-//-       input#searchInput.field.bg-white(type="text", placeholder="Nhập tên gói nhu yếu phẩm")
-//-       button#searchBtn.btn.btn-info #[i.bi.bi-search]
-
-//-     if search
-//-       h5.my-3.text-info Kết quả tìm kiếm cho: #[b.mx-3= search] #[a(href=`/management/product-packages/list?page=${currentPage}`) #[i.bi.bi-x-square-fill.text-danger.cur-pointer#destroySearch]]
-
-//-     if packages && packages.length > 0
-//-       table.table.table-striped.table-light.table-bordered.w-100
-//-         thead.thead-dark
-//-           tr
-//-             th(scope="col")
-//-               .has-icon #[span Tên gói] #[i.bi.sort-icon(data-sort="productPackageName")]
-//-             th(scope="col") Giới hạn SL sản phẩm
-//-             th(scope="col") Giới hạn SL gói/ngày
-//-             th(scope="col") Giới hạn SL gói/tuần
-//-             th(scope="col") Giới hạn SL gói/tháng
-//-             th(scope="col") Hành động
-//-         tbody
-//-           each p in packages
-//-             tr
-//-               td= p.productPackageName
-//-               td= p.limitedProducts
-//-               td= p.limitedInDay
-//-               td= p.limitedInWeek
-//-               td= p.limitedInMonth
-//-               td.text-center
-//-                 i.mgmt-icon.edit-icon.bi.bi-pencil-fill.px-2(data-productPackageId=p.productPackageId ,data-productPackageName=p.productPackageName, data-limitedProducts=p.limitedProducts, data-limitedInDay=p.limitedInDay, data-limitedInWeek=p.limitedInWeek, data-limitedInMonth=p.limitedInMonth)
-//-                 i.mgmt-icon.info-icon.bi.bi-info-circle-fill.px-2(type="button", data-toggle="modal", data-target="#packageModal", data-whatever="#idPackage", data-uuid=p.productPackageId)
-//-       #pagination
-//-     else
-//-       +noResult('w-80', '/management/product-packages/list')
-
-//-     .modal.fade#packageModal(tabindex="-1", aria-labelledby="packageModalLabel", aria-hidden="true")
-//-       .modal-dialog.modal-dialog-centered.modal-dialog-scrollable.m-0-auto
-//-         .modal-content
-//-           .modal-header.bg-info
-//-             h5.modal-title.text-light.text-capitalize Chi tiết gói nhu yếu phẩm
-//-             button.close(type="button", data-dismiss="modal", aria-label="Close")
-//-               span.text-light(aria-hidden="true") ×
-//-           .modal-body
-//-             #loading.flex-center.py-4.d-none
-//-               .spinner-border.text-info(role="status")
-//-                 span.sr-only Đang tải dữ liệu ...
-//-             #packageModalBody
-//-           .modal-footer
-//-             button.btn.btn-secondary(type="button", data-dismiss="modal") Đóng
-
-//-     .modal.fade#editModal
-//-       .modal-dialog.modal-dialog-centered.modal-dialog-scrollable.m-0-auto
-//-         .modal-content
-//-           .modal-header.bg-warning
-//-             h5.modal-title.text-capitalize Cập nhật gói nhu yếu phẩm
-//-             button.close(type="button", data-dismiss="modal", aria-label="Close")
-//-               span(aria-hidden="true") ×
-//-           .modal-body(style="padding:4rem 2rem")
-//-             //- #editModalBody
-//-               //- .spinner-border.text-info(role="status")
-//-               //-   span.sr-only Đang tải dữ liệu ...
-//-             #editModalBody
-//-               label(for="#productPackageName").text-gray.font-weight-bold Tên gói #[span#currentPackageName.font-weight-normal]
-//-               input#newPackageName.form-control(type="text", maxLength="100")
-//-               label(for="#limitedProducts").text-gray.font-weight-bold Giới hạn SL sản phẩm #[span#currentLP.font-weight-normal]
-//-               input#newLP.form-control(type="number", min="1", max="1000")
-//-               label(for="#limitedInDay").text-gray.font-weight-bold Giới hạn SL gói/ngày #[span#currentLID.font-weight-normal]
-//-               input#newLID.form-control(type="number", min="1", max="1000")
-//-               label(for="#limitedInWeek").text-gray.font-weight-bold Giới hạn SL gói/tuần #[span#currentLIW.font-weight-normal]
-//-               input#newLIW.form-control(type="number", min="1",max="1000")
-//-               label(for="#limitedInMonth").text-gray.font-weight-bold Giới hạn số lượng gói/tháng #[span#currentLIM.font-weight-normal]
-//-               input#newLIM.form-control(type="number", min="1", max="1000")
-//-           .modal-footer
-//-             button.btn.btn-secondary(type="button", data-dismiss="modal") Đóng
-//-             button#updateBtn.btn.btn-warning(type="button") Cập nhật
-
-//-   .toast-msg#toastMsg
-//- block addScript
-//-   script.
-//-     const pageSize = parseInt("#{pageSize}");
-//-     const total = parseInt("#{total}");
-//-     const currentPage = parseInt("#{currentPage}");
-//-     const sortListRaw = "#{sortList}";
-//-     const sortList = sortListRaw.length > 0 ? sortListRaw.split(',') : [];
-//-     const search = "#{search}";
-
-//-   script(src="/vendors/selectize/selectize.min.js")
-//-   script(src="/vendors/pagination.min.js")
-//-   script(src="/js/management/product-package-list.js")
-
-
 extends ../../templates/management.template.pug
 include ../../mixins/navbar.mixin.pug
 include ../../mixins/footer.mixin.pug
-include ../../mixins/package-card.mixin.pug
+//- include ../../mixins/package-card.mixin.pug
 include ../../mixins/scroll-top.mixin.pug
 include ../../mixins/no-result.mixin.pug
 
@@ -112,7 +14,6 @@ block append style
 
 block addContent
   .toast-msg#toastMsg
-
 
   .p-4.flex-grow-1
     .search.d-flex.mb-4
@@ -155,13 +56,18 @@ block addContent
       .product-list#packageList
         each productPackage in packages
           - const { productPackageId, productPackageName, thumbnail, products, totalPrice } = productPackage;
-          +packageCard(
-          productPackageId,
-          productPackageName,
-          thumbnail,
-          helpers.formatCurrency(totalPrice),
-          products
-          )
+            .package-card
+              a.package-card__top(href=`/management/product-packages/${productPackageId}`)
+                img.thumbnail(src=thumbnail, alt=packageName, onerror="this.onerror=null;this.src='https://res.cloudinary.com/tuan-cloudinary/image/upload/v1642031448/smarket/no-img.png'")
+              .package-card__body
+                a.package-card__title(href=`/management/product-packages/${productPackageId}`)= productPackageName
+                if products
+                  ul.p-0
+                    each product in products
+                      li.product-item #[span= product.productName] #[span.text-gray #{helpers.formatCurrency(product.productPrice)} / #{product.productUnit}]
+                p.mt-auto.package-card__price #[span.price= packagePrice]
+              .package-card__bottom
+                button.btn.btn-primary.w-100.add-cart-btn.d-none(data-id=packageId) Thêm vào giỏ hàng #[i.bi.bi-cart-plus-fill]
     else
       +noResult('', '/management/product-packages/list')
 
@@ -180,4 +86,4 @@ block append script
   script.
     const searchKeyword = "#{searchKeyword}";
   script(src="/js/user/search.js")
-  //- script(src="/js/management/product-package-list.js")
+  script(src="/js/management/product-package-list.js")

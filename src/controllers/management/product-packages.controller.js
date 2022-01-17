@@ -10,59 +10,9 @@ const { Op } = require('../../configs/db.config');
 const ProductInPackage = require('../../models/product-in-package.model');
 const ProductPackage = require('../../models/product-package.model');
 const Product = require('../../models/product.model');
+const ProductImage = require('../../models/product-image.model');
 
 exports.getProductPackage = async (req, res) => {
-	// try {
-	// 	let { page = 1, sort = '', search = '' } = req.query;
-	// 	const sortList = parseSortStr(sort);
-	// 	const order = sortList.map((i) => i.split(' '));
-
-	// 	page = Number(page);
-	// 	if (isNaN(page) || page < 1) page = 1;
-
-	// 	const where = search
-	// 		? {
-	// 				[Op.or]: [
-	// 					{
-	// 						productPackageName: Sequelize.where(
-	// 							Sequelize.fn('LOWER', Sequelize.col('productPackageName')),
-	// 							'LIKE',
-	// 							`%${search.toLowerCase()}%`
-	// 						),
-	// 					},
-	// 				],
-	// 		  }
-	// 		: {};
-
-	// 	const packagesList = await ProductPackage.findAndCountAll({
-	// 		raw: true,
-	// 		order,
-	// 		attributes: [
-	// 			'productPackageId',
-	// 			'productPackageName',
-	// 			'limitedProducts',
-	// 			'limitedInDay',
-	// 			'limitedInWeek',
-	// 			'limitedInMonth',
-	// 		],
-	// 		where,
-	// 		limit: MAX.PAGE_SIZE,
-	// 		offset: (page - 1) * MAX.PAGE_SIZE,
-	// 	});
-
-	// 	return res.render('./management/product-packages/view-list', {
-	// 		total: packagesList.count,
-	// 		currentPage: page,
-	// 		pageSize: MAX.PAGE_SIZE,
-	// 		packages: packagesList.rows,
-	// 		sortList: sortList.join(','),
-	// 		search,
-	// 	});
-	// } catch (error) {
-	// 	console.error('Load product packages list failed: ', error);
-	// 	return res.render('404');
-	// }
-
 	let {
 		keyword = '',
 		sortByPrice = -1,
@@ -123,36 +73,71 @@ exports.getProductPackage = async (req, res) => {
 };
 
 exports.getPackageDetail = async (req, res) => {
+	const { packageId } = req.params;
 	try {
-		const { productPackageId } = req.params;
-		if (!productPackageId)
-			return res
-				.status(404)
-				.json({ message: 'Không tìm thấy gói nhu yếu phẩm' });
+		let package = {},
+			products = [];
+		const promises = [];
+		const productPhotoPromises = [];
 
-		const productInPackage = await ProductInPackage.findAll({
-			raw: true,
-			attributes: [
-				'maxQuantity',
-				[
-					Sequelize.col('ProductPackage.productPackageName'),
-					'productPackageName',
+		promises.push(
+			ProductPackage.findOne({
+				raw: true,
+				where: { productPackageId: packageId },
+				attributes: { exclude: ['productPackageId', 'limitedProducts'] },
+			}).then((data) => (package = { ...data }))
+		);
+
+		promises.push(
+			ProductInPackage.findAll({
+				raw: true,
+				attributes: [
+					'maxQuantity',
+					'productId',
+					[Sequelize.col('Product.productName'), 'productName'],
+					[Sequelize.col('Product.price'), 'productPrice'],
+					[Sequelize.col('Product.unit'), 'productUnit'],
 				],
-				[Sequelize.col('Product.productName'), 'productName'],
-				[Sequelize.col('Product.price'), 'price'],
-				[Sequelize.col('Product.unit'), 'unit'],
-				[Sequelize.col('ProductInPackage.maxQuantity'), 'maxQuantity'],
-			],
-			where: { productPackageId },
-			include: [
-				{ model: ProductPackage, attributes: [] },
-				{ model: Product, attributes: [] },
-			],
-		});
+				where: {
+					productPackageId: packageId,
+				},
+				include: {
+					model: Product,
+					attributes: [],
+				},
+			}).then((data) => {
+				products = [...data];
+				data.forEach((p) =>
+					productPhotoPromises.push(
+						ProductImage.findAll({
+							raw: true,
+							where: { productId: p.productId },
+							attributes: ['src'],
+							order: [['isThumbnail', 'DESC']],
+							limit: 6,
+						}).then((photos) => {
+							p.thumbnail = photos[0];
+							p.photos = [...photos.slice(1).map((i) => i.src)];
+						})
+					)
+				);
+			})
+		);
 
-		return res.status(200).json(productInPackage);
+		console.log('product package id ', req.params);
+
+		await Promise.all(promises);
+		await Promise.all(productPhotoPromises);
+
+		return res.render('./management/product-packages/package-detail.pug', {
+			package,
+			products,
+			helpers: {
+				formatCurrency,
+			},
+		});
 	} catch (error) {
-		console.error('Load product package detail failed: ', error);
+		console.error('Function getPackageDetail Error: ', error);
 		return res.render('404');
 	}
 };

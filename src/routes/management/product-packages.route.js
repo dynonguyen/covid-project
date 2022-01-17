@@ -6,7 +6,7 @@ productPackageMgmtRoute.get(
 	productPackageMgmtController.getProductPackage
 );
 productPackageMgmtRoute.get(
-	'/:productPackageId',
+	'/:packageId',
 	productPackageMgmtController.getPackageDetail
 );
 

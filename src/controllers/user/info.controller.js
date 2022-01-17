@@ -18,6 +18,8 @@ const IsolationFacility = require('../../models/isolation-facility.model');
 const { Sequelize } = require('sequelize');
 const ConsumptionHistory = require('../../models/consumption-history.model');
 const ProductPackage = require('../../models/product-package.model');
+const PaymentHistory = require('../../models/payment-history.model');
+const { PAYMENT_TYPES } = require('../../constants/index.constant');
 
 exports.getUserInfo = async (req, res) => {
 	try {
@@ -130,9 +132,39 @@ exports.getConsumptionHistory = async (req, res) => {
 };
 
 exports.getPaymentHistory = async (req, res) => {
+	const { accountId } = req.user;
 	try {
-		console.log('getPaymentHistory');
-		return res.render('./user/payment-history.pug');
+		const user = await User.findOne({ raw: true, where: { accountId } });
+		const payments = await PaymentHistory.findAll({
+			raw: true,
+			where: { userId: user.userId },
+			attributes: [
+				'paymentCode',
+				'paymentDate',
+				'totalMoney',
+				'paymentType',
+				'currentBalance',
+			],
+		});
+
+		const paymentHistories = payments.map((p) => {
+			const paymentCodeSplit = p.paymentCode.split('-');
+			return {
+				...p,
+				paymentCode: paymentCodeSplit[paymentCodeSplit.length - 1],
+				paymentDate: formatDateToStr(p.paymentDate),
+				totalMoney: formatCurrency(p.totalMoney),
+				currentBalance: formatCurrency(p.currentBalance),
+				content:
+					p.paymentType === PAYMENT_TYPES.SEND_MONEY
+						? 'Nạp tiền vào tài khoản'
+						: 'Mua gói nhu yếu phẩm',
+			};
+		});
+
+		return res.render('./user/payment-history.pug', {
+			paymentHistories,
+		});
 	} catch (error) {
 		console.error('Function getPaymentHistory Error: ', error);
 		return res.render('404');

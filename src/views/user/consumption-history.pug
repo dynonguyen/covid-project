@@ -4,19 +4,22 @@ block title
   title Covid Project | Lịch sử tiêu thụ gói nhu yếu phẩm
 
 block addContent
-  h1.user-info-title Lịch sử tiêu thụ gói nhu yếu phẩm
-  .table-wrap
-    table.table.table-striped
-      thead.thead-dark
-        tr
-          th(scope="col") #
-          th(scope="col") Tên gói
-          th(scope="col") Ngày mua
-          th(scope="col") Tổng giá
-      tbody
-        each item, index in new Array(50).fill(1)
+  h1.user-info-title Lịch sử tiêu thụ gói nhu yếu phẩm (#{consumptionHistories ? consumptionHistories.length : 0})
+  if consumptionHistories && consumptionHistories.length > 0
+    .table-wrap
+      table.table.table-striped
+        thead.thead-dark
           tr
-            td= index
-            td #[a(href="/user/package/8")] Gói sản phẩm #{index}
-            td 25-12-2021
-            td 254.000 đ
+            th(scope="col") #
+            th(scope="col") Tên gói
+            th(scope="col") Ngày mua
+            th(scope="col") Tổng giá
+        tbody
+          each ch, index in consumptionHistories
+            tr
+              td= index
+              td #[a(href="/user/package/" + ch.productPackageId)= ch.productPackageName]
+              td= helpers.formatDateToStr(ch.buyDate)
+              td= helpers.formatCurrency(ch.totalPrice)
+  else
+    p.text-center.text-gray.mb-0 Bạn chưa có bất kỳ hoá đơn mua hàng nào.

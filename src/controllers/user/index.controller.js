@@ -120,8 +120,6 @@ exports.getPackageDetail = async (req, res) => {
 			})
 		);
 
-		console.log('product package id ', req.params);
-
 		await Promise.all(promises);
 		await Promise.all(productPhotoPromises);
 

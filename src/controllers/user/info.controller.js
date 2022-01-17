@@ -16,6 +16,8 @@ const {
 const TreatmentHistory = require('../../models/treatment-history.model');
 const IsolationFacility = require('../../models/isolation-facility.model');
 const { Sequelize } = require('sequelize');
+const ConsumptionHistory = require('../../models/consumption-history.model');
+const ProductPackage = require('../../models/product-package.model');
 
 exports.getUserInfo = async (req, res) => {
 	try {
@@ -93,9 +95,34 @@ exports.getManagementHistory = async (req, res) => {
 };
 
 exports.getConsumptionHistory = async (req, res) => {
+	const { accountId } = req.user;
 	try {
-		console.log('getConsumptionHistory');
-		return res.render('./user/consumption-history.pug');
+		const user = await User.findOne({ raw: true, where: { accountId } });
+		const consumptionHistories = await ConsumptionHistory.findAll({
+			raw: true,
+			where: { userId: user.userId },
+			include: {
+				model: ProductPackage,
+				attributes: [],
+			},
+			attributes: [
+				'totalPrice',
+				'buyDate',
+				[
+					Sequelize.col('ProductPackage.productPackageName'),
+					'productPackageName',
+				],
+				[Sequelize.col('ProductPackage.productPackageId'), 'productPackageId'],
+			],
+		});
+
+		return res.render('./user/consumption-history.pug', {
+			consumptionHistories,
+			helpers: {
+				formatCurrency,
+				formatDateToStr,
+			},
+		});
 	} catch (error) {
 		console.error('Function getConsumptionHistory Error: ', error);
 		return res.render('404');

@@ -4,7 +4,7 @@ block title
   title Covid Project | Lịch sử được quản lý
 
 block addContent
-  h1.user-info-title Lịch sử được quản lý
+  h1.user-info-title Lịch sử được quản lý (#{treatmentHistories ? treatmentHistories.length : 0})
   if treatmentHistories && treatmentHistories.length > 0
     .table-wrap
       table.table.table-striped
@@ -22,4 +22,4 @@ block addContent
               td= helpers.formatDateToStr(th.startDate)
               td= helpers.formatDateToStr(th.endDate)
   else
-    p.text-center.text-gray.mb-0 Bạn mìm thấy ghi nhận quản lý nào.
+    p.text-center.text-gray.mb-0 Bạn không có bất kỳ ghi nhận quản lý nào.

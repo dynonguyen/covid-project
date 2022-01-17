@@ -13,6 +13,9 @@ const {
 	getPaymentLimit,
 	getUserBalance,
 } = require('../../payment-api');
+const TreatmentHistory = require('../../models/treatment-history.model');
+const IsolationFacility = require('../../models/isolation-facility.model');
+const { Sequelize } = require('sequelize');
 
 exports.getUserInfo = async (req, res) => {
 	try {
@@ -54,9 +57,35 @@ exports.getUserInfo = async (req, res) => {
 };
 
 exports.getManagementHistory = async (req, res) => {
+	const { accountId } = req.user;
 	try {
-		console.log('getManagementHistory');
-		return res.render('./user/management-history.pug');
+		const user = await User.findOne({ raw: true, where: { accountId } });
+		const treatmentHistories = await TreatmentHistory.findAll({
+			raw: true,
+			where: {
+				userId: user?.userId,
+			},
+			include: {
+				model: IsolationFacility,
+				attributes: [],
+			},
+			attributes: [
+				'startDate',
+				'endDate',
+				'statusF',
+				[
+					Sequelize.col('IsolationFacility.isolationFacilityName'),
+					'isolationFacilityName',
+				],
+			],
+		});
+		return res.render('./user/management-history.pug', {
+			treatmentHistories,
+			helpers: {
+				formatDateToStr,
+				convertStatusFToStr,
+			},
+		});
 	} catch (error) {
 		console.error('Function getManagementHistory Error: ', error);
 		return res.render('404');

@@ -2,11 +2,11 @@ const {
 	formatCurrency,
 	formatDateToStr,
 	getFirstDayNextMonth,
+	getAddressUser,
+	convertStatusFToStr,
 } = require('../../helpers/index.helpers');
 const User = require('../../models/user.model');
 const Notification = require('../../models/notification.model');
-const Address = require('../../models/address.model');
-const Manager = require('../../models/account.model');
 const Accounts = require('../../models/account.model');
 const {
 	getDebtInfo,
@@ -16,33 +16,37 @@ const {
 
 exports.getUserInfo = async (req, res) => {
 	try {
-    console.log('getUserInformation');
-    const {username} = req.user;
-    const account = await Accounts.findAll({
-      where: {
-        username
-      },
-    })
-    const findUser = await User.findOne({
-      where: {
-        accountId: account[0].accountId
-      }
-    })
-    const address = await Address.findOne({
-      where: {
-        addressId: findUser.addressId
-      }
-    })
-    const manager = await Accounts.findOne({
-      where: {
-        accountId: findUser.managerId
-      }
-    })
-		return res.render('./user/info.pug',{
-      findUser,
-      manager,
-      address
-    });
+		const { accountId, username } = req.user;
+		const user = await User.findOne({
+			raw: true,
+			where: {
+				accountId,
+			},
+			attributes: {
+				exclude: ['userId', 'uuid', 'updatedAt', 'accountId'],
+			},
+		});
+		const address = await getAddressUser(user.addressId);
+		const manager = await Accounts.findOne({
+			raw: true,
+			where: {
+				accountId: user.managerId,
+			},
+			attributes: ['username'],
+		});
+
+		return res.render('./user/info.pug', {
+			userInfo: {
+				...user,
+				username,
+				address,
+				manager: manager?.username || '',
+			},
+			helpers: {
+				formatDateToStr,
+				convertStatusFToStr,
+			},
+		});
 	} catch (error) {
 		console.error('Function getUserInfo Error: ', error);
 		return res.render('404');
@@ -51,7 +55,7 @@ exports.getUserInfo = async (req, res) => {
 
 exports.getManagementHistory = async (req, res) => {
 	try {
-    console.log('getManagementHistory');
+		console.log('getManagementHistory');
 		return res.render('./user/management-history.pug');
 	} catch (error) {
 		console.error('Function getManagementHistory Error: ', error);
@@ -61,7 +65,7 @@ exports.getManagementHistory = async (req, res) => {
 
 exports.getConsumptionHistory = async (req, res) => {
 	try {
-    console.log('getConsumptionHistory');
+		console.log('getConsumptionHistory');
 		return res.render('./user/consumption-history.pug');
 	} catch (error) {
 		console.error('Function getConsumptionHistory Error: ', error);
@@ -71,7 +75,7 @@ exports.getConsumptionHistory = async (req, res) => {
 
 exports.getPaymentHistory = async (req, res) => {
 	try {
-    console.log('getPaymentHistory');
+		console.log('getPaymentHistory');
 		return res.render('./user/payment-history.pug');
 	} catch (error) {
 		console.error('Function getPaymentHistory Error: ', error);

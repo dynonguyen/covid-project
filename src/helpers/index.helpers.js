@@ -54,7 +54,7 @@ exports.convertStatusFToStr = (statusF) => {
  * @param {number} level - result level: 1 - only details, 2 - to ward, 3 - to district, 4 - only province, 5 - district & province, default - full
  * @return {string} result - address fully.
  */
-exports.getAddressUser = async (addressId, level) => {
+exports.getAddressUser = async (addressId, level = 0) => {
 	try {
 		let result = '';
 
@@ -111,6 +111,7 @@ exports.getAddressUser = async (addressId, level) => {
 
 		return result;
 	} catch (error) {
+		console.log('getAddressUser ERROR: ', error);
 		return '';
 	}
 };

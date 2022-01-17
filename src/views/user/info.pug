@@ -18,10 +18,11 @@ block append style
 block addContent
   h1.user-info-title Thông tin tài khoản
   .account-info
-    p #[span.label Họ tên:] #[span= findUser.fullname]
-    p #[span.label username:] #[span= user.username]
-    p #[span.label CMND/CCCD:] #[span=findUser.peopleId]
-    p #[span.label Ngày sinh:] #[span=findUser.DOB]
-    p #[span.label Địa chỉ:] #[span=address.details + " Quận " + address.wardId]
-    p #[span.label username người quản lý:] #[span=manager.username]
-    p #[span.label Trạng thái bệnh:] #[span='F' + findUser.statusF]
+    - const { peopleId, username, fullname, DOB, statusF, createdAt, address, manager } = userInfo
+    p #[span.label Họ tên:] #[span= fullname]
+    p #[span.label username:] #[span= username]
+    p #[span.label CMND/CCCD:] #[span= peopleId]
+    p #[span.label Ngày sinh:] #[span= helpers.formatDateToStr(DOB)]
+    p #[span.label Địa chỉ:] #[span= address]
+    p #[span.label username người quản lý:] #[span=manager]
+    p #[span.label Trạng thái bệnh:] #[span= helpers.convertStatusFToStr(statusF)]

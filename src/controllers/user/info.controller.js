@@ -50,6 +50,7 @@ exports.getUserInfo = async (req, res) => {
 
 exports.getManagementHistory = async (req, res) => {
 	try {
+    console.log('getManagementHistory');
 		return res.render('./user/management-history.pug');
 	} catch (error) {
 		console.error('Function getManagementHistory Error: ', error);

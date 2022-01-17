@@ -2,7 +2,6 @@ const {
 	getPackageList,
 	countUserConsumePackage,
 } = require('../helpers/index.helpers');
-const Account = require('../models/account.model');
 const District = require('../models/district.model');
 const IsolationFacility = require('../models/isolation-facility.model');
 const ProductPackage = require('../models/product-package.model');

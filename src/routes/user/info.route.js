@@ -10,6 +10,7 @@ userInfoRoute.get(
 	'/consumption-history',
 	userInfoController.getConsumptionHistory
 );
+userInfoRoute.get('/debt', userInfoController.getDebt);
 userInfoRoute.get('/payment-history', userInfoController.getPaymentHistory);
 userInfoRoute.get('/change-password', userInfoController.getChangePassword);
 

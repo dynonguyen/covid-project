@@ -549,3 +549,19 @@ exports.countUserConsumePackage = async (userId, productPackageId) => {
 		};
 	}
 };
+
+exports.formatDateToStr = (date) => {
+	const d = new Date(date);
+	const y = d.getFullYear();
+	const mm = `0${d.getMonth() + 1}`.slice(-2);
+	const dd = `0${d.getDate()}`.slice(-2);
+
+	return `${dd}-${mm}-${y}`;
+};
+
+exports.getFirstDayNextMonth = (date = new Date()) => {
+	const now = new Date(date);
+	const m = now.getMonth();
+	const y = now.getFullYear();
+	return new Date(m === 11 ? y + 1 : y, m === 11 ? 0 : m + 1, 1);
+};

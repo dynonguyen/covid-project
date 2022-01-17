@@ -1,3 +1,16 @@
+const {
+	formatCurrency,
+	formatDateToStr,
+	getFirstDayNextMonth,
+} = require('../../helpers/index.helpers');
+const User = require('../../models/user.model');
+const Notification = require('../../models/notification.model');
+const {
+	getDebtInfo,
+	getPaymentLimit,
+	getUserBalance,
+} = require('../../payment-api');
+
 exports.getUserInfo = async (req, res) => {
 	try {
 		return res.render('./user/info.pug');
@@ -30,6 +43,72 @@ exports.getPaymentHistory = async (req, res) => {
 		return res.render('./user/payment-history.pug');
 	} catch (error) {
 		console.error('Function getPaymentHistory Error: ', error);
+		return res.render('404');
+	}
+};
+
+exports.getDebt = async (req, res) => {
+	const { accountId } = req.user;
+
+	try {
+		const { userId } = await User.findOne({ raw: true, where: { accountId } });
+		const debtInfo = await getDebtInfo(userId);
+		const paymentLimit = await getPaymentLimit();
+
+		return res.render('./user/debt.pug', {
+			debtInfo,
+			paymentLimit,
+			nextTerm: getFirstDayNextMonth(),
+			helpers: {
+				formatDateToStr,
+				formatCurrency,
+			},
+		});
+	} catch (error) {
+		console.error('Function getDebtHistory Error: ', error);
+		return res.render('404');
+	}
+};
+
+exports.getBalance = async (req, res) => {
+	const { accountId } = req.user;
+
+	try {
+		const { userId } = await User.findOne({ raw: true, where: { accountId } });
+		const balance = await getUserBalance(userId);
+
+		return res.render('./user/balance.pug', {
+			balance,
+			helpers: {
+				formatCurrency,
+			},
+		});
+	} catch (error) {
+		console.error('Function getBalance Error: ', error);
+		return res.render('404');
+	}
+};
+
+exports.getNotification = async (req, res) => {
+	const { accountId } = req.user;
+	try {
+		const { userId } = await User.findOne({ raw: true, where: { accountId } });
+		const notifications = await Notification.findAll({
+			raw: true,
+			where: {
+				userId,
+			},
+			order: [['createdTime', 'DESC']],
+		});
+
+		return res.render('./user/notification.pug', {
+			notifications,
+			helpers: {
+				formatDateToStr,
+			},
+		});
+	} catch (error) {
+		console.error('Function getNotification Error: ', error);
 		return res.render('404');
 	}
 };

@@ -1,4 +1,5 @@
 const axios = require('axios').default;
+const https = require('https');
 const {
 	PAYMENT_SYS_URL,
 	PAYMENT_SYS_AUTH_HEADER,

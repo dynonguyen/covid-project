@@ -82,9 +82,9 @@ passport.serializeUser(function (user, done) {
 });
 
 passport.deserializeUser(async function (user, done) {
-	const { username } = user;
+	const { accountId } = user;
 	try {
-		const account = await Account.findOne({ where: { username } });
+		const account = await Account.findOne({ where: { accountId } });
 		if (account && !account.isLocked) {
 			return done(null, user);
 		}

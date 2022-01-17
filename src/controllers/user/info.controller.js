@@ -4,6 +4,7 @@ const {
 	getFirstDayNextMonth,
 	getAddressUser,
 	convertStatusFToStr,
+	hashPassword,
 } = require('../../helpers/index.helpers');
 const User = require('../../models/user.model');
 const Notification = require('../../models/notification.model');
@@ -20,6 +21,8 @@ const ConsumptionHistory = require('../../models/consumption-history.model');
 const ProductPackage = require('../../models/product-package.model');
 const PaymentHistory = require('../../models/payment-history.model');
 const { PAYMENT_TYPES } = require('../../constants/index.constant');
+const Account = require('../../models/account.model');
+const bcrypt = require('bcryptjs');
 
 exports.getUserInfo = async (req, res) => {
 	try {
@@ -243,10 +246,39 @@ exports.getChangePassword = (req, res) => {
 
 exports.postChangePassword = async (req, res) => {
 	const { oldPassword, newPassword } = req.body;
-	console.log(req.user.accountId, oldPassword, newPassword);
+	const { accountId } = req.user;
+
 	try {
+		const account = await Account.findByPk(accountId, {
+			raw: true,
+			attributes: ['password'],
+		});
+
+		if (!account) {
+			throw new Error('Account does not exists');
+		}
+
+		const isCorrectPwd = await bcrypt.compare(oldPassword, account.password);
+		if (!isCorrectPwd) {
+			return res.render('./user/change-password.pug', {
+				msg: 'Mật khẩu hiện tại không chính xác',
+			});
+		}
+
+		const newHashPwd = await hashPassword(newPassword);
+		const affectedRows = await Account.update(
+			{ password: newHashPwd },
+			{ where: { accountId } }
+		);
+
+		if (affectedRows) {
+			req.logout();
+			res.redirect('/auth/login');
+		}
 	} catch (error) {
 		console.error('Function putChangePassword Error: ', error);
-		return res.render('404');
+		return res.render('./user/change-password.pug', {
+			msg: 'Cập nhật thất bại, thử lại',
+		});
 	}
 };

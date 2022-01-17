@@ -16,6 +16,7 @@ const {
 
 exports.getUserInfo = async (req, res) => {
 	try {
+    console.log('getUserInformation');
     const {username} = req.user;
     const account = await Accounts.findAll({
       where: {

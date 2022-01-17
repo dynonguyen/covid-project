@@ -4,7 +4,11 @@ const {
 	getFirstDayNextMonth,
 } = require('../../helpers/index.helpers');
 const User = require('../../models/user.model');
-const { getDebtInfo, getPaymentLimit } = require('../../payment-api');
+const {
+	getDebtInfo,
+	getPaymentLimit,
+	getUserBalance,
+} = require('../../payment-api');
 
 exports.getUserInfo = async (req, res) => {
 	try {
@@ -61,6 +65,25 @@ exports.getDebt = async (req, res) => {
 		});
 	} catch (error) {
 		console.error('Function getDebtHistory Error: ', error);
+		return res.render('404');
+	}
+};
+
+exports.getBalance = async (req, res) => {
+	const { accountId } = req.user;
+
+	try {
+		const { userId } = await User.findOne({ raw: true, where: { accountId } });
+		const balance = await getUserBalance(userId);
+
+		return res.render('./user/balance.pug', {
+			balance,
+			helpers: {
+				formatCurrency,
+			},
+		});
+	} catch (error) {
+		console.error('Function getBalance Error: ', error);
 		return res.render('404');
 	}
 };

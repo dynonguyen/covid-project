@@ -39,3 +39,13 @@ exports.getPaymentLimit = async () => {
 		throw error;
 	}
 };
+
+exports.getUserBalance = async (userId) => {
+	try {
+		const apiRes = await axiosPayment.get(`${BASE_URL}/balance/${userId}`);
+		return apiRes?.data?.balance;
+	} catch (error) {
+		console.error('Function getUserBalance Error: ', error);
+		throw error;
+	}
+};

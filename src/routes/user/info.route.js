@@ -11,6 +11,7 @@ userInfoRoute.get(
 	userInfoController.getConsumptionHistory
 );
 userInfoRoute.get('/debt', userInfoController.getDebt);
+userInfoRoute.get('/balance', userInfoController.getBalance);
 userInfoRoute.get('/payment-history', userInfoController.getPaymentHistory);
 userInfoRoute.get('/change-password', userInfoController.getChangePassword);
 

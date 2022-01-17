@@ -4,6 +4,7 @@ const {
 	getFirstDayNextMonth,
 } = require('../../helpers/index.helpers');
 const User = require('../../models/user.model');
+const Notification = require('../../models/notification.model');
 const {
 	getDebtInfo,
 	getPaymentLimit,
@@ -84,6 +85,30 @@ exports.getBalance = async (req, res) => {
 		});
 	} catch (error) {
 		console.error('Function getBalance Error: ', error);
+		return res.render('404');
+	}
+};
+
+exports.getNotification = async (req, res) => {
+	const { accountId } = req.user;
+	try {
+		const { userId } = await User.findOne({ raw: true, where: { accountId } });
+		const notifications = await Notification.findAll({
+			raw: true,
+			where: {
+				userId,
+			},
+			order: [['createdTime', 'DESC']],
+		});
+
+		return res.render('./user/notification.pug', {
+			notifications,
+			helpers: {
+				formatDateToStr,
+			},
+		});
+	} catch (error) {
+		console.error('Function getNotification Error: ', error);
 		return res.render('404');
 	}
 };

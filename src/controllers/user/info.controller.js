@@ -5,6 +5,9 @@ const {
 } = require('../../helpers/index.helpers');
 const User = require('../../models/user.model');
 const Notification = require('../../models/notification.model');
+const Address = require('../../models/address.model');
+const Manager = require('../../models/account.model');
+const Accounts = require('../../models/account.model');
 const {
 	getDebtInfo,
 	getPaymentLimit,
@@ -13,7 +16,32 @@ const {
 
 exports.getUserInfo = async (req, res) => {
 	try {
-		return res.render('./user/info.pug');
+    const {username} = req.user;
+    const account = await Accounts.findAll({
+      where: {
+        username
+      },
+    })
+    const findUser = await User.findOne({
+      where: {
+        accountId: account[0].accountId
+      }
+    })
+    const address = await Address.findOne({
+      where: {
+        addressId: findUser.addressId
+      }
+    })
+    const manager = await Accounts.findOne({
+      where: {
+        accountId: findUser.managerId
+      }
+    })
+		return res.render('./user/info.pug',{
+      findUser,
+      manager,
+      address
+    });
 	} catch (error) {
 		console.error('Function getUserInfo Error: ', error);
 		return res.render('404');

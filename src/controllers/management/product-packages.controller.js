@@ -1,6 +1,10 @@
 const { parseSortStr } = require('../../helpers/index.helpers');
 
 const { Sequelize } = require('sequelize');
+const {
+	formatCurrency,
+	getPackageList,
+} = require('../../helpers/index.helpers');
 const { MAX } = require('../../constants/index.constant');
 const { Op } = require('../../configs/db.config');
 const ProductInPackage = require('../../models/product-in-package.model');
@@ -8,54 +12,112 @@ const ProductPackage = require('../../models/product-package.model');
 const Product = require('../../models/product.model');
 
 exports.getProductPackage = async (req, res) => {
+	// try {
+	// 	let { page = 1, sort = '', search = '' } = req.query;
+	// 	const sortList = parseSortStr(sort);
+	// 	const order = sortList.map((i) => i.split(' '));
+
+	// 	page = Number(page);
+	// 	if (isNaN(page) || page < 1) page = 1;
+
+	// 	const where = search
+	// 		? {
+	// 				[Op.or]: [
+	// 					{
+	// 						productPackageName: Sequelize.where(
+	// 							Sequelize.fn('LOWER', Sequelize.col('productPackageName')),
+	// 							'LIKE',
+	// 							`%${search.toLowerCase()}%`
+	// 						),
+	// 					},
+	// 				],
+	// 		  }
+	// 		: {};
+
+	// 	const packagesList = await ProductPackage.findAndCountAll({
+	// 		raw: true,
+	// 		order,
+	// 		attributes: [
+	// 			'productPackageId',
+	// 			'productPackageName',
+	// 			'limitedProducts',
+	// 			'limitedInDay',
+	// 			'limitedInWeek',
+	// 			'limitedInMonth',
+	// 		],
+	// 		where,
+	// 		limit: MAX.PAGE_SIZE,
+	// 		offset: (page - 1) * MAX.PAGE_SIZE,
+	// 	});
+
+	// 	return res.render('./management/product-packages/view-list', {
+	// 		total: packagesList.count,
+	// 		currentPage: page,
+	// 		pageSize: MAX.PAGE_SIZE,
+	// 		packages: packagesList.rows,
+	// 		sortList: sortList.join(','),
+	// 		search,
+	// 	});
+	// } catch (error) {
+	// 	console.error('Load product packages list failed: ', error);
+	// 	return res.render('404');
+	// }
+
+	let {
+		keyword = '',
+		sortByPrice = -1,
+		sortByName = -1,
+		priceFrom = 0,
+		priceTo = 0,
+	} = req.query;
+
+	sortByName = parseInt(sortByName);
+	if (isNaN(sortByName)) {
+		sortByName = -1;
+	}
+
+	sortByPrice = parseInt(sortByPrice);
+	if (isNaN(sortByPrice)) {
+		sortByPrice = -1;
+	}
+
+	priceFrom = parseInt(priceFrom);
+	if (isNaN(priceFrom)) {
+		priceFrom = 0;
+	}
+
+	priceTo = parseInt(priceTo);
+	if (isNaN(priceTo)) {
+		priceTo = 0;
+	}
+
+	if (priceFrom > priceTo && priceTo !== 0) {
+		[priceFrom, priceTo] = [priceTo, priceFrom];
+	}
+
 	try {
-		let { page = 1, sort = '', search = '' } = req.query;
-		const sortList = parseSortStr(sort);
-		const order = sortList.map((i) => i.split(' '));
-
-		page = Number(page);
-		if (isNaN(page) || page < 1) page = 1;
-
-		const where = search
-			? {
-					[Op.or]: [
-						{
-							productPackageName: Sequelize.where(
-								Sequelize.fn('LOWER', Sequelize.col('productPackageName')),
-								'LIKE',
-								`%${search.toLowerCase()}%`
-							),
-						},
-					],
-			  }
-			: {};
-
-		const packagesList = await ProductPackage.findAndCountAll({
-			raw: true,
-			order,
-			attributes: [
-				'productPackageId',
-				'productPackageName',
-				'limitedProducts',
-				'limitedInDay',
-				'limitedInWeek',
-				'limitedInMonth',
-			],
-			where,
-			limit: MAX.PAGE_SIZE,
-			offset: (page - 1) * MAX.PAGE_SIZE,
+		const packageData = await getPackageList(1, 12, {
+			keyword,
+			sortByName,
+			sortByPrice,
+			priceFrom,
+			priceTo,
 		});
+		const { packages } = packageData;
 
-		return res.render('./management/product-packages/view-list', {
-			total: packagesList.count,
-			currentPage: page,
-			pageSize: MAX.PAGE_SIZE,
-			packages: packagesList.rows,
-			sortList: sortList.join(','),
-			search,
+		res.render('./management/product-packages/view-list', {
+			packages,
+			searchKeyword: keyword,
+			sortByPrice,
+			sortByName,
+			priceFrom,
+			priceTo,
+			helpers: {
+				formatCurrency,
+			},
 		});
 	} catch (error) {
-		console.error('Load product packages list failed: ', error);
+		console.error('Function getProductPackage Error: ', error);
 		return res.render('404');
 	}
 };

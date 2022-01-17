@@ -11,7 +11,6 @@ const renderPackageDetails = (package) => {
 				<td>${package[i].price}</td>
 				<td>${package[i].unit}</td>
 				<td>${package[i].maxQuantity}</td>
-				<td>${package[i].quantity}</td>
 			</tr>
       `
 		);
@@ -27,7 +26,6 @@ const renderPackageDetails = (package) => {
 	        <th scope="col">Giá</th>
 	        <th scope="col">Đơn vị tính</th>
 	        <th scope="col">Số lượng tối đa</th>
-	        <th scope="col">Số lượng</th>
 	      </tr>
 	    </thead>
 	    <tbody> ` +
@@ -167,7 +165,7 @@ $(document).ready(function () {
 		console.log('productPackageId', productPackageId);
 
 		let oldPackageName = editModal.attr('data-statusf');
-		let newPackageName = $('#newPackageName').val();
+		let newPackageName = $('#newPackageName').val()?.trim() || '';
 
 		let oldLP = editModal.attr('data-limitedProducts');
 		let newLP = $('#newLP').val();
@@ -182,9 +180,9 @@ $(document).ready(function () {
 		let newLIM = $('#newLIM').val();
 
 		// Xu ly khi nhap khoang trang
-		if (newPackageName.match(/ /)) {
-			newPackageName = oldPackageName;
-		}
+		// if (newPackageName.match(/ /)) {
+		// 	newPackageName = oldPackageName;
+		// }
 
 		// Update mot so thuoc tính
 		if (newPackageName === '') {

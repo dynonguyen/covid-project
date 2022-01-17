@@ -72,7 +72,6 @@ exports.getPackageDetail = async (req, res) => {
 			raw: true,
 			attributes: [
 				'maxQuantity',
-				'quantity',
 				[
 					Sequelize.col('ProductPackage.productPackageName'),
 					'productPackageName',
@@ -81,7 +80,6 @@ exports.getPackageDetail = async (req, res) => {
 				[Sequelize.col('Product.price'), 'price'],
 				[Sequelize.col('Product.unit'), 'unit'],
 				[Sequelize.col('ProductInPackage.maxQuantity'), 'maxQuantity'],
-				[Sequelize.col('ProductInPackage.quantity'), 'quantity'],
 			],
 			where: { productPackageId },
 			include: [

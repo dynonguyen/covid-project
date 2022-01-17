@@ -60,6 +60,7 @@ exports.getManagementHistory = async (req, res) => {
 
 exports.getConsumptionHistory = async (req, res) => {
 	try {
+    console.log('getConsumptionHistory');
 		return res.render('./user/consumption-history.pug');
 	} catch (error) {
 		console.error('Function getConsumptionHistory Error: ', error);
@@ -69,6 +70,7 @@ exports.getConsumptionHistory = async (req, res) => {
 
 exports.getPaymentHistory = async (req, res) => {
 	try {
+    
 		return res.render('./user/payment-history.pug');
 	} catch (error) {
 		console.error('Function getPaymentHistory Error: ', error);

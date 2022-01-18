@@ -14,6 +14,7 @@ const Province = require('../models/province.model');
 const User = require('../models/user.model');
 const Ward = require('../models/ward.model');
 const { v4: uuidv4 } = require('uuid');
+const Product = require('../models/product.model');
 
 exports.getAllProvince = async (req, res) => {
 	try {
@@ -186,6 +187,19 @@ exports.getCheckUserLimitPackage = async (req, res) => {
 	} catch (error) {
 		console.error('Function getCheckUserLimitPackage Error: ', error);
 		return res.status(400).json({ isSuccess: false, msg: 'Kiểm tra thất bại' });
+	}
+};
+
+exports.getProducts = async (req, res) => {
+	try {
+		const products = await Product.findAll({
+			raw: true,
+			attributes: ['productId', 'productName', 'price', 'unit'],
+		});
+		return res.status(200).json(products);
+	} catch (error) {
+		console.error('Function getProducts Error: ', error);
+		return res.json([]);
 	}
 };
 

@@ -9,4 +9,6 @@ apiRoute.get('/iso-facilities', apiController.getAllIsolationFacilities);
 apiRoute.get('/packages', apiController.getProductPackages);
 apiRoute.get('/check-limit-package', apiController.getCheckUserLimitPackage);
 
+apiRoute.post('/new-payment-history', apiController.postNewPaymentHistory);
+
 module.exports = apiRoute;

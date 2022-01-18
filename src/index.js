@@ -75,7 +75,12 @@ if (process.env.NODE_ENV?.trim() === 'development') {
 
 /* ============== Global Middleware =============== */
 app.use(unlessRoute([], checkInitSystemMiddleware));
-app.use(unlessRoute(['/auth', '/init-system'], authMiddleware));
+app.use(
+	unlessRoute(
+		['/auth', '/init-system', '/api/new-payment-history'],
+		authMiddleware
+	)
+);
 app.use(unlessRoute([], passVariableMiddleware));
 
 /* ============== Routes =============== */

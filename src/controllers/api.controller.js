@@ -1,13 +1,19 @@
 const {
+	API_AUTH_HEADER,
+	PAYMENT_SYS_AUTH_PRIVATE_KEY,
+} = require('../constants/index.constant');
+const {
 	getPackageList,
 	countUserConsumePackage,
 } = require('../helpers/index.helpers');
 const District = require('../models/district.model');
 const IsolationFacility = require('../models/isolation-facility.model');
+const PaymentHistory = require('../models/payment-history.model');
 const ProductPackage = require('../models/product-package.model');
 const Province = require('../models/province.model');
 const User = require('../models/user.model');
 const Ward = require('../models/ward.model');
+const { v4: uuidv4 } = require('uuid');
 
 exports.getAllProvince = async (req, res) => {
 	try {
@@ -180,5 +186,40 @@ exports.getCheckUserLimitPackage = async (req, res) => {
 	} catch (error) {
 		console.error('Function getCheckUserLimitPackage Error: ', error);
 		return res.status(400).json({ isSuccess: false, msg: 'Kiểm tra thất bại' });
+	}
+};
+
+exports.postNewPaymentHistory = async (req, res) => {
+	const {
+		paymentDate,
+		currentBalance,
+		paymentType,
+		totalMoney,
+		userId,
+		consumptionHistoryId = null,
+	} = req.body;
+
+	const privateKey = req.headers[API_AUTH_HEADER];
+	if (privateKey !== PAYMENT_SYS_AUTH_PRIVATE_KEY) {
+		return res.status(403).json({ msg: 'Access Denied!' });
+	}
+
+	try {
+		const affectedRows = await PaymentHistory.create({
+			paymentDate,
+			currentBalance,
+			paymentType,
+			paymentCode: uuidv4(),
+			totalMoney,
+			userId,
+			consumptionHistoryId,
+		});
+
+		if (affectedRows) {
+			return res.status(201).json({ msg: 'successfully' });
+		}
+	} catch (error) {
+		console.error('Function postAddHistory Error: ', error);
+		return res.status(500).json({ msg: 'Server Error !' });
 	}
 };

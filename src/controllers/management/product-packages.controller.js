@@ -140,6 +140,10 @@ exports.getPackageDetail = async (req, res) => {
 	}
 };
 
+exports.getNewPackage = async (req, res) => {
+	return res.render('./management/product-packages/new-package.pug');
+};
+
 exports.putUpdatePackage = async (req, res) => {
 	try {
 		let { productPackageId, newPackageName, newLP, newLID, newLIW, newLIM } =

@@ -57,10 +57,10 @@ block addContent
         each productPackage in packages
           - const { productPackageId, productPackageName, thumbnail, products, totalPrice } = productPackage;
             .package-card
-              a.package-card__top(href=`/management/product-packages/${productPackageId}`)
+              a.package-card__top(href=`/management/product-packages/list/${productPackageId}`)
                 img.thumbnail(src=thumbnail, alt=packageName, onerror="this.onerror=null;this.src='https://res.cloudinary.com/tuan-cloudinary/image/upload/v1642031448/smarket/no-img.png'")
               .package-card__body
-                a.package-card__title(href=`/management/product-packages/${productPackageId}`)= productPackageName
+                a.package-card__title(href=`/management/product-packages/list/${productPackageId}`)= productPackageName
                 if products
                   ul.p-0
                     each product in products

@@ -314,7 +314,7 @@ const packageCard = ({
 }) => {
 	return `
   <div class="package-card">
-    <a class="package-card__top" href="/management/product-packages/${productPackageId}">
+    <a class="package-card__top" href="/management/product-packages/list/${productPackageId}">
       <img class="thumbnail" src="${thumbnail}" alt="${productPackageName}"
         onerror="this.onerror=null;this.src='https://res.cloudinary.com/tuan-cloudinary/image/upload/v1642031448/smarket/no-img.png'">
     </a>

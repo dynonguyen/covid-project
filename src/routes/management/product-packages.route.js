@@ -6,9 +6,10 @@ productPackageMgmtRoute.get(
 	productPackageMgmtController.getProductPackage
 );
 productPackageMgmtRoute.get(
-	'/:packageId',
+	'/list/:packageId',
 	productPackageMgmtController.getPackageDetail
 );
+productPackageMgmtRoute.get('/new', productPackageMgmtController.getNewPackage);
 
 productPackageMgmtRoute.put(
 	'/update',

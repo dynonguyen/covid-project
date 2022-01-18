@@ -9,7 +9,7 @@ const renderAccountHistories = (actives) => {
 		tableData.push(
 			`<tr>
 				<td>${actives[i].activity}</td>
-				<td>${actives[i].createdDate}</td>
+				<td>${formatDateToStr(actives[i].createdDate)}</td>
 			</tr>
       `
 		);

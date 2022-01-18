@@ -76,6 +76,7 @@ exports.getManager = async (req, res) => {
 			raw: true,
 			where: { accountId: manager.accountId },
 			attributes: ['activity', 'createdDate'],
+			order: [['createdDate', 'DESC']],
 		});
 
 		return res.status(200).json(accountHistories);

@@ -1,0 +1,54 @@
+extends ../../templates/admin.template.pug
+
+block title
+  title Thêm nơi điều trị | Admin
+
+block addStyle
+  link(rel="stylesheet", href="/vendors/selectize/selectize.min.css")
+  style.
+    form {
+      min-width: 26rem;
+      max-width: 90%;
+      box-shadow: var(--sm-box-shadow);
+      border-radius: 12px
+    }
+    #submitBtn {
+      border-radius: 25px;
+    }
+    label {
+      margin-left: 0.5rem;
+      color: var(--gray)
+    }
+    .selectize-input {
+      border-radius: 25px;
+    }
+
+block addContent
+  .p-4.flex-grow-1
+    .flex-center
+      form#form.bg-white.p-4.m-0-auto(action="/admin/isolation-facilities/new", method="POST")
+        .form-title
+          h1.title.text-center.mb-4 Thêm cơ sở điều trị
+        .d-flex.flex-column
+          .d-flex.flex-column
+            label(for="ifName") Tên cơ sơ điều trị
+            input#ifName.field.mb-3(type="text", name="ifName", placeholder="Tên cơ sơ điều trị", required, autofocus)
+          .d-flex.flex-column
+            label(for="ifCapacity") Sức chứa tối đa
+            input#ifCapacity.field.mb-3(type="number", name="ifCapacity", placeholder="Sức chứa tối đa", required)
+          .d-flex.flex-column
+            label(for="province") Địa chỉ
+            select#province.mb-3(name="province", required)
+              option(selected, disabled, hidden, value="") Chọn tỉnh / thành
+            select#district.district.mb-3(name="district", required)
+              option(selected, disabled, hidden, value="") Chọn quận / huyện
+            select#ward.ward.mb-3(name="ward", required)
+              option(selected, disabled, hidden, value="") Chọn xã / phường
+            input#addressDetail.field.mb-3(type="text", name="addressDetail", placeholder="Tên đường")
+
+        button#submitBtn.w-100.submit-btn.btn.btn-primary(type="submit") Thêm
+  .toast-msg#toastMsg(class=`${msg ? `show ${isError ? 'danger' : 'success'}` : ''}`)= msg
+    .close-icon x
+block addScript
+  script(src="/vendors/selectize/selectize.min.js")
+  script(src="/js/admin/if-new.js")

@@ -7,6 +7,25 @@ const { MAX } = require('../../constants/index.constant');
 const IsolationFacility = require('../../models/isolation-facility.model');
 const { Op } = require('../../configs/db.config');
 const { Sequelize } = require('sequelize');
+const Address = require('../../models/address.model');
+
+async function checkIFExistence(ifName) {
+	try {
+		const isExist = await IsolationFacility.findOne({
+			raw: true,
+			where: {
+				isolationFacilityName: Sequelize.where(
+					Sequelize.fn('lower', Sequelize.col('isolationFacilityName')),
+					ifName.toLowerCase()
+				),
+			},
+		});
+		if (isExist) return true;
+		return false;
+	} catch (error) {
+		return false;
+	}
+}
 
 exports.getILFList = async (req, res) => {
 	let { page = 1, sort = '', search = '' } = req.query;
@@ -92,5 +111,46 @@ exports.putUpdateIF = async (req, res) => {
 	} catch (error) {
 		console.error('Function putUpdateIF Error: ', error);
 		return res.status(400).json({});
+	}
+};
+
+exports.getNewIF = (req, res) => {
+	return res.render('./admin/isolation-facilities/new-if.pug');
+};
+
+exports.postNewIF = async (req, res) => {
+	let { ifName, ifCapacity, ward, addressDetail } = req.body;
+	[ifCapacity, ward] = [ifCapacity, ward].map(Number);
+
+	try {
+		const isExist = await checkIFExistence(ifName);
+		if (isExist) {
+			return res.render('./admin/isolation-facilities/new-if.pug', {
+				msg: 'Tên cơ sở đã tồn tại',
+				isError: true,
+			});
+		}
+
+		const newAddress = await Address.create(
+			{ wardId: ward, details: addressDetail },
+			{ raw: true }
+		);
+		const newIF = await IsolationFacility.create({
+			isolationFacilityName: ifName,
+			capacity: ifCapacity,
+			addressId: newAddress.addressId,
+		});
+		if (newIF) {
+			return res.render('./admin/isolation-facilities/new-if.pug', {
+				msg: 'Thêm cơ sở điều trị thành công',
+				isError: false,
+			});
+		}
+	} catch (error) {
+		console.error('Function postNewIF Error: ', error);
+		return res.render('./admin/isolation-facilities/new-if.pug', {
+			msg: 'Thêm cơ sở điều trị thất bại',
+			isError: true,
+		});
 	}
 };

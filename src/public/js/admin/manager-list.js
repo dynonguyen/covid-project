@@ -14,9 +14,7 @@ const renderAccountHistories = (actives) => {
       `
 		);
 	}
-
-	return (
-		`
+	return `
 	  <table class="table table-striped table-light table-bordered w-100">
 	    <thead class="thead-dark">
 	      <tr>
@@ -24,12 +22,11 @@ const renderAccountHistories = (actives) => {
 	        <th scope="col">Thời gian</th>
 	      </tr>
 	    </thead>
-	    <tbody> ` +
-		`${tableData}` +
-		`</tbody>
+	    <tbody>
+		    ${tableData.join('')}
+		</tbody>
 	  </table>
-	`
-	);
+	`;
 };
 
 $(document).ready(function () {
@@ -108,7 +105,6 @@ $(document).ready(function () {
 
 		if (historyRes.status === 200) {
 			const history = await historyRes.json();
-			console.log(history);
 			modalBody.html(renderAccountHistories(history));
 		} else {
 			modalBody.html(

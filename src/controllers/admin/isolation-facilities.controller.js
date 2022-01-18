@@ -47,14 +47,14 @@ exports.getILFList = async (req, res) => {
 		});
 
 		for (let ilf of ILFs.rows) {
-			const address = await getAddressUser(ilf.addressId, 5);
+			const address = await getAddressUser(ilf.addressId);
 			ilf.address = address;
 		}
 
 		const ilfList = ILFs.rows.map((ilf) =>
 			omitPropObj(ilf, ['isolationFacilityId', 'addressId'])
 		);
-		// const ilfList = ILFs.rows;
+
 		return res.render('./admin/isolation-facilities/view-list', {
 			ilfList,
 			total: ILFs.count,

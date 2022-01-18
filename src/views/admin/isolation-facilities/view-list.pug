@@ -31,17 +31,34 @@ block addContent
             th(scope="col") Hành động
         tbody
           each ilf in ilfList
-            tr
-              td= ilf.isolationFacilityName
-              td= ilf.capacity
-              td= ilf.currentQuantity
+            tr.if-item(data-id=ilf.isolationFacilityId)
+              td.name= ilf.isolationFacilityName
+              td.capacity= ilf.capacity
+              td.current-quantity= ilf.currentQuantity
               td= ilf.address
               td.text-center
-                i.mgmt-icon.edit-icon.bi.bi-pencil-fill.px-2()
-                i.mgmt-icon.info-icon.bi.bi-info-circle-fill.px-2()
+                i.mgmt-icon.edit-icon.bi.bi-pencil-fill.px-2(data-id=ilf.isolationFacilityId)
       #pagination
     else
       +noResult('w-80', '/admin/isolation-facilities/list')
+
+  .modal#editModal
+    .modal-dialog.modal-centered
+      .modal-content(style="max-width: 480px; margin: 0 auto")
+        .modal-header
+          h5.modal-title Chỉnh sửa cơ sở điều trị
+          button.close(type="button", data-dismiss="modal", aria-label="Close")
+            span(aria-hidden="true") ×
+        .modal-body
+          .d-flex.flex-column
+            label.text-gray.ml-2(for="ifNameInput") Tên cơ sở điều trị
+            input#ifNameInput.mb-3.field(type="text", placeholder="Nhập tên cơ sở điều trị", name="ifName", required, maxLength="100")
+          .d-flex.flex-column
+            label.text-gray.ml-2(for="ifCapacityInput") Sức chứa tối đa
+            input#ifCapacityInput.field(type="number", placeholder="Nhập số lượng bệnh nhân tối đa", required, name="capacity", min="0", max="1000000")
+        .modal-footer
+          button.btn.btn-secondary(type="button", data-dismiss="modal") Đóng
+          button#editBtn.btn.btn-primary(type="button") Cập nhật
 
   .toast-msg#toastMsg
 block addScript

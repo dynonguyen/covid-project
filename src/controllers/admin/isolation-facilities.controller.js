@@ -51,9 +51,7 @@ exports.getILFList = async (req, res) => {
 			ilf.address = address;
 		}
 
-		const ilfList = ILFs.rows.map((ilf) =>
-			omitPropObj(ilf, ['isolationFacilityId', 'addressId'])
-		);
+		const ilfList = ILFs.rows.map((ilf) => omitPropObj(ilf, ['addressId']));
 
 		return res.render('./admin/isolation-facilities/view-list', {
 			ilfList,
@@ -66,5 +64,33 @@ exports.getILFList = async (req, res) => {
 	} catch (error) {
 		console.error('Function getILFList Error: ', error);
 		return res.render('404');
+	}
+};
+
+exports.putUpdateIF = async (req, res) => {
+	let { ifName, ifCapacity, ifId } = req.body;
+	ifName = ifName.length <= 100 ? ifName : ifName.slice(0, 100);
+	ifCapacity = Number(ifCapacity);
+	ifId = Number(ifId);
+
+	try {
+		if (isNaN(ifCapacity) || !ifName || isNaN(ifId)) throw new Error();
+
+		await IsolationFacility.update(
+			{
+				isolationFacilityName: ifName,
+				capacity: ifCapacity,
+			},
+			{
+				where: {
+					isolationFacilityId: Number(ifId),
+				},
+			}
+		);
+
+		return res.status(200).json({});
+	} catch (error) {
+		console.error('Function putUpdateIF Error: ', error);
+		return res.status(400).json({});
 	}
 };

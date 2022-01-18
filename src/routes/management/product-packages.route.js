@@ -15,4 +15,9 @@ productPackageMgmtRoute.put(
 	productPackageMgmtController.putUpdatePackage
 );
 
+productPackageMgmtRoute.delete(
+	'/:packageId',
+	productPackageMgmtController.deletePackage
+);
+
 module.exports = productPackageMgmtRoute;

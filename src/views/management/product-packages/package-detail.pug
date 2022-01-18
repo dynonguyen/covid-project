@@ -40,7 +40,7 @@ block addContent
       p #[span.label Giới hạn mua trong tháng:] #{limitedInMonth}
       p #[span.label Tổng giá:] #[b.text-danger(style="letter-spacing:0.75px;")= helpers.formatCurrency(totalPrice)]
       button.edit-btn.btn.btn-primary.mr-2(data-productPackageId=productPackageId ,data-productPackageName=productPackageName, data-limitedProducts=limitedProducts, data-limitedInDay=limitedInDay, data-limitedInWeek=limitedInWeek, data-limitedInMonth=limitedInMonth) Sửa #[i.bi.bi-pencil-fill]
-      button.delete-btn.btn.btn-danger(data-id=packageId) Xoá #[i.bi.bi-trash-fill]
+      button.delete-btn.btn.btn-danger(data-id=productPackageId) Xoá #[i.bi.bi-trash-fill]
 
     h5.text-uppercase.label.my-4 Các sản phẩm trong gói
     .wrapper

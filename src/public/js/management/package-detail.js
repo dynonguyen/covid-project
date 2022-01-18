@@ -1,3 +1,4 @@
+const ROOT_URL = '/management/product-packages';
 let photoSlides = [];
 let currentSlide = 0;
 
@@ -24,6 +25,7 @@ function getPhotoSlideSrc(productId, curSrc) {
 $(document).ready(function () {
 	const photoPreviewWrap = $('.photo-preview-wrapper');
 	const photoPreview = $('.photo-preview img');
+	const toastMsg = $('#toastMsg');
 
 	loadCart();
 
@@ -61,7 +63,7 @@ $(document).ready(function () {
 		photoPreview.attr('src', photoSlides[currentSlide]);
 	});
 
-	// ------------------------------ Show edit package modal ------------------------------
+	// ------------------------------ Show modal & Edit package ------------------------------
 	// $('select').selectize({
 	// 	shortField: 'text',
 	// });
@@ -227,6 +229,36 @@ $(document).ready(function () {
 			const { msg } = await resJSON.json();
 			$(this).removeClass('disabled');
 			showToastMsg(toast, msg || 'Cập nhật thất bại', 'danger', 3000);
+		}
+	});
+
+	// ------------------------------ Delete package ------------------------------
+	$('.delete-btn').click(async function () {
+		const packageId = $(this).attr('data-id');
+
+		if (!packageId || isNaN(parseInt(packageId))) return;
+
+		try {
+			const apiRes = await fetch(`${ROOT_URL}/${packageId}`, {
+				method: 'DELETE',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+			});
+
+			if (apiRes.status === 200) {
+				showToastMsg(
+					toastMsg,
+					'Xoá gói nhu yếu phẩm thành công',
+					'success',
+					1000
+				);
+				setTimeout(() => {
+					location.replace(`${ROOT_URL}/list`);
+				}, 1000);
+			}
+		} catch (error) {
+			showToastMsg(toastMsg, 'Xoá gói nhu yếu phẩm thất bại', 'danger');
 		}
 	});
 });

@@ -189,3 +189,26 @@ exports.putUpdatePackage = async (req, res) => {
 		return res.status(400).json({ msg: 'Cập nhật thất bại !' });
 	}
 };
+
+exports.deletePackage = async (req, res) => {
+	const productPackageId = parseInt(req.params.packageId);
+	if (!productPackageId || isNaN(productPackageId)) {
+		return res.status(400).json({});
+	}
+
+	try {
+		const nRowAffected = await ProductPackage.destroy({
+			where: { productPackageId },
+			cascade: true,
+		});
+
+		if (nRowAffected) {
+			return res.status(200).json({});
+		}
+
+		return res.status(409).json({});
+	} catch (error) {
+		console.error('Function deleteProduct Error: ', error);
+		return res.status(409).json({});
+	}
+};

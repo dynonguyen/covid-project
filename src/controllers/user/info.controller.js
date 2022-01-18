@@ -85,6 +85,7 @@ exports.getManagementHistory = async (req, res) => {
 					'isolationFacilityName',
 				],
 			],
+			order: [['startDate', 'DESC']],
 		});
 		return res.render('./user/management-history.pug', {
 			treatmentHistories,
@@ -119,6 +120,7 @@ exports.getConsumptionHistory = async (req, res) => {
 				],
 				[Sequelize.col('ProductPackage.productPackageId'), 'productPackageId'],
 			],
+			order: [['buyDate', 'DESC']],
 		});
 
 		return res.render('./user/consumption-history.pug', {
@@ -148,6 +150,7 @@ exports.getPaymentHistory = async (req, res) => {
 				'paymentType',
 				'currentBalance',
 			],
+			order: [['paymentDate', 'DESC']],
 		});
 
 		const paymentHistories = payments.map((p) => {
@@ -159,9 +162,7 @@ exports.getPaymentHistory = async (req, res) => {
 				totalMoney: formatCurrency(p.totalMoney),
 				currentBalance: formatCurrency(p.currentBalance),
 				content:
-					p.paymentType === PAYMENT_TYPES.SEND_MONEY
-						? 'Nạp tiền vào tài khoản'
-						: 'Mua gói nhu yếu phẩm',
+					p.paymentType === PAYMENT_TYPES.SEND_MONEY ? 'Nạp tiền' : 'Mua NYP',
 			};
 		});
 

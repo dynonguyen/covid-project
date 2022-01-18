@@ -84,7 +84,7 @@ exports.getPackageDetail = async (req, res) => {
 			ProductPackage.findOne({
 				raw: true,
 				where: { productPackageId: packageId },
-				attributes: { exclude: ['productPackageId', 'limitedProducts'] },
+				attributes: {},
 			}).then((data) => (package = { ...data }))
 		);
 
@@ -123,8 +123,6 @@ exports.getPackageDetail = async (req, res) => {
 				);
 			})
 		);
-
-		console.log('product package id ', req.params);
 
 		await Promise.all(promises);
 		await Promise.all(productPhotoPromises);
@@ -172,11 +170,13 @@ exports.putUpdatePackage = async (req, res) => {
 			{ limitedInDay: newLID },
 			{ where: { productPackageId } }
 		);
+
 		// update limited in week
 		await ProductPackage.update(
 			{ limitedInWeek: newLIW },
 			{ where: { productPackageId } }
 		);
+
 		// update limited in month
 		await ProductPackage.update(
 			{ limitedInMonth: newLIM },

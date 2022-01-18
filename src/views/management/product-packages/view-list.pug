@@ -67,7 +67,7 @@ block addContent
                       li.product-item #[span= product.productName] #[span.text-gray #{helpers.formatCurrency(product.productPrice)} / #{product.productUnit}]
                 p.mt-auto.package-card__price #[span.price= packagePrice]
               .package-card__bottom
-                button.btn.btn-primary.w-100.add-cart-btn.d-none(data-id=packageId) Thêm vào giỏ hàng #[i.bi.bi-cart-plus-fill]
+                button.btn.btn-primary.w-100.add-cart-btn.d-none(data-id=productPackageId) Thêm vào giỏ hàng #[i.bi.bi-cart-plus-fill]
     else
       +noResult('', '/management/product-packages/list')
 

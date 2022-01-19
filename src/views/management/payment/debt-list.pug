@@ -1,0 +1,50 @@
+extends ../../templates/management.template.pug
+include ../../mixins/no-result.mixin.pug
+
+block title
+  title Danh sách dư nợ người dùng | Người quản trị
+
+block addContent
+  .p-4.flex-grow-1
+    h1.text-center.title.my-4 Danh sách dư nợ của người dùng
+    if debtList && debtList.length > 0
+      div(style="max-height: 80vh; overflow-y: auto")
+        table.table.table-striped
+          thead.thead-dark.sticky-top
+            tr
+              th(scope="col") CMND/CCCD
+              th(scope="col") Họ tên
+              th(scope="col") Tổng nợ
+              th(scope="col") Tổng đã trả
+              th(scope="col") Dư nợ còn lại
+              th(scope="col") TT định kỳ
+              th(scope="col") Ngày ghi nhận
+              th(scope="col") Nhắc thanh toán
+          tbody
+            each d in debtList
+              - const { peopleId, fullname, debt, returned, status, createdTime, isRemind } = d;
+              tr
+                td= peopleId
+                td= fullname
+                td= helpers.formatCurrency(debt)
+                td= helpers.formatCurrency(returned)
+                td= helpers.formatCurrency(debt - returned)
+                td.text-center
+                  if status === 1
+                    i.bi.bi-check-circle-fill(style="color:var(--success)")
+                  else
+                    i.bi.bi-x-circle-fill(style="color:var(--danger)")
+                td= helpers.formatDateToStr(createdTime)
+                td.text-center
+                  if status === 0
+                    if isRemind
+                      .btn.btn-success Đã nhắc
+                    else
+                      .btn.btn-danger Nhắc
+    else
+      +noResult("", "/management")
+
+  .toast-msg#toastMsg
+block append addScript
+
+

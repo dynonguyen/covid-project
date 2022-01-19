@@ -50,6 +50,16 @@ exports.getUserBalance = async (userId) => {
 	}
 };
 
+exports.getUserDebtList = async () => {
+	try {
+		const apiRes = await axiosPayment.get(`${BASE_URL}/debt-list`);
+		return apiRes?.data?.debtList;
+	} catch (error) {
+		console.log('Function getUserDebtList ERROR: ', error);
+		throw error;
+	}
+};
+
 exports.putUpdatePaymentLimit = async (minimumLimit = 1) => {
 	try {
 		await axiosPayment.put(`${BASE_URL}/minium-limit`, {

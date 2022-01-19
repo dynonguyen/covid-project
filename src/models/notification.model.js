@@ -9,10 +9,6 @@ const Notification = db.define(
 			primaryKey: true,
 			autoIncrement: true,
 		},
-		userId: {
-			type: DataTypes.INTEGER,
-			allowNull: false,
-		},
 		title: {
 			type: DataTypes.STRING(100),
 			allowNull: false,

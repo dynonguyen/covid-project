@@ -1,8 +1,16 @@
 const AccountHistory = require('../../models/account-history.model');
+const Notification = require('../../models/notification.model');
+const User = require('../../models/user.model');
 const {
 	getPaymentLimit,
 	putUpdatePaymentLimit: axiosPutUpdatePaymentLimit,
+	getUserDebtList,
 } = require('../../payment-api');
+const {
+	formatCurrency,
+	formatDateToStr,
+} = require('../../helpers/index.helpers');
+const { Op } = require('../../configs/db.config');
 
 exports.getMinimumLimit = async (req, res) => {
 	try {
@@ -13,6 +21,61 @@ exports.getMinimumLimit = async (req, res) => {
 	} catch (error) {
 		console.error('Function getMiniumLimit Error: ', error);
 		return res.render('404');
+	}
+};
+
+exports.getDebtList = async (req, res) => {
+	try {
+		const debtList = await getUserDebtList();
+
+		// get list of users managed by this manager
+		const { accountId } = req.user;
+		const managedUsers = await User.findAll({
+			raw: true,
+			where: {
+				managerId: Number(accountId),
+			},
+			attributes: ['fullname', 'peopleId', 'userId'],
+		});
+
+		let managedDebtList = [];
+		const date = new Date();
+		const [y, m] = [date.getFullYear(), date.getMonth(), date.getDate()];
+		const startMonth = new Date(y, m, 1);
+		const endMonth = new Date(y, m + 1, 0);
+
+		for (let d of debtList) {
+			const u = managedUsers.find((i) => i.userId === d.userId);
+			if (u) {
+				const isExistRemind = await Notification.count({
+					where: {
+						userId: u.userId,
+						createdTime: {
+							[Op.and]: [{ [Op.gte]: startMonth }, { [Op.lt]: endMonth }],
+						},
+					},
+				});
+
+				managedDebtList.push({
+					...u,
+					...d,
+					isRemind: isExistRemind ? true : false,
+				});
+			}
+		}
+
+		return res.render('./management/payment/debt-list.pug', {
+			debtList: managedDebtList,
+			helpers: {
+				formatCurrency,
+				formatDateToStr,
+			},
+		});
+	} catch (error) {
+		console.error('Function getDebtList Error: ', error);
+		return res.render('./management/payment/debt-list.pug', {
+			debtList: [],
+		});
 	}
 };
 

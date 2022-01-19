@@ -5,6 +5,7 @@ const { Op } = require('../../configs/db.config');
 const { Sequelize } = require('sequelize');
 const { parseSortStr } = require('../../helpers/index.helpers');
 const AccountHistory = require('../../models/account-history.model');
+const { hashPassword } = require('../../helpers/index.helpers');
 
 exports.getManagerList = async (req, res) => {
 	try {
@@ -87,7 +88,7 @@ exports.getManager = async (req, res) => {
 
 exports.putUpdateIsLocked = async (req, res) => {
 	let { accountId, newIsLocked } = req.body;
-	console.log('AccountId', accountId);
+	// console.log('AccountId', accountId);
 	try {
 		const manager = await Account.findOne({
 			raw: true,
@@ -119,10 +120,44 @@ exports.getNewManagerForm = async (req, res) => {
 };
 
 exports.postNewManager = async (req, res) => {
+	const { username, password } = req.body;
 	try {
-		return res.status(200).json({ msg: 'Thêm thành công' });
+		// check if account exists
+		const manager = await Account.findOne({
+			raw: true,
+			attributes: [
+				'accountId',
+				'username',
+				'isLocked',
+				'accountType',
+				'failedLoginTime',
+			],
+			where: { username },
+		});
+		if (manager) {
+			return res.render('./admin/managers/new-manager.pug', {
+				username,
+				msg: 'Username đã tồn tại !',
+			});
+		}
+		// create an account
+		const hashPwd = await hashPassword(password);
+		await Account.create({
+			username,
+			password: hashPwd,
+			accountType: ACCOUNT_TYPES.MANAGER,
+		});
+
+		return res.render('./admin/managers/new-manager.pug', {
+			username,
+			isSuccess: true,
+			msg: 'Thêm tài khoản thành công',
+		});
 	} catch (error) {
 		console.error('Function postNewManager Error: ', error);
-		return res.status(400).json({ msg: 'Thêm thất bại !' });
+		return res.render('./admin/managers/new-manager.pug', {
+			username,
+			msg: 'Thêm quản lý thất bại ! Thử lại',
+		});
 	}
 };

@@ -1,0 +1,35 @@
+extends ../../templates/admin.template.pug
+include ../../mixins/no-result.mixin.pug
+include ../../mixins/toast-msg.mixin.pug
+
+block title
+  title Thêm người quản trị | Admin
+
+block append addStyle
+  link(rel="stylesheet", href="/css/new-manager.css")
+
+block addContent
+  +toastMsg(msg,isSuccess)
+
+  .p-4.flex-grow-1
+    .flex-center
+      .container-wrapper.p-2.flex-center.w-100.h-100
+        .form-wrap.d-flex.justify-content-between
+          form#form.m-0-auto(action="/admin/managers/new", method="POST")
+            .form-title
+              h1.title.text-center Tạo tài khoản người quản lý
+            .d-flex.flex-column
+              d-flex.mb-4
+              input#username.field.mb-3(type="text", name="username", maxLength="30", required, placeholder="Nhập username", autofocus)
+              .position-relative.mb-4
+                input#password.field.w-100(type="password", name="password", maxLength="50", required, placeholder="Nhập mật khẩu")
+                i.field-end-icon.bi.bi-eye-slash-fill.view-password-icon
+              .position-relative.mb-4
+                input#confirmPw.field.w-100(type="password", maxLength="50", required, placeholder="Nhập lại mật khẩu")
+                i.field-end-icon.bi.bi-eye-slash-fill.view-password-icon
+              d-flex.mb-4
+
+            button#submitBtn.submit-btn.btn.btn-primary(type="submit") Tạo tài khoản
+
+block append addScript
+  script(src="/js/new-manager.js")

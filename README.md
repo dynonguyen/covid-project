@@ -56,6 +56,7 @@
   - Github, Github Project
 - Cloud, Hosting
   - Hosting: Vercel.
+  - PostgreSQL DB Cloud: ElephantSQL.
   - Photo Cloud: Cloudinary.
 
 ---
@@ -90,7 +91,7 @@
 
 ## 1. Hệ thống Quản lý Covid
 
-### 1.1 Đăng nhập, khởi tạo ban đầu `(Tuấn)`
+### 1.1 Đăng nhập, khởi tạo ban đầu
 
 - Khi chương trình khởi động thì cần yêu cầu đăng nhập. Tùy thuộc vào phân
   quyền của tài khoản mà mở màn hình với các chức năng thích hợp.
@@ -102,7 +103,7 @@
 
 ### 1.2 Phân hệ Quản lý
 
-#### 1.2.1 Quản lý danh sách người liên quan Covid-19 `(Tuấn)`
+#### 1.2.1 Quản lý danh sách người liên quan Covid-19
 
 - Người liên quan Covid-19 bao gồm các thông tin cơ bản sau:
   - Họ tên
@@ -118,17 +119,17 @@
 - Tìm kiếm
 - Sắp xếp theo nhiều tiêu chí.
 
-#### 1.2.2 Thêm người liên quan Covid-19 vào hệ thống `(Tuấn)`
+#### 1.2.2 Thêm người liên quan Covid-19 vào hệ thống
 
 - Form thêm với đầy đủ thông tin cần thiết
 - Có validation đầy đủ
 
-#### 1.2.3 Thay đổi trạng thái người liên quan Covid-19 `(Tuấn)`
+#### 1.2.3 Thay đổi trạng thái người liên quan Covid-19
 
 - Chuyển trạng thái cần thiết như: F2 -> F1, F2 -> F0,… với các thông tin phù hợp (người liên quan phải thay đổi trạng thái theo).
 - Chuyển nơi điều trị / cách ly (ràng buộc về sức chứa).
 
-#### 1.2.4 Quản lý các sản phẩm nhu yếu phẩm `(Tuấn)`
+#### 1.2.4 Quản lý các sản phẩm nhu yếu phẩm
 
 - Sản phẩm nhu yếu phẩm gồm các thông tin cơ bản
 
@@ -141,7 +142,7 @@
 - Tìm kiếm, Sắp xếp, Lọc
 - Thêm, xóa, sửa (luôn kiểm tra ràng buộc)
 
-#### 1.2.5 Quản lý các gói Nhu yếu phẩm `(Trí)`
+#### 1.2.5 Quản lý các gói Nhu yếu phẩm
 
 - Gói Nhu yếu phẩm gồm các thông tin cơ bản sau:
 
@@ -156,7 +157,7 @@
 - Tìm kiếm, sắp xếp, lọc
 - Thêm, xóa, sửa (luôn kiểm tra ràng buộc)
 
-#### 1.2.6 Thống kê thông tin `(Trí)`
+#### 1.2.6 Thống kê thông tin
 
 - Thống kê số lượng người ở từng trạng thái theo thời gian.
 - Thống kê các thông tin có thể như: số chuyển trạng thái, khỏi bệnh,…
@@ -164,31 +165,31 @@
 - Thống kê tiêu thụ sản phẩm
 - Thống kê dư nợ, thanh toán
 
-#### 1.2.7 Quản lý Thanh toán `(Trí)`
+#### 1.2.7 Quản lý Thanh toán
 
 - Thay đổi hạn mức thanh toán tối thiểu
 - Duyệt danh sách và gửi thông báo nhắc thanh toán
 
 ### 1.3 Phân hệ quản trị (Admin)
 
-#### 1.3.1 Tạo tài khoản `(Trang)`
+#### 1.3.1 Tạo tài khoản
 
 - Tạo tài khoản người quản lý với xử lý password lưu trữ hợp lý (không lưu trữ password bản rõ trong database).
 - Chỉ cần thông tin username, password và phân quyền.
 
-#### 1.3.2 Quản lý thông tin tài khoản người quản lý `(Trang)`
+#### 1.3.2 Quản lý thông tin tài khoản người quản lý
 
 - Khóa tài khoản.
 - Xem lịch sử hoạt động của tài khoản.
 
-#### 1.3.3 Quản lý địa điểm điều trị / cách ly `(Trang)`
+#### 1.3.3 Quản lý địa điểm điều trị / cách ly
 
 - Thêm mới, điều chỉnh.
 - Địa điểm điều trị / cách ly chỉ cần thông tin Tên, Sức chứa và Số lượng tiếp nhận hiện tại.
 
 ### 1.4 Phân hệ người dùng (Người được quản lý)
 
-#### 1.4.1 Xem thông tin cá nhân `(Phúc)`
+#### 1.4.1 Xem thông tin cá nhân
 
 - Các thông tin cơ bản
 - Lịch sử được quản lý
@@ -197,24 +198,24 @@
 - Lịch sử thanh toán
 - Thông báo nhắc thanh toán (nếu có)
 
-#### 1.4.2 Thay đổi thông tin cá nhân `(Trang)`
+#### 1.4.2 Thay đổi thông tin cá nhân
 
 - Chỉ cho thay đổi mật khẩu (quy trình hợp lý)
 - Liên kết sang Hệ thống thanh toán để nạp tiền
 
-#### 1.4.3 Chọn mua gói Nhu yếu phẩm `(Tuấn)`
+#### 1.4.3 Chọn mua gói Nhu yếu phẩm
 
 - Xem danh sách các gói Nhu yếu phẩm
 - Tìm kiếm, sắp xếp, lọc
 - Thay đổi số lượng sản phẩm trong gói (trong phạm vi ràng buộc)
 - Chọn mua gói Nhu yếu phẩm (có kiểm tra các ràng buộc).
 
-#### 1.4.4 Thanh toán chi phí `(Phúc)`
+#### 1.4.4 Thanh toán chi phí
 
 - Thanh toán dư nợ theo hạn mức tối thiểu (có kiểm tra số dư từ Hệ thống thanh toán
 - Liên kết sang Hệ thống thanh toán để nạp tiền
 
-## 2 Hệ thống Quản lý Thanh toán `(Tuấn)`
+## 2 Hệ thống Quản lý Thanh toán
 
 ### 2.1 Khởi tạo hệ thống
 

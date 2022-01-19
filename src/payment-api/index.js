@@ -43,7 +43,7 @@ exports.getPaymentLimit = async () => {
 exports.getUserBalance = async (userId) => {
 	try {
 		const apiRes = await axiosPayment.get(`${BASE_URL}/balance/${userId}`);
-		return apiRes?.data?.balance;
+		return Number(apiRes?.data?.balance);
 	} catch (error) {
 		console.error('Function getUserBalance Error: ', error);
 		throw error;
@@ -68,6 +68,19 @@ exports.putUpdatePaymentLimit = async (minimumLimit = 1) => {
 		return true;
 	} catch (error) {
 		console.error('Function putUpdatePaymentLimit Error: ', error);
+		throw error;
+	}
+};
+
+exports.postPayment = async ({ totalMoney, userId }) => {
+	try {
+		const apiRes = await axiosPayment.post(`${BASE_URL}/payment`, {
+			userId,
+			totalMoney,
+		});
+		return apiRes?.data;
+	} catch (error) {
+		console.log('Function postPayment Axios ERROR: ', error);
 		throw error;
 	}
 };

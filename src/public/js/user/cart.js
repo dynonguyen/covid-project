@@ -115,8 +115,44 @@ $(document).ready(function () {
 		updateProductQuantity(packageId, productInPackageId, false);
 	});
 
-	$('#paymentBtn').on('click', function () {
-		console.log(paymentTotal);
-		console.log(packages);
+	$('#paymentBtn').on('click', async function () {
+		$(this).addClass('disabled');
+
+		const paymentRes = await fetch('/user/payment', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({
+				carts: {
+					paymentTotal,
+					packages,
+				},
+			}),
+		});
+
+		if (paymentRes.status === 200) {
+			showToastMsg(
+				$('#toastMsg'),
+				'Đặt hàng thành công, chúng tôi sẽ gửi đến bạn trong thời gian sớm nhất. Xin Cảm ơn',
+				'success',
+				3000
+			);
+			removeAllCartItems();
+			$('body').addClass('disabled');
+			setTimeout(() => {
+				location.href = '/user/info/payment-history';
+			}, 3000);
+		} else if (paymentRes.status === 406) {
+			$(this).removeClass('disabled');
+		} else {
+			showToastMsg(
+				$('#toastMsg'),
+				'Đặt hàng thất bại, thử lại sau. Xin cảm ơn',
+				'danger',
+				3000
+			);
+			$(this).removeClass('disabled');
+		}
 	});
 });

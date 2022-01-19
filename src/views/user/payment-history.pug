@@ -4,21 +4,24 @@ block title
   title Covid Project | Lịch sử thanh toán
 
 block addContent
-  h1.user-info-title Lịch sử thanh toán
-  .table-wrap
-    table.table.table-striped
-      thead.thead-dark
-        tr
-          th(scope="col") Mã TT
-          th(scope="col") Ngày TT
-          th(scope="col") Tổng tiền
-          th(scope="col") Số dư
-          th(scope="col") Nội dung
-      tbody
-        each item, index in new Array(20).fill(1)
+  h1.user-info-title Lịch sử thanh toán (#{paymentHistories ? paymentHistories.length : 0})
+  if paymentHistories && paymentHistories.length > 0
+    .table-wrap
+      table.table.table-striped
+        thead.thead-dark
           tr
-            td 19187281
-            td 18-10-2021
-            td 19.000đ
-            td 5.250.000đ
-            td #{index % 2 ? "Nạp tiền" : "Mua gói nhu yếu phẩm"}
+            th(scope="col") Mã TT
+            th(scope="col") Ngày TT
+            th(scope="col") Tổng tiền
+            th(scope="col") Số dư
+            th(scope="col") Nội dung
+        tbody
+          each p in paymentHistories
+            tr
+              td= p.paymentCode
+              td= p.paymentDate
+              td= p.totalMoney
+              td= p.currentBalance
+              td= p.content
+  else
+    p.text-center.text-gray.mb-0 Bạn chưa có bất kỳ thanh toán nào.

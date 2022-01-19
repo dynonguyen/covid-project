@@ -12,6 +12,7 @@ const IsolationFacility = db.define(
 		isolationFacilityName: {
 			type: DataTypes.STRING(100),
 			allowNull: false,
+			unique: true,
 		},
 		capacity: {
 			type: DataTypes.INTEGER,

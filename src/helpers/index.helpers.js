@@ -54,7 +54,7 @@ exports.convertStatusFToStr = (statusF) => {
  * @param {number} level - result level: 1 - only details, 2 - to ward, 3 - to district, 4 - only province, 5 - district & province, default - full
  * @return {string} result - address fully.
  */
-exports.getAddressUser = async (addressId, level) => {
+exports.getAddressUser = async (addressId, level = 0) => {
 	try {
 		let result = '';
 
@@ -111,6 +111,7 @@ exports.getAddressUser = async (addressId, level) => {
 
 		return result;
 	} catch (error) {
+		console.log('getAddressUser ERROR: ', error);
 		return '';
 	}
 };
@@ -548,4 +549,20 @@ exports.countUserConsumePackage = async (userId, productPackageId) => {
 			month: 0,
 		};
 	}
+};
+
+exports.formatDateToStr = (date) => {
+	const d = new Date(date);
+	const y = d.getFullYear();
+	const mm = `0${d.getMonth() + 1}`.slice(-2);
+	const dd = `0${d.getDate()}`.slice(-2);
+
+	return `${dd}-${mm}-${y}`;
+};
+
+exports.getFirstDayNextMonth = (date = new Date()) => {
+	const now = new Date(date);
+	const m = now.getMonth();
+	const y = now.getFullYear();
+	return new Date(m === 11 ? y + 1 : y, m === 11 ? 0 : m + 1, 1);
 };

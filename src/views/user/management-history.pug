@@ -4,19 +4,22 @@ block title
   title Covid Project | Lịch sử được quản lý
 
 block addContent
-  h1.user-info-title Lịch sử được quản lý
-  .table-wrap
-    table.table.table-striped
-      thead.thead-dark
-        tr
-          th(scope="col") Khu cách ly
-          th(scope="col") Tình trạng
-          th(scope="col") Ngày bắt đầu
-          th(scope="col") Ngày kết thúc
-      tbody
-        each item in new Array(6).fill(1)
+  h1.user-info-title Lịch sử được quản lý (#{treatmentHistories ? treatmentHistories.length : 0})
+  if treatmentHistories && treatmentHistories.length > 0
+    .table-wrap
+      table.table.table-striped
+        thead.thead-dark
           tr
-            td Khu cách ly quận 5, ĐH Y Dược
-            td F0
-            td 19-12-2021
-            td 25-12-2021
+            th(scope="col") Khu cách ly
+            th(scope="col") Tình trạng
+            th(scope="col") Ngày bắt đầu
+            th(scope="col") Ngày kết thúc
+        tbody
+          each th in treatmentHistories
+            tr
+              td= th.isolationFacilityName
+              td= helpers.convertStatusFToStr(th.statusF)
+              td= helpers.formatDateToStr(th.startDate)
+              td= helpers.formatDateToStr(th.endDate)
+  else
+    p.text-center.text-gray.mb-0 Bạn không có bất kỳ ghi nhận quản lý nào.

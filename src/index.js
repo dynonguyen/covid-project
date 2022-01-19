@@ -8,6 +8,8 @@ const morgan = require('morgan');
 const { db } = require('./configs/db.config');
 const session = require('express-session');
 const passport = require('passport');
+const fs = require('fs');
+const https = require('https');
 
 /* ============== Import middleware =============== */
 const {
@@ -58,9 +60,27 @@ app.set('views', path.join(__dirname, 'views'));
 // set logging
 app.use(morgan('tiny'));
 
+// https for localhost
+let server = app;
+if (process.env.NODE_ENV?.trim() === 'development') {
+	const key = fs.readFileSync(__dirname + '/key/key.pem');
+	const cert = fs.readFileSync(__dirname + '/key/cert.pem');
+	const options = {
+		key: key,
+		cert: cert,
+	};
+	process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+	server = https.createServer(options, app);
+}
+
 /* ============== Global Middleware =============== */
 app.use(unlessRoute([], checkInitSystemMiddleware));
-app.use(unlessRoute(['/auth', '/init-system'], authMiddleware));
+app.use(
+	unlessRoute(
+		['/auth', '/init-system', '/api/new-payment-history'],
+		authMiddleware
+	)
+);
 app.use(unlessRoute([], passVariableMiddleware));
 
 /* ============== Routes =============== */
@@ -85,7 +105,7 @@ const normalizePort = (port) => parseInt(port, 10);
 const PORT = normalizePort(process.env.PORT || 3000);
 
 db.sync({ after: true }).then((_) => {
-	app.listen(PORT, () => {
+	server.listen(PORT, () => {
 		console.log(`Server is listening on port ${PORT}`);
 	});
 });

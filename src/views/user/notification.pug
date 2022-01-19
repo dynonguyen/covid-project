@@ -1,0 +1,47 @@
+extends ../templates/user-info.template.pug
+
+block title
+  title Covid Project | Thông báo
+
+block append style
+  style.
+    .notification-wrap {
+      max-height: 420px;
+      overflow-y: auto;
+    }
+    .notification{
+      border: solid 1px #ddd;
+      border-radius: 8px;
+      padding: 8px 12px;
+      margin-bottom: 12px;
+    }
+    .notification-title {
+      font-size: 1.15rem;
+      color: var(--gray-dark);
+      font-weight: 600;
+      margin-bottom: 0;
+    }
+    .notification-time {
+      font-size: 0.85rem;
+      color: var(--gray);
+    }
+    .notification-content {
+      font-size: 0.95rem;
+      color: var(--gray);
+      margin-bottom: 0px;
+      text-align: justify;
+    }
+
+block addContent
+    h1.user-info-title Thông báo (#{notifications.length})
+    if notifications && notifications.length > 0
+      .notification-wrap
+        .px-2
+          each ntfy in notifications
+            .notification
+              .flex-center-between.mb-1
+                h4.notification-title= ntfy.title
+                span.notification-time= helpers.formatDateToStr(ntfy.createdTime)
+              p.notification-content= ntfy.content
+    else
+      p.text-gray.text-center.mb-0 Bạn không có thông báo nào.

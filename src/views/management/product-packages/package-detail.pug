@@ -1,0 +1,104 @@
+extends ../../templates/management.template.pug
+include ../../mixins/no-result.mixin.pug
+
+block title
+  title Covid Project | Chi tiết gói nhu yếu phẩm
+
+block append style
+  //- link(rel="stylesheet", href="/vendors/selectize/selectize.min.css")
+  link(rel="stylesheet", href="/css/management/product-view-list.css")
+  style.
+    body {
+      background: #ddd;
+    }
+    h1 {
+      font-size: 1.5rem;
+    }
+    .package-info{
+      font-size: 1.2rem;
+    }
+    .label {
+      font-weight: 600;
+      color: var(--gray-dark)
+    }
+    .card-content {
+      margin-bottom: 0;
+    }
+
+block addContent
+  .toast-msg#toastMsg
+
+  .p-4.flex-grow-1
+    - const { productPackageId, productPackageName, limitedProducts, limitedInDay, limitedInWeek, limitedInMonth, totalPrice } = package;
+    h1.text-uppercase.text-left.mb-4 Chi tiết gói sản phẩm - #{productPackageName}
+    .package-info
+      p #[span.label Tên gói:] #{productPackageName}
+      p #[span.label Số sản phẩm trong gói:] #{products.length}
+      p #[span.label Giới hạn số lượng sản phẩm:] #{limitedProducts}
+      p #[span.label Giới hạn mua trong ngày:] #{limitedInDay}
+      p #[span.label Giới hạn mua trong tuần:] #{limitedInWeek}
+      p #[span.label Giới hạn mua trong tháng:] #{limitedInMonth}
+      p #[span.label Tổng giá:] #[b.text-danger(style="letter-spacing:0.75px;")= helpers.formatCurrency(totalPrice)]
+      button.edit-btn.btn.btn-primary.mr-2(data-productPackageId=productPackageId ,data-productPackageName=productPackageName, data-limitedProducts=limitedProducts, data-limitedInDay=limitedInDay, data-limitedInWeek=limitedInWeek, data-limitedInMonth=limitedInMonth) Sửa #[i.bi.bi-pencil-fill]
+      button.delete-btn.btn.btn-danger(data-id=productPackageId) Xoá #[i.bi.bi-trash-fill]
+
+    h5.text-uppercase.label.my-4 Các sản phẩm trong gói
+    .wrapper
+      if products && products.length > 0
+        each product in products
+          - const { productName, productPrice, productUnit, thumbnail, photos, maxQuantity, productId } = product;
+          .product-card(data-id=productId)
+            img.card-top(src=thumbnail, alt="Product Photo", onerror="this.onerror=null;this.src='https://res.cloudinary.com/tuan-cloudinary/image/upload/v1642031448/smarket/no-img.png'")
+            .card-body
+              .photos
+                if photos && photos.length > 0
+                  each photo in photos
+                    .photo-item
+                      img(src=photo, alt="Photo")
+
+              .card-content
+                h4.product-name= productName
+                .product-price #[span.price.text-danger= helpers.formatCurrency(productPrice)] / #[span.unit= productUnit]
+                p.text-gray Tối đa #[b= maxQuantity] sản phẩm / gói
+      else
+        +noResult("","/management/product-packages/list")
+
+      .modal.fade#editModal
+        .modal-dialog.modal-dialog-centered.modal-dialog-scrollable.m-0-auto
+          .modal-content
+            .modal-header.bg-warning
+              h5.modal-title.text-capitalize Cập nhật gói nhu yếu phẩm
+              button.close(type="button", data-dismiss="modal", aria-label="Close")
+                span(aria-hidden="true") ×
+            .modal-body(style="padding:4rem 2rem")
+              //- #editModalBody
+                //- .spinner-border.text-info(role="status")
+                //-   span.sr-only Đang tải dữ liệu ...
+              #editModalBody
+                label(for="#productPackageName").text-gray.font-weight-bold Tên gói #[span#currentPackageName.font-weight-normal]
+                input#newPackageName.form-control(type="text", maxLength="100")
+                label(for="#limitedProducts").text-gray.font-weight-bold Giới hạn SL sản phẩm #[span#currentLP.font-weight-normal]
+                input#newLP.form-control(type="number", min="1", max="1000")
+                label(for="#limitedInDay").text-gray.font-weight-bold Giới hạn SL gói/ngày #[span#currentLID.font-weight-normal]
+                input#newLID.form-control(type="number", min="1", max="1000")
+                label(for="#limitedInWeek").text-gray.font-weight-bold Giới hạn SL gói/tuần #[span#currentLIW.font-weight-normal]
+                input#newLIW.form-control(type="number", min="1",max="1000")
+                label(for="#limitedInMonth").text-gray.font-weight-bold Giới hạn số lượng gói/tháng #[span#currentLIM.font-weight-normal]
+                input#newLIM.form-control(type="number", min="1", max="1000")
+            .modal-footer
+              button.btn.btn-secondary(type="button", data-dismiss="modal") Đóng
+              button#updateBtn.btn.btn-warning(type="button") Cập nhật
+
+      .photo-preview-wrapper
+        .photo-preview-close-icon
+          i.bi.bi-x-lg#closePreview
+        .photo-preview
+          img(src="", alt="Photo")
+        i.arrow.previous.bi.bi-caret-left-fill
+        i.arrow.next.bi.bi-caret-right-fill
+
+block append script
+  script(src="/js/helpers/cart.js")
+  script(src="/js/helpers/utils.js")
+  script(src="/js/helpers/cloudinary.js")
+  script(src="/js/management/package-detail.js")

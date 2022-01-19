@@ -39,4 +39,6 @@ module.exports = {
 	PAYMENT_SYS_URL: process.env.PAYMENT_URL,
 	PAYMENT_SYS_AUTH_HEADER: 'covid-token',
 	PAYMENT_SYS_AUTH_PRIVATE_KEY: process.env.PAYMENT_PRIVATE_KEY,
+	PAYMENT_TRACKING_QUERY_KEY: 'fid',
+	API_AUTH_HEADER: 'covid-token',
 };

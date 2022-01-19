@@ -6,13 +6,19 @@ productPackageMgmtRoute.get(
 	productPackageMgmtController.getProductPackage
 );
 productPackageMgmtRoute.get(
-	'/:productPackageId',
+	'/list/:packageId',
 	productPackageMgmtController.getPackageDetail
 );
+productPackageMgmtRoute.get('/new', productPackageMgmtController.getNewPackage);
 
 productPackageMgmtRoute.put(
 	'/update',
 	productPackageMgmtController.putUpdatePackage
+);
+
+productPackageMgmtRoute.delete(
+	'/:packageId',
+	productPackageMgmtController.deletePackage
 );
 
 module.exports = productPackageMgmtRoute;

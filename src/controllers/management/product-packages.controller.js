@@ -1,100 +1,147 @@
 const { parseSortStr } = require('../../helpers/index.helpers');
 
 const { Sequelize } = require('sequelize');
+const {
+	formatCurrency,
+	getPackageList,
+} = require('../../helpers/index.helpers');
 const { MAX } = require('../../constants/index.constant');
 const { Op } = require('../../configs/db.config');
 const ProductInPackage = require('../../models/product-in-package.model');
 const ProductPackage = require('../../models/product-package.model');
 const Product = require('../../models/product.model');
+const ProductImage = require('../../models/product-image.model');
 
 exports.getProductPackage = async (req, res) => {
+	let {
+		keyword = '',
+		sortByPrice = -1,
+		sortByName = -1,
+		priceFrom = 0,
+		priceTo = 0,
+	} = req.query;
+
+	sortByName = parseInt(sortByName);
+	if (isNaN(sortByName)) {
+		sortByName = -1;
+	}
+
+	sortByPrice = parseInt(sortByPrice);
+	if (isNaN(sortByPrice)) {
+		sortByPrice = -1;
+	}
+
+	priceFrom = parseInt(priceFrom);
+	if (isNaN(priceFrom)) {
+		priceFrom = 0;
+	}
+
+	priceTo = parseInt(priceTo);
+	if (isNaN(priceTo)) {
+		priceTo = 0;
+	}
+
+	if (priceFrom > priceTo && priceTo !== 0) {
+		[priceFrom, priceTo] = [priceTo, priceFrom];
+	}
+
 	try {
-		let { page = 1, sort = '', search = '' } = req.query;
-		const sortList = parseSortStr(sort);
-		const order = sortList.map((i) => i.split(' '));
-
-		page = Number(page);
-		if (isNaN(page) || page < 1) page = 1;
-
-		const where = search
-			? {
-					[Op.or]: [
-						{
-							productPackageName: Sequelize.where(
-								Sequelize.fn('LOWER', Sequelize.col('productPackageName')),
-								'LIKE',
-								`%${search.toLowerCase()}%`
-							),
-						},
-					],
-			  }
-			: {};
-
-		const packagesList = await ProductPackage.findAndCountAll({
-			raw: true,
-			order,
-			attributes: [
-				'productPackageId',
-				'productPackageName',
-				'limitedProducts',
-				'limitedInDay',
-				'limitedInWeek',
-				'limitedInMonth',
-			],
-			where,
-			limit: MAX.PAGE_SIZE,
-			offset: (page - 1) * MAX.PAGE_SIZE,
+		const packageData = await getPackageList(1, 12, {
+			keyword,
+			sortByName,
+			sortByPrice,
+			priceFrom,
+			priceTo,
 		});
+		const { packages } = packageData;
 
-		return res.render('./management/product-packages/view-list', {
-			total: packagesList.count,
-			currentPage: page,
-			pageSize: MAX.PAGE_SIZE,
-			packages: packagesList.rows,
-			sortList: sortList.join(','),
-			search,
+		res.render('./management/product-packages/view-list', {
+			packages,
+			searchKeyword: keyword,
+			sortByPrice,
+			sortByName,
+			priceFrom,
+			priceTo,
+			helpers: {
+				formatCurrency,
+			},
 		});
 	} catch (error) {
-		console.error('Load product packages list failed: ', error);
+		console.error('Function getProductPackage Error: ', error);
 		return res.render('404');
 	}
 };
 
 exports.getPackageDetail = async (req, res) => {
+	const { packageId } = req.params;
 	try {
-		const { productPackageId } = req.params;
-		if (!productPackageId)
-			return res
-				.status(404)
-				.json({ message: 'Không tìm thấy gói nhu yếu phẩm' });
+		let package = {},
+			products = [];
+		const promises = [];
+		const productPhotoPromises = [];
 
-		const productInPackage = await ProductInPackage.findAll({
-			raw: true,
-			attributes: [
-				'maxQuantity',
-				'quantity',
-				[
-					Sequelize.col('ProductPackage.productPackageName'),
-					'productPackageName',
+		promises.push(
+			ProductPackage.findOne({
+				raw: true,
+				where: { productPackageId: packageId },
+				attributes: {},
+			}).then((data) => (package = { ...data }))
+		);
+
+		promises.push(
+			ProductInPackage.findAll({
+				raw: true,
+				attributes: [
+					'maxQuantity',
+					'productId',
+					[Sequelize.col('Product.productName'), 'productName'],
+					[Sequelize.col('Product.price'), 'productPrice'],
+					[Sequelize.col('Product.unit'), 'productUnit'],
 				],
-				[Sequelize.col('Product.productName'), 'productName'],
-				[Sequelize.col('Product.price'), 'price'],
-				[Sequelize.col('Product.unit'), 'unit'],
-				[Sequelize.col('ProductInPackage.maxQuantity'), 'maxQuantity'],
-				[Sequelize.col('ProductInPackage.quantity'), 'quantity'],
-			],
-			where: { productPackageId },
-			include: [
-				{ model: ProductPackage, attributes: [] },
-				{ model: Product, attributes: [] },
-			],
-		});
+				where: {
+					productPackageId: packageId,
+				},
+				include: {
+					model: Product,
+					attributes: [],
+				},
+			}).then((data) => {
+				products = [...data];
+				data.forEach((p) =>
+					productPhotoPromises.push(
+						ProductImage.findAll({
+							raw: true,
+							where: { productId: p.productId },
+							attributes: ['src'],
+							order: [['isThumbnail', 'DESC']],
+							limit: 6,
+						}).then((photos) => {
+							p.thumbnail = photos[0];
+							p.photos = [...photos.slice(1).map((i) => i.src)];
+						})
+					)
+				);
+			})
+		);
 
-		return res.status(200).json(productInPackage);
+		await Promise.all(promises);
+		await Promise.all(productPhotoPromises);
+
+		return res.render('./management/product-packages/package-detail.pug', {
+			package,
+			products,
+			helpers: {
+				formatCurrency,
+			},
+		});
 	} catch (error) {
-		console.error('Load product package detail failed: ', error);
+		console.error('Function getPackageDetail Error: ', error);
 		return res.render('404');
 	}
+};
+
+exports.getNewPackage = async (req, res) => {
+	return res.render('./management/product-packages/new-package.pug');
 };
 
 exports.putUpdatePackage = async (req, res) => {
@@ -127,11 +174,13 @@ exports.putUpdatePackage = async (req, res) => {
 			{ limitedInDay: newLID },
 			{ where: { productPackageId } }
 		);
+
 		// update limited in week
 		await ProductPackage.update(
 			{ limitedInWeek: newLIW },
 			{ where: { productPackageId } }
 		);
+
 		// update limited in month
 		await ProductPackage.update(
 			{ limitedInMonth: newLIM },
@@ -142,5 +191,28 @@ exports.putUpdatePackage = async (req, res) => {
 	} catch (error) {
 		console.error('Function putUpdatePackage Error: ', error);
 		return res.status(400).json({ msg: 'Cập nhật thất bại !' });
+	}
+};
+
+exports.deletePackage = async (req, res) => {
+	const productPackageId = parseInt(req.params.packageId);
+	if (!productPackageId || isNaN(productPackageId)) {
+		return res.status(400).json({});
+	}
+
+	try {
+		const nRowAffected = await ProductPackage.destroy({
+			where: { productPackageId },
+			cascade: true,
+		});
+
+		if (nRowAffected) {
+			return res.status(200).json({});
+		}
+
+		return res.status(409).json({});
+	} catch (error) {
+		console.error('Function deleteProduct Error: ', error);
+		return res.status(409).json({});
 	}
 };

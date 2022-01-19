@@ -18,3 +18,34 @@ exports.createPaymentAccount = async (userInfo) => {
 		return false;
 	}
 };
+
+exports.getDebtInfo = async (userId) => {
+	if (!userId) return null;
+	try {
+		const apiRes = await axiosPayment.get(`${BASE_URL}/debt-info/${userId}`);
+		return apiRes?.data?.debtInfo;
+	} catch (error) {
+		console.error('Function getDebtInfo Error: ', error);
+		throw error;
+	}
+};
+
+exports.getPaymentLimit = async () => {
+	try {
+		const apiRes = await axiosPayment.get(`${BASE_URL}/payment-limit`);
+		return apiRes?.data?.paymentLimit;
+	} catch (error) {
+		console.error('Function getPaymentLimit Error: ', error);
+		throw error;
+	}
+};
+
+exports.getUserBalance = async (userId) => {
+	try {
+		const apiRes = await axiosPayment.get(`${BASE_URL}/balance/${userId}`);
+		return apiRes?.data?.balance;
+	} catch (error) {
+		console.error('Function getUserBalance Error: ', error);
+		throw error;
+	}
+};

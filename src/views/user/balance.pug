@@ -1,0 +1,26 @@
+extends ../templates/user-info.template.pug
+
+block title
+  title Covid Project | Kiểm tra số dư
+
+block append style
+  style.
+    .balance {
+      font-size: 2.25rem;
+      font-weight: 300;
+      color: var(--gray-dark);
+      letter-spacing: 1px;
+    }
+    .available {
+      font-size: 0.85rem;
+      color: var(--gray);
+      font-weight: 600;
+    }
+
+block addContent
+  h1.user-info-title Kiểm tra số dư
+  .my-4
+    .balance= helpers.formatCurrency(balance)
+    .available Khả dụng
+  .btn.btn-info
+    a.text-light(href="/user/payment/put-money") Nạp tiền #[i.bi.bi-credit-card-fill.ml-2]

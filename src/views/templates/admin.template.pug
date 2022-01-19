@@ -23,13 +23,14 @@ block content
         a(href="/auth/logout") #[i.mgmt-icon.bi.bi-box-arrow-in-right]
 
     .d-flex
-      -
+
         const menuList = [
                         {
                           menuTitle: 'Tài khoản người quản lý',
                           icon: 'bi bi-people-fill',
                           list: [
                             { title: 'Xem danh sách', to: '/managers/list' },
+
                             { title: 'Thêm người quản lý', to: '/managers/new' },
                           ],
                         },
@@ -41,7 +42,7 @@ block content
                             { title: 'Thêm địa điểm mới', to: '/isolation-facilities/new' },
                           ],
                         },
-                        {
+                         {
                           menuTitle: 'Thiết lập',
                           icon: 'bi bi-gear-fill',
                           list: [

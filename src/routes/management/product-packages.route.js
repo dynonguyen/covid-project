@@ -11,6 +11,11 @@ productPackageMgmtRoute.get(
 );
 productPackageMgmtRoute.get('/new', productPackageMgmtController.getNewPackage);
 
+productPackageMgmtRoute.post(
+	'/new',
+	productPackageMgmtController.postNewPackage
+);
+
 productPackageMgmtRoute.put(
 	'/update',
 	productPackageMgmtController.putUpdatePackage

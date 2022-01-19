@@ -7,7 +7,7 @@ block title
   title Thêm gói nhu yếu phẩm | Người quản trị
 
 block append addStyle
-  link(rel="stylesheet", href="/css/management/new-product.css")
+
   link(rel="stylesheet", href="/css/management/new-package.css")
 
 block addContent
@@ -15,15 +15,15 @@ block addContent
 
   .p-4.flex-grow-1
     .flex-center
-      form#form.bg-white.p-4.m-0-auto(action="/management/products/new", method="POST", enctype="multipart/form-data")
+      form#form.bg-white.p-4.m-0-auto(action="/management/product-packages/new", method="POST")
         .form-title
           h1.title.text-center.mb-4 Thêm gói nhu yếu phẩm
         .d-flex.flex-column
-          input#productName.field.mb-3(type="text", name="productName", maxLength="40", required, placeholder="Nhập tên gói", autofocus, value=productName && !isSuccess ? productName: '')
-          input#price.field.mb-3(type="number", name="price", placeholder="Nhập giới hạn gói", min="0", max="1000")
-          input#price.field.mb-3(type="number", name="price", placeholder="Nhập giới hạn gói theo ngày", min="0", max="1000")
-          input#price.field.mb-3(type="number", name="price", placeholder="Nhập giới hạn gói theo tuần", min="0", max="1000")
-          input#price.field.mb-3(type="number", name="price", placeholder="Nhập giới hạn gói theo tháng", min="0", max="1000")
+          input#productPackageName.field.mb-3(type="text", name="productPackageName", maxLength="40", placeholder="Nhập tên gói", autofocus, value=packageName && !isSuccess ? packageName: '')
+          input#limitedProducts.field.mb-3(type="number", name="limitedProducts", placeholder="Nhập giới hạn gói", min="0", max="1000")
+          input#limitedInDay.field.mb-3(type="number", name="limitedInDay", placeholder="Nhập giới hạn gói theo ngày", min="0", max="1000")
+          input#limitedInWeek.field.mb-3(type="number", name="limitedInWeek", placeholder="Nhập giới hạn gói theo tuần", min="0", max="1000")
+          input#limitedInMonth.field.mb-3(type="number", name="limitedInMonth", placeholder="Nhập giới hạn gói theo tháng", min="0", max="1000")
 
           #addedProductBox.bg-white.sm-box-shadow.box-rounded.box.mb-4
             h3.box-title.f-box.toggle-action.mb-0.cur-pointer(data-toggle-target="productBox") Thêm sản phẩm trong gói
@@ -38,5 +38,6 @@ block addContent
           span Thêm
 
 block append addScript
+  script(src="/vendors/selectize/selectize.min.js")
   script(src="/js/management/new-package.js")
 

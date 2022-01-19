@@ -144,6 +144,76 @@ exports.getNewPackage = async (req, res) => {
 	return res.render('./management/product-packages/new-package.pug');
 };
 
+exports.postNewPackage = async (req, res) => {
+	let {
+		productPackageName,
+		limitedProducts,
+		limitedInWeek,
+		limitedInDay,
+		limitedInMonth,
+		productId,
+		maxQuantity,
+	} = req.body;
+	try {
+		// check package existence
+		const isPackageExist = await ProductPackage.findOne({
+			raw: true,
+			attributes: ['productPackageId'],
+			where: {
+				productPackageName: Sequelize.where(
+					Sequelize.fn('LOWER', Sequelize.col('productPackageName')),
+					productPackageName.toLowerCase()
+				),
+			},
+		});
+
+		if (isPackageExist) {
+			return res.render('./management/product-packages/new-package.pug', {
+				productPackageName,
+				msg: 'Gói nhu yếu phẩm đã tồn tại',
+			});
+		}
+
+		// Create a new package
+		const productPackage = await ProductPackage.create({
+			productPackageName,
+			limitedProducts,
+			limitedInDay,
+			limitedInWeek,
+			limitedInMonth,
+		});
+
+		if (!productPackage) {
+			throw new Error('Failed to create a new package');
+		}
+
+		const { productPackageId } = productPackage;
+
+		// Add a product into this package
+		const productInPackage = await ProductInPackage.create({
+			maxQuantity,
+			productId,
+			productPackageId,
+		});
+
+		if (!productInPackage) {
+			throw new Error('Failed to add a product into this package');
+		}
+
+		return res.render('./management/product-packages/new-package.pug', {
+			productPackageName,
+			isSuccess: true,
+			msg: 'Thêm gói nhu yếu phẩm thành công',
+		});
+	} catch (error) {
+		console.error('Function postNewPackage Error: ', error);
+		return res.render('./management/product-packages/new-package.pug', {
+			productPackageName,
+			msg: 'Thêm gói nhu yếu phẩm thất bại ! Thử lại',
+		});
+	}
+};
+
 exports.putUpdatePackage = async (req, res) => {
 	try {
 		let { productPackageId, newPackageName, newLP, newLID, newLIW, newLIM } =

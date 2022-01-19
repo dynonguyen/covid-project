@@ -19,7 +19,7 @@ const ConsumptionPIP = db.define(
 	{
 		tableName: 'ConsumptionPIP',
 		timestamps: false,
-		initialAutoIncrement: 1,
+		initialAutoIncrement: 1000,
 	}
 );
 

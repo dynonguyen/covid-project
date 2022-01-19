@@ -38,7 +38,7 @@ const ProductPackage = db.define(
 			defaultValue: 0,
 		},
 	},
-	{ tableName: 'ProductPackage', timestamps: false, initialAutoIncrement: 1 }
+	{ tableName: 'ProductPackage', timestamps: false, initialAutoIncrement: 1000 }
 );
 
 module.exports = ProductPackage;

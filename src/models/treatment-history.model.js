@@ -26,7 +26,11 @@ const TreatmentHistory = db.define(
 			defaultValue: STATUS_F.F0,
 		},
 	},
-	{ tableName: 'TreatmentHistory', timestamps: false, initialAutoIncrement: 1 }
+	{
+		tableName: 'TreatmentHistory',
+		timestamps: false,
+		initialAutoIncrement: 1000,
+	}
 );
 
 // Foreign key

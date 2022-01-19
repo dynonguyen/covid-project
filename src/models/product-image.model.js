@@ -19,7 +19,7 @@ const ProductImage = db.define(
 			defaultValue: false,
 		},
 	},
-	{ tableName: 'ProductImage', timestamps: false, initialAutoIncrement: 1 }
+	{ tableName: 'ProductImage', timestamps: false, initialAutoIncrement: 1000 }
 );
 
 // Foreign key

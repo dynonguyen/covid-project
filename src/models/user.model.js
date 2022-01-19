@@ -34,7 +34,7 @@ const User = db.define(
 			defaultValue: STATUS_F.F0,
 		},
 	},
-	{ tableName: 'User', timestamps: true, initialAutoIncrement: 1 }
+	{ tableName: 'User', timestamps: true, initialAutoIncrement: 1000 }
 );
 
 // Foreign key

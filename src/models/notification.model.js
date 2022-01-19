@@ -23,7 +23,7 @@ const Notification = db.define(
 			defaultValue: new Date(),
 		},
 	},
-	{ tableName: 'Notification', timestamps: false, initialAutoIncrement: 1 }
+	{ tableName: 'Notification', timestamps: false, initialAutoIncrement: 1000 }
 );
 
 User.hasMany(Notification, {

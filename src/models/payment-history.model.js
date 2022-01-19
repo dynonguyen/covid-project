@@ -36,7 +36,7 @@ const PaymentHistory = db.define(
 			defaultValue: 0,
 		},
 	},
-	{ tableName: 'PaymentHistory', timestamps: false, initialAutoIncrement: 1 }
+	{ tableName: 'PaymentHistory', timestamps: false, initialAutoIncrement: 1000 }
 );
 
 // Foreign key

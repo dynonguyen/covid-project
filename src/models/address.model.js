@@ -14,7 +14,7 @@ const Address = db.define(
 			allowNull: false,
 		},
 	},
-	{ tableName: 'Address', timestamps: false, initialAutoIncrement: 1 }
+	{ tableName: 'Address', timestamps: false, initialAutoIncrement: 1000 }
 );
 
 // Foreign key

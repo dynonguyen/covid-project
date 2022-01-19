@@ -23,7 +23,7 @@ const Product = db.define(
 			allowNull: false,
 		},
 	},
-	{ tableName: 'Product', timestamps: false, initialAutoIncrement: 1 }
+	{ tableName: 'Product', timestamps: false, initialAutoIncrement: 1000 }
 );
 
 module.exports = Product;

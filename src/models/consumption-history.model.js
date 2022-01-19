@@ -24,7 +24,7 @@ const ConsumptionHistory = db.define(
 	{
 		tableName: 'ConsumptionHistory',
 		timestamps: false,
-		initialAutoIncrement: 1,
+		initialAutoIncrement: 1000,
 	}
 );
 

@@ -16,7 +16,11 @@ const ProductInPackage = db.define(
 			defaultValue: 1,
 		},
 	},
-	{ tableName: 'ProductInPackage', timestamps: false, initialAutoIncrement: 1 }
+	{
+		tableName: 'ProductInPackage',
+		timestamps: false,
+		initialAutoIncrement: 1000,
+	}
 );
 
 // Foreign key

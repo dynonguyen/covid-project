@@ -25,7 +25,11 @@ const IsolationFacility = db.define(
 			defaultValue: 0,
 		},
 	},
-	{ tableName: 'IsolationFacility', timestamps: false, initialAutoIncrement: 1 }
+	{
+		tableName: 'IsolationFacility',
+		timestamps: false,
+		initialAutoIncrement: 1000,
+	}
 );
 
 // Foreign key

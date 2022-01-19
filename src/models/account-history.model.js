@@ -19,7 +19,7 @@ const AccountHistory = db.define(
 			defaultValue: new Date(),
 		},
 	},
-	{ tableName: 'AccountHistory', timestamps: false, initialAutoIncrement: 1 }
+	{ tableName: 'AccountHistory', timestamps: false, initialAutoIncrement: 1000 }
 );
 
 // Foreign key

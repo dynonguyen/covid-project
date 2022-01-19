@@ -10,7 +10,7 @@ const RelatedUser = db.define(
 			autoIncrement: true,
 		},
 	},
-	{ tableName: 'RelatedUser', timestamps: false, initialAutoIncrement: 1 }
+	{ tableName: 'RelatedUser', timestamps: false, initialAutoIncrement: 1000 }
 );
 
 // Foreign key

@@ -1,4 +1,5 @@
 $(document).ready(function () {
+	loadCart();
 	const pathname =
 		'/' +
 		location.pathname

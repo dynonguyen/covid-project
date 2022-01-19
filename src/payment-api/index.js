@@ -84,3 +84,16 @@ exports.postPayment = async ({ totalMoney, userId }) => {
 		throw error;
 	}
 };
+
+exports.postDebt = async ({ debt, userId }) => {
+	try {
+		await axiosPayment.post(`${BASE_URL}/debt`, {
+			userId,
+			debt,
+		});
+		return true;
+	} catch (error) {
+		console.log('Function postDebt Axios Error: ', error);
+		throw error;
+	}
+};

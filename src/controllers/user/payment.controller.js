@@ -13,6 +13,9 @@ const User = require('../../models/user.model');
 const {
 	getUserBalance,
 	postPayment: axiosPostPayment,
+	getPaymentLimit,
+	getDebtInfo,
+	postDebt: postDebtAxios,
 } = require('../../payment-api');
 const { v4: uuidv4 } = require('uuid');
 
@@ -144,11 +147,68 @@ exports.postPayment = async (req, res) => {
 
 		// Not enough money -> show debt modal
 		if (userBalance < paymentTotal) {
-			return res.status(406).json({ balance: userBalance, paymentTotal });
+			return res.status(406).json({ balance: userBalance });
 		}
 
 		// payment processing ...
 		await paymentProcess(userId, paymentTotal, packages);
+		return res.status(200).json({ msg: 'Successfully' });
+	} catch (error) {
+		console.error('Function postPayment Error: ', error);
+		return res.status(500).json({ msg: 'Thanh toán thất bại' });
+	}
+};
+
+exports.postDebt = async (req, res) => {
+	const { carts } = req.body;
+	let { paymentTotal, packages } = carts;
+	paymentTotal = Number(paymentTotal);
+
+	if (isNaN(paymentTotal) || !packages || packages.length === 0) {
+		return res.status(400).json({});
+	}
+
+	const { accountId } = req.user;
+
+	try {
+		// recalculate payment total
+		const recalculatedTotalMoney = recalculateCarts(packages);
+		if (recalculatedTotalMoney !== paymentTotal) {
+			// return res.status(400).json({});
+		}
+
+		// get user id
+		const { userId } = await User.findOne({ raw: true, where: { accountId } });
+
+		// check user's balance
+		const promises = [];
+		let userBalance, maximumDebt, userDebt;
+		promises.push(
+			getUserBalance(userId).then((balance) => (userBalance = Number(balance)))
+		);
+		promises.push(
+			getPaymentLimit().then((data) => (maximumDebt = Number(data.maximumDebt)))
+		);
+		promises.push(
+			getDebtInfo(userId).then((data) => (userDebt = data?.debt || 0))
+		);
+		await Promise.all(promises);
+
+		// Not enough money -> show debt modal
+		if (userBalance < paymentTotal) {
+			const newDebt = paymentTotal - userBalance;
+			if (userDebt + newDebt >= maximumDebt) {
+				return res.status(403).json({
+					msg: 'Bạn đã vượt tối đa số tiền có thể ghi nợ, vui lòng nạp tiền để tiếp tục',
+				});
+			}
+
+			const paymentPromises = [];
+			paymentPromises.push(postDebtAxios({ userId, debt: newDebt }));
+			paymentPromises.push(paymentProcess(userId, userBalance, packages));
+			await Promise.all(paymentPromises);
+		}
+
 		return res.status(200).json({ msg: 'Successfully' });
 	} catch (error) {
 		console.error('Function postPayment Error: ', error);

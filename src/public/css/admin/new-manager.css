@@ -1,8 +1,6 @@
-
 form {
 	border-radius: 16px;
 	box-shadow: var(--sm-box-shadow);
-  height: 22500px;
 }
 
 .form-title {
@@ -35,7 +33,6 @@ form {
 		font-size: 80%;
 	}
 }
-
 
 label {
 	font-weight: 500;

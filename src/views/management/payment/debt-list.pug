@@ -22,7 +22,7 @@ block addContent
               th(scope="col") Nhắc thanh toán
           tbody
             each d in debtList
-              - const { peopleId, fullname, debt, returned, status, createdTime, isRemind } = d;
+              - const { peopleId, fullname, debt, returned, status, createdTime, isRemind, userId } = d;
               tr
                 td= peopleId
                 td= fullname
@@ -40,11 +40,12 @@ block addContent
                     if isRemind
                       .btn.btn-success Đã nhắc
                     else
-                      .btn.btn-danger Nhắc
+                      .btn.btn-danger.remind-btn(data-id=userId) Nhắc
     else
       +noResult("", "/management")
 
   .toast-msg#toastMsg
 block append addScript
+  script(src="/js/management/payment/debt-list.js")
 
 

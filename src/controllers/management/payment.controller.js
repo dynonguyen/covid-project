@@ -5,6 +5,7 @@ const {
 	getPaymentLimit,
 	putUpdatePaymentLimit: axiosPutUpdatePaymentLimit,
 	getUserDebtList,
+	getDebtInfo,
 } = require('../../payment-api');
 const {
 	formatCurrency,
@@ -99,6 +100,36 @@ exports.putUpdateMinimumLimit = async (req, res) => {
 		return res.status(400).json({});
 	} catch (error) {
 		console.error('Function putUpdateMiniumLimit Error: ', error);
+		return res.status(400).json({});
+	}
+};
+
+exports.postRemindUserPayDebt = async (req, res) => {
+	const userId = Number(req.params.userId);
+	try {
+		const { minimumLimit } = await getPaymentLimit();
+		const debtInfo = await getDebtInfo(userId);
+		if (debtInfo && minimumLimit) {
+			const { debt, returned, status } = debtInfo;
+			if (status === 1 || debt === returned) {
+				return res.status(200).json({});
+			}
+
+			const remainingDebt = debt - returned;
+			await Notification.create({
+				userId,
+				title: `Nhắc thanh toán dư nợ tháng ${new Date().getMonth() + 1}`,
+				content: `Bạn có một khoản dư nợ ${formatCurrency(
+					remainingDebt
+				)} cần thanh toán. Hạn mức thanh toán tối thiểu phải thanh toán hàng tháng là ${minimumLimit}% số dư nợ còn lại ~ ${formatCurrency(
+					~~((remainingDebt * minimumLimit) / 100)
+				)}. Chọn tính năng nạp tiền để thanh toán. Cảm ơn.`,
+				createdTime: new Date(),
+			});
+		}
+		return res.status(200).json({});
+	} catch (error) {
+		console.error('Function postRemindUserPayDebt Error: ', error);
 		return res.status(400).json({});
 	}
 };

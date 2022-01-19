@@ -19,6 +19,7 @@ module.exports = {
 	PAYMENT_TYPES: {
 		CONSUME: 0,
 		SEND_MONEY: 1,
+		DEBT: 2,
 	},
 
 	STATUS_F: {

@@ -162,7 +162,11 @@ exports.getPaymentHistory = async (req, res) => {
 				totalMoney: formatCurrency(p.totalMoney),
 				currentBalance: formatCurrency(p.currentBalance),
 				content:
-					p.paymentType === PAYMENT_TYPES.SEND_MONEY ? 'Nạp tiền' : 'Mua NYP',
+					p.paymentType === PAYMENT_TYPES.SEND_MONEY
+						? 'Nạp tiền'
+						: p.paymentType === PAYMENT_TYPES.CONSUME
+						? 'Mua nhu yếu phẩm'
+						: 'Nạp tiền và thanh toán dư nợ',
 			};
 		});
 

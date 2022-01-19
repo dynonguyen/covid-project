@@ -20,21 +20,21 @@
 	flex-basis: 9rem;
 }
 
-.new-user .field {
+.new-package .field {
 	border-radius: 8px;
 	flex-grow: 1;
 }
 
 .selectize-input {
-	border-radius: 8px;
+	border-radius: 25px;
 }
 
-.related-user {
+/* .related-user {
 	background-color: var(--light-gray);
 	padding: 0.75rem;
 	border-radius: 8px;
 	margin: 0.75rem 0;
-}
+} */
 
 .toggle-action i[class*='bi-chevron'] {
 	position: absolute;
@@ -54,4 +54,9 @@
 	border: solid 1px var(--field-bg);
 	border-radius: 8px;
 	border-top: none;
+}
+
+input {
+	background-color: transparent;
+	border: none;
 }

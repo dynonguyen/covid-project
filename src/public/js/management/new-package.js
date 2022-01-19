@@ -1,8 +1,6 @@
 let toastMsg = null;
 let products = [];
-let addedProducts = {
-	product: [],
-};
+let addedProducts = [];
 
 /* ============== UTILS FUNCTION =============== */
 async function getProductsAjax() {
@@ -27,43 +25,18 @@ function renderProductToSelect(selector) {
 	$(selector).html(html);
 }
 
-function renderAddProductForm(selector) {
-	const html = `
-  <div class="toggle-form p-3">
-    <div class="addProduct mb-3">
-      <select class="mb-2 product" name="productId">
-        <option selected hidden disabled value="">Chọn sản phẩm</option>
-      </select>
-    </div>
-    <input class="price.field.mb-3", type="number", name="maxQuantity", placeholder="Nhập giới hạn gói", min="0", max="1000">
-
-    <div class="text-right mt-4">
-      <div class="btn btn-danger reset-btn mr-2">Điền lại</div>
-      <div class="btn btn-primary related-add-btn">Thêm</div>
-    </div>
-  </div>
-  `;
-
-	$(selector).html(html);
-
-	renderProductToSelect(`${selector} .product`);
-	$(`${selector} select`).selectize();
-
-	onProductChange(`${selector} .product`);
-}
-
 /* ============== EVENT HANDLER =============== */
-function onProductChange(selector) {
-	$(selector).change(async function () {
-		const id = Number($(this).val());
-		if (!id || isNaN(id)) return;
-	});
-}
 
-function onResetBtnClick() {
-	$('.reset-btn').click(function () {
-		const boxId = $(this).parents('.box')[0].id;
-		clearForm(`#${boxId}`);
+function onAddProductBtnClick() {
+	$('.product-add-btn').click(function () {
+		const productId = $('.item').attr('data-value');
+		const maxQuantity = $('#maxQuantity').val();
+
+		addProductToListBox(productId, maxQuantity);
+		// clearForm(`#f${statusF}AddForm`);
+
+		console.log('addedProducts: ', productId + ' ' + maxQuantity);
+		console.log('addedProducts: ', addedProducts);
 	});
 }
 
@@ -75,6 +48,16 @@ async function initLoad() {
 
 	// setting selectize
 	$('select').selectize();
+}
+
+/* ============== ACTIONS =============== */
+function addProductToListBox(productId, maxQuantity) {
+	$(`.product-list`).append(
+		`<div class="added-product flex-center-between">
+      <span>${productId} - ${maxQuantity}</span>
+      <i class="bi bi-trash cur-pointer text-danger delete-user-icon" data-id="${productId}"></i>
+    </div>`
+	);
 }
 
 $(document).ready(async function () {
@@ -96,9 +79,12 @@ $(document).ready(async function () {
 		}
 	});
 
-	onProductChange('#product');
+	onAddProductBtnClick();
 
-	onResetBtnClick();
+	// test nut them san pham
+	$('#productAddForm').click(function () {
+		console.log('object', $(this).attr);
+	});
 
 	$('.add-form-btn').click(function (e) {
 		e.preventDefault();
@@ -107,5 +93,7 @@ $(document).ready(async function () {
 		const addForm = $(target);
 		renderAddProductForm(target);
 		addForm.slideToggle(250);
+
+		console.log('target', target);
 	});
 });

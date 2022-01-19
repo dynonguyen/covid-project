@@ -29,13 +29,20 @@ block addContent
             h3.box-title.f-box.toggle-action.mb-0.cur-pointer(data-toggle-target="productBox") Thêm sản phẩm trong gói
               i.bi.bi-chevron-down
             #productBox
-              .related-list(data-f="product")
-              button.btn.btn-outline-info.text-center.w-100.mt-3.add-form-btn(data-toggle-target="productAddForm", data-f="product") #[span Thêm mới] #[i.bi.bi-plus.ml-2]
-              #productAddForm
+              .product-list
+                //- button.btn.btn-outline-info.text-center.w-100.mt-3.add-form-btn(data-toggle-target="productAddForm", data-f="product") #[span Thêm mới] #[i.bi.bi-plus.ml-2]
+                //- #productAddForm
+                .toggle-form.p-3
+                  .addProduct.mb-3
+                    select.mb-2#product(name="productId")
+                      option(selected, hidden, disabled, value) Chọn sản phẩm
+                    input#maxQuantity.field.w-100(type="number", name="maxQuantity", placeholder="Nhập giới hạn gói", min="0", max="1000")
+                  .text-right.mt-4
+                    .btn.btn-primary.product-add-btn Thêm
 
         button#submitBtn.w-100.submit-btn.btn.btn-primary(type="submit")
           span#loading.d-none.spinner-border.spinner-border-sm.text-border.mr-2(role="status")
-          span Thêm
+          span Thêm gói
 
 block append addScript
   script(src="/vendors/selectize/selectize.min.js")

@@ -1,0 +1,22 @@
+extends ../../templates/management.template.pug
+include ../../mixins/no-result.mixin.pug
+
+block title
+  title Hạn mức tối thiểu | Người quản trị
+
+block addContent
+  .py-5.flex-grow-1
+    .p-4.bg-white.mx-auto(style="max-width: 776px;box-shadow: var(--sm-box-shadow)")
+      p.text-gray(style="font-size: 1.15rem") #[b Hạn mức thanh toán tối thiểu ] là phần trăm trên số dư nợ của người dùng mà họ phải trả theo định kỳ để tiếp tục thanh toán và ghi nợ.
+      .pl-4
+        p.text-gray Ví dụ: Dư nợ của người dùng = #[b 250.000 đ], Hạn mức tối thiểu = #[b 10%]
+        p.text-gray Số tiền tối thiểu phải trả định kỳ = (250.000 * 10%) = #[b 25.000 đ]
+      p.text-gray(style="font-size: 1.15rem") #[b Hạn mức thanh toán tối thiểu hiện tại của hệ thống là:]
+      p.text-center.text-danger(style="font-size: 2rem;letter-spacing:10px") #[b#minimumLimit #{minimumLimit}%]
+      .text-center.d-flex.flex-column.mx-auto(style="max-width: 360px")
+        input.field.mb-3#input(type="number", min="1", max="25", step="1", placeholder="Hạn mức thanh toán tối thiểu 1-25%")
+        button.btn.btn-danger#updateBtn(style="border-radius: 25px") Thay đổi hạn mức tối thiểu
+  .toast-msg#toastMsg
+block append addScript
+  script(src="/js/management/payment/minimum-limit.js")
+

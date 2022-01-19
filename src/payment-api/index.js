@@ -49,3 +49,15 @@ exports.getUserBalance = async (userId) => {
 		throw error;
 	}
 };
+
+exports.putUpdatePaymentLimit = async (minimumLimit = 1) => {
+	try {
+		await axiosPayment.put(`${BASE_URL}/minium-limit`, {
+			minimumLimit,
+		});
+		return true;
+	} catch (error) {
+		console.error('Function putUpdatePaymentLimit Error: ', error);
+		throw error;
+	}
+};

@@ -11,4 +11,9 @@ statisticRoute.get(
 	statisticController.getPackagesTimeStatistic
 );
 
+statisticRoute.get(
+	'/payment-time',
+	statisticController.getPaymentTimeStatistic
+);
+
 module.exports = statisticRoute;

@@ -2,6 +2,7 @@ const { Sequelize } = require('sequelize');
 const TreatmentHistory = require('../../models/treatment-history.model');
 const { Op } = require('../../configs/db.config');
 const ConsumptionHistory = require('../../models/consumption-history.model');
+const PaymentHistory = require('../../models/payment-history.model');
 
 exports.getStatusfTimeStatistic = async (req, res) => {
 	const { start, end } = req.query;
@@ -90,6 +91,59 @@ exports.getPackagesTimeStatistic = async (req, res) => {
 		return res.render('./management/statistic/packages-time.pug', {
 			chartData: totalPriceArr,
 			chartDataX: productPackageIdArr,
+			end,
+		});
+	} catch (error) {
+		console.error('Function getStatusfTimeStatistic Error: ', error);
+		return res.render('404');
+	}
+};
+
+exports.getPaymentTimeStatistic = async (req, res) => {
+	const { start, end } = req.query;
+	const andOps = [];
+	start &&
+		andOps.push({
+			startDate: {
+				[Op.gte]: new Date(start),
+			},
+		});
+	end &&
+		andOps.push({
+			startDate: {
+				[Op.lte]: new Date(end),
+			},
+		});
+
+	const where = {
+		[Op.and]: andOps,
+	};
+
+	try {
+		const paymentStat = await PaymentHistory.findAll({
+			raw: true,
+			attributes: ['paymentHistoryId', 'userId', 'currentBalance'],
+			where,
+			group: ['paymentHistoryId', 'userId', 'currentBalance'],
+		});
+
+		const paymentStatSort = paymentStat
+			.sort((a, b) => a.paymentHistoryId - b.paymentHistoryId)
+			.map((i) => i);
+
+		let userIdArr = [];
+		for (let i = 0; i < paymentStatSort.length; ++i) {
+			userIdArr.push(paymentStatSort[i].userId);
+		}
+
+		let currentBalanceArr = [];
+		for (let i = 0; i < paymentStatSort.length; ++i) {
+			currentBalanceArr.push(paymentStatSort[i].currentBalance);
+		}
+
+		return res.render('./management/statistic/payment-time.pug', {
+			chartData: currentBalanceArr,
+			chartDataX: userIdArr,
 			end,
 		});
 	} catch (error) {

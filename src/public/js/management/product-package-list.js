@@ -166,6 +166,12 @@ $(document).ready(function () {
 		}
 	});
 
+	$('#search').click(function () {
+		const keyword = $('#searchInput').val()?.trim();
+		if (!keyword) return;
+		location.href = `/management/product-packages/list?keyword=${keyword}`;
+	});
+
 	$('#sortByName').change(function () {
 		location.href = getQuery(searchKeyword);
 	});

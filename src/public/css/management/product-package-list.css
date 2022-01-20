@@ -24,6 +24,7 @@ th .has-icon .bi {
 	border-bottom-left-radius: 8px;
 	border-bottom-right-radius: 0px;
 	min-width: 300px;
+	background-color: #fff !important;
 }
 
 .search .btn {

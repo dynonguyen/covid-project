@@ -10,14 +10,15 @@ block title
 
 block append style
   link(rel="stylesheet", href="/css/user/package-card.css")
+  link(rel="stylesheet", href="/css/management/product-package-list.css")
   link(rel="stylesheet", href="/css/user/home.css")
 
 block addContent
   .toast-msg#toastMsg
 
   .p-4.flex-grow-1
-    .search.d-flex.mb-4
-      input#search.field(type="text", placeholder="Nhập tên sản phẩm cần tìm")
+    #search.d-flex.mb-4
+      input#searchInput.bg-white.field(type="text", placeholder="Nhập tên gói cần tìm", style="border-radius: 8px")
       button#searchBtn.btn.btn-info #[i.bi.bi-search]
     if searchKeyword
       h5.my-3.text-info Kết quả tìm kiếm cho: #[b.mx-3= searchKeyword] #[i.bi.bi-x-square-fill.text-danger.cur-pointer#destroySearch]

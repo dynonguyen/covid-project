@@ -1,0 +1,11 @@
+# Ignore files to push Heroku Dyno
+*.psd
+*.pdf
+/references
+/databases
+.local.env
+jsconfig.json
+README.md
+.prettierignore
+.prettierrc
+.editorconfig

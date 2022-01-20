@@ -5,7 +5,7 @@ const app = express();
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const morgan = require('morgan');
-const { db } = require('./configs/db.config');
+const { db } = require('./src/configs/db.config');
 const session = require('express-session');
 const passport = require('passport');
 const fs = require('fs');
@@ -14,29 +14,31 @@ const https = require('https');
 /* ============== Import middleware =============== */
 const {
 	checkInitSystemMiddleware,
-} = require('./middleware/init-system.middleware');
+} = require('./src/middleware/init-system.middleware');
 const {
 	authMiddleware,
 	adminAuthorizationMiddleware,
 	mgmtAuthorizationMiddleware,
 	userAuthorizationMiddleware,
-} = require('./middleware/auth.middleware');
-const { passSidebarStatus } = require('./middleware/mgmt-session.middleware');
-const passVariableMiddleware = require('./middleware/pass-variable.middleware');
+} = require('./src/middleware/auth.middleware');
+const {
+	passSidebarStatus,
+} = require('./src/middleware/mgmt-session.middleware');
+const passVariableMiddleware = require('./src/middleware/pass-variable.middleware');
 
 /* ============== Import routes =============== */
-const { MAX } = require('./constants/index.constant');
-const { unlessRoute } = require('./middleware/unless.middleware');
-const adminRoute = require('./routes/admin/index.route');
-const apiRoute = require('./routes/api.route');
-const authRoute = require('./routes/auth.route');
-const homeRoute = require('./routes/home.route');
-const initSystemRoute = require('./routes/init-system.route');
-const managementRoute = require('./routes/management/index.route');
-const userRoute = require('./routes/user/index.route');
+const { MAX } = require('./src/constants/index.constant');
+const { unlessRoute } = require('./src/middleware/unless.middleware');
+const adminRoute = require('./src/routes/admin/index.route');
+const apiRoute = require('./src/routes/api.route');
+const authRoute = require('./src/routes/auth.route');
+const homeRoute = require('./src/routes/home.route');
+const initSystemRoute = require('./src/routes/init-system.route');
+const managementRoute = require('./src/routes/management/index.route');
+const userRoute = require('./src/routes/user/index.route');
 
 /* ============== Config =============== */
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'src/public')));
 app.use(express.json({ limit: '5MB' }));
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser(process.env.SIGNED_COOKIE || 'signed_cookie'));
@@ -55,13 +57,13 @@ app.use(passport.session());
 
 // set view engine
 app.set('view engine', 'pug');
-app.set('views', path.join(__dirname, 'views'));
+app.set('views', path.join(__dirname, 'src/views'));
 
 // https for localhost and wake up heroku server in production
 let server = app;
 if (process.env.NODE_ENV?.trim() === 'development') {
-	const key = fs.readFileSync(__dirname + '/key/key.pem');
-	const cert = fs.readFileSync(__dirname + '/key/cert.pem');
+	const key = fs.readFileSync(path.join(__dirname, 'key/key.pem'));
+	const cert = fs.readFileSync(path.join(__dirname, 'key/cert.pem'));
 	const options = {
 		key: key,
 		cert: cert,
@@ -74,9 +76,6 @@ if (process.env.NODE_ENV?.trim() === 'development') {
 } else {
 	app.disable('x-powered-by');
 	app.use(morgan('common'));
-	app.get('/', (req, res) => {
-		res.sendFile(path.join(__dirname, '/src/build', 'index.html'));
-	});
 
 	// Auto wake up heroku
 	app.get('/wakeup-heroku', (req, res) => res.send(''));
@@ -90,7 +89,7 @@ if (process.env.NODE_ENV?.trim() === 'development') {
 app.use(unlessRoute([], checkInitSystemMiddleware));
 app.use(
 	unlessRoute(
-		['/auth', '/init-system', '/api/new-payment-history', '/'],
+		['/auth', '/init-system', '/api/new-payment-history', '/wakeup-heroku'],
 		authMiddleware
 	)
 );

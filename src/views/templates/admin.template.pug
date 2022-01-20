@@ -18,7 +18,7 @@ block content
 
       .account-side.center-vertical
         .d-flex.flex-column.mx-4
-          .username Username
+          .username= user.username || 'Username'
           .role Admin
         a(href="/auth/logout") #[i.mgmt-icon.bi.bi-box-arrow-in-right]
 

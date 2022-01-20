@@ -15,6 +15,11 @@
 
 ---
 
+## Live Demo
+
+- Management System: https://cp-management.herokuapp.com
+- Payment System: https://cp-payment.herokuapp.com
+
 ## Công nghệ sử dụng
 
 - Server: NodeJS, ExpressJS MVC
@@ -55,7 +60,7 @@
   - Slack
   - Github, Github Project
 - Cloud, Hosting
-  - Hosting: Vercel.
+  - Hosting: Heroku.
   - PostgreSQL DB Cloud: ElephantSQL.
   - Photo Cloud: Cloudinary.
 

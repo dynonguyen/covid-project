@@ -22,6 +22,7 @@ exports.getUserList = async (req, res) => {
 	let { page = 1, sort = '', search = '' } = req.query;
 	const sortList = parseSortStr(sort);
 	const order = sortList.map((i) => i.split(' '));
+	const { accountId } = req.user;
 
 	page = Number(page);
 	if (isNaN(page) || page < 1) page = 1;
@@ -57,7 +58,10 @@ exports.getUserList = async (req, res) => {
 				[Sequelize.col('account.isLocked'), 'isLocked'],
 			],
 			include: [{ model: Account, as: 'account', attributes: [] }],
-			where,
+			where: {
+				managerId: accountId,
+				...where,
+			},
 			limit: MAX.PAGE_SIZE,
 			offset: (page - 1) * MAX.PAGE_SIZE,
 		});

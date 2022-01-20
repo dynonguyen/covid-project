@@ -1,0 +1,33 @@
+extends ../../templates/management.template.pug
+include ../../mixins/chartjs-script.mixin.pug
+
+block title
+  title Thống kê mức độ tiêu thụ gói nhu yếu phẩm | Covid Project
+
+block append addStyle
+
+block addContent
+  .p-3.flex-grow-1.wrapper
+    h1.title.my-3(style="font-size:1.5rem") Thống kê mức độ tiêu thụ gói nhu yếu phẩm năm #{year}
+    .d-flex.mb-5
+      select#yearSelect.field.bg-white.sm-box-shadow
+        option(value="", hidden, disabled, selected) Chọn năm thống kê
+        - const currentYear = new Date().getFullYear()
+        each _, i in new Array(10).fill(1)
+          option(value=currentYear-i) Năm #{currentYear - i}
+    .row.mt-4
+      .col-12.col-xl-6
+        .chart-wrap
+          canvas#revenueChart.w-100.h-100
+      .col-12.col-xl-6
+        .chart-wrap.mt-xl-0.mt-5
+          canvas#totalPackChart.w-100.h-100
+
+block append addScript
+  +chartjsScript
+  script.
+    const revenuesRaw = "#{revenues}";
+    const revenues = revenuesRaw ? revenuesRaw.split(',').map(i=>Number(i)) : [];
+    const totalPackagesRaw = "#{totalPackages}";
+    const totalPackages = totalPackagesRaw ? totalPackagesRaw.split(',').map(i=>Number(i)) : [];
+  script(src="/js/management/consumption-stats.js")

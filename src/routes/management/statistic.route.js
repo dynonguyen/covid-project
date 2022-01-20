@@ -6,14 +6,6 @@ statisticRoute.get(
 	statisticController.getStatusfTimeStatistic
 );
 
-statisticRoute.get(
-	'/packages-time',
-	statisticController.getPackagesTimeStatistic
-);
-
-statisticRoute.get(
-	'/payment-time',
-	statisticController.getPaymentTimeStatistic
-);
+statisticRoute.get('/consumption', statisticController.getConsumptionStatistic);
 
 module.exports = statisticRoute;

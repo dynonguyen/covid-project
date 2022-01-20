@@ -2,7 +2,30 @@ const { Sequelize } = require('sequelize');
 const TreatmentHistory = require('../../models/treatment-history.model');
 const { Op } = require('../../configs/db.config');
 const ConsumptionHistory = require('../../models/consumption-history.model');
-const PaymentHistory = require('../../models/payment-history.model');
+
+async function getRevenueByMonth(month = 1, year = 2020) {
+	const start = new Date(year, month - 1, 1);
+	const end = new Date(year, month - 1, 30);
+
+	try {
+		const data = await ConsumptionHistory.findAndCountAll({
+			raw: true,
+			where: {
+				buyDate: {
+					[Op.and]: [{ [Op.gte]: start }, { [Op.lt]: end }],
+				},
+			},
+			attributes: ['totalPrice'],
+		});
+
+		const revenue = data.rows.reduce((sum, item) => sum + item.totalPrice, 0);
+
+		return { count: data.count, revenue };
+	} catch (error) {
+		console.log('FUNCTION getRevenueByMonth ERROR: ', error);
+		return { count: 0, revenue: 0 };
+	}
+}
 
 exports.getStatusfTimeStatistic = async (req, res) => {
 	const { start, end } = req.query;
@@ -50,104 +73,34 @@ exports.getStatusfTimeStatistic = async (req, res) => {
 	}
 };
 
-exports.getPackagesTimeStatistic = async (req, res) => {
-	const { start, end } = req.query;
-	const andOps = [];
-	start &&
-		andOps.push({
-			startDate: {
-				[Op.gte]: new Date(start),
-			},
-		});
-	end &&
-		andOps.push({
-			startDate: {
-				[Op.lte]: new Date(end),
-			},
-		});
+exports.getConsumptionStatistic = async (req, res) => {
+	const year = Number(req.query.year) || new Date().getFullYear();
 
-	const where = {
-		[Op.and]: andOps,
-	};
-
+	const revenues = new Array(12).fill(0),
+		totalPackages = new Array(12).fill(0);
 	try {
-		const consumptionStat = await ConsumptionHistory.findAll({
-			raw: true,
-			attributes: ['buyDate', 'productPackageId', 'totalPrice'],
-			where,
-			group: ['buyDate', 'productPackageId', 'totalPrice'],
-		});
-
-		let totalPriceArr = [];
-		for (let i = 0; i < consumptionStat.length; ++i) {
-			totalPriceArr.push(consumptionStat[i].totalPrice);
+		const promises = [];
+		for (let i = 1; i <= 12; ++i) {
+			promises.push(
+				getRevenueByMonth(i, year).then((data) => {
+					revenues[i - 1] = data.revenue;
+					totalPackages[i - 1] = data.count;
+				})
+			);
 		}
+		await Promise.all(promises);
 
-		let productPackageIdArr = [];
-		for (let i = 0; i < consumptionStat.length; ++i) {
-			productPackageIdArr.push(consumptionStat[i].productPackageId);
-		}
-
-		return res.render('./management/statistic/packages-time.pug', {
-			chartData: totalPriceArr,
-			chartDataX: productPackageIdArr,
-			end,
+		return res.render('./management/statistic/consumption.pug', {
+			revenues,
+			totalPackages,
+			year,
 		});
 	} catch (error) {
-		console.error('Function getStatusfTimeStatistic Error: ', error);
-		return res.render('404');
-	}
-};
-
-exports.getPaymentTimeStatistic = async (req, res) => {
-	const { start, end } = req.query;
-	const andOps = [];
-	start &&
-		andOps.push({
-			startDate: {
-				[Op.gte]: new Date(start),
-			},
+		console.error('Function getConsumptionStatistic Error: ', error);
+		return res.render('./management/statistic/consumption.pug', {
+			revenues: new Array(12).fill(0),
+			totalPackages: new Array(12).fill(0),
+			year,
 		});
-	end &&
-		andOps.push({
-			startDate: {
-				[Op.lte]: new Date(end),
-			},
-		});
-
-	const where = {
-		[Op.and]: andOps,
-	};
-
-	try {
-		const paymentStat = await PaymentHistory.findAll({
-			raw: true,
-			attributes: ['paymentHistoryId', 'userId', 'currentBalance'],
-			where,
-			group: ['paymentHistoryId', 'userId', 'currentBalance'],
-		});
-
-		const paymentStatSort = paymentStat
-			.sort((a, b) => a.paymentHistoryId - b.paymentHistoryId)
-			.map((i) => i);
-
-		let userIdArr = [];
-		for (let i = 0; i < paymentStatSort.length; ++i) {
-			userIdArr.push(paymentStatSort[i].userId);
-		}
-
-		let currentBalanceArr = [];
-		for (let i = 0; i < paymentStatSort.length; ++i) {
-			currentBalanceArr.push(paymentStatSort[i].currentBalance);
-		}
-
-		return res.render('./management/statistic/payment-time.pug', {
-			chartData: currentBalanceArr,
-			chartDataX: userIdArr,
-			end,
-		});
-	} catch (error) {
-		console.error('Function getStatusfTimeStatistic Error: ', error);
-		return res.render('404');
 	}
 };

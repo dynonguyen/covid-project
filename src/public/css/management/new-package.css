@@ -26,15 +26,8 @@
 }
 
 .selectize-input {
-	border-radius: 25px;
+	border-radius: 25px !important;
 }
-
-/* .related-user {
-	background-color: var(--light-gray);
-	padding: 0.75rem;
-	border-radius: 8px;
-	margin: 0.75rem 0;
-} */
 
 .toggle-action i[class*='bi-chevron'] {
 	position: absolute;

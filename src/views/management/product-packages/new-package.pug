@@ -8,6 +8,7 @@ block title
 
 block append addStyle
 
+  link(rel="stylesheet", href="/vendors/selectize/selectize.min.css")
   link(rel="stylesheet", href="/css/management/new-package.css")
 
 block addContent
@@ -30,8 +31,6 @@ block addContent
               i.bi.bi-chevron-down
             #productBox
               .product-list
-                //- button.btn.btn-outline-info.text-center.w-100.mt-3.add-form-btn(data-toggle-target="productAddForm", data-f="product") #[span Thêm mới] #[i.bi.bi-plus.ml-2]
-                //- #productAddForm
                 .toggle-form.p-3
                   .addProduct.mb-3
                     select.mb-2#product(name="productId")

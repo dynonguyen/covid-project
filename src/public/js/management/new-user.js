@@ -589,4 +589,6 @@ $(document).ready(async function () {
 		renderAddUserForm(target, Number(statusF));
 		addForm.slideToggle(250);
 	});
+
+	console.log('object', relatedUsers);
 });

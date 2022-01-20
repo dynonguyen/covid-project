@@ -1,12 +1,9 @@
-const { parseSortStr } = require('../../helpers/index.helpers');
-
 const { Sequelize } = require('sequelize');
 const {
 	formatCurrency,
 	getPackageList,
 } = require('../../helpers/index.helpers');
-const { MAX } = require('../../constants/index.constant');
-const { Op } = require('../../configs/db.config');
+const { Op, db } = require('../../configs/db.config');
 const ProductInPackage = require('../../models/product-in-package.model');
 const ProductPackage = require('../../models/product-package.model');
 const Product = require('../../models/product.model');
@@ -151,9 +148,11 @@ exports.postNewPackage = async (req, res) => {
 		limitedInWeek,
 		limitedInDay,
 		limitedInMonth,
-		productId,
-		maxQuantity,
+		products = [],
 	} = req.body;
+
+	const tx = await db.transaction();
+
 	try {
 		// check package existence
 		const isPackageExist = await ProductPackage.findOne({
@@ -168,46 +167,70 @@ exports.postNewPackage = async (req, res) => {
 		});
 
 		if (isPackageExist) {
-			return res.render('./management/product-packages/new-package.pug', {
+			return res.status(400).json({
 				productPackageName,
 				msg: 'Gói nhu yếu phẩm đã tồn tại',
 			});
 		}
 
-		// Create a new package
-		const productPackage = await ProductPackage.create({
-			productPackageName,
-			limitedProducts,
-			limitedInDay,
-			limitedInWeek,
-			limitedInMonth,
+		// Calculate total price
+		let totalPrice = 0;
+		const pricePromises = [];
+		products.forEach((p) => {
+			pricePromises.push(
+				Product.findOne({
+					raw: true,
+					where: { productId: parseInt(p.productId) },
+				}).then((prod) => (totalPrice += prod?.price || 0))
+			);
 		});
 
+		await Promise.all(pricePromises);
+
+		// Create a new package
+		const productPackage = await ProductPackage.create(
+			{
+				productPackageName,
+				limitedProducts,
+				limitedInDay,
+				limitedInWeek,
+				limitedInMonth,
+				totalPrice,
+			},
+			{ transaction: tx }
+		);
+
+		console.log('total price', totalPrice);
 		if (!productPackage) {
 			throw new Error('Failed to create a new package');
 		}
 
 		const { productPackageId } = productPackage;
 
-		// Add a product into this package
-		const productInPackage = await ProductInPackage.create({
-			maxQuantity,
-			productId,
-			productPackageId,
+		// Add products into this package
+		const promises = [];
+		products.forEach((p) => {
+			promises.push(
+				ProductInPackage.create(
+					{
+						maxQuantity: parseInt(p.maxQuantity),
+						productId: parseInt(p.productId),
+						productPackageId,
+					},
+					{ transaction: tx }
+				)
+			);
 		});
 
-		if (!productInPackage) {
-			throw new Error('Failed to add a product into this package');
-		}
+		await Promise.all(promises);
+		await tx.commit();
 
-		return res.render('./management/product-packages/new-package.pug', {
-			productPackageName,
-			isSuccess: true,
-			msg: 'Thêm gói nhu yếu phẩm thành công',
-		});
+		return res.status(200).json({});
 	} catch (error) {
 		console.error('Function postNewPackage Error: ', error);
-		return res.render('./management/product-packages/new-package.pug', {
+		await tx.rollback();
+
+		return res.status(500).json({
 			productPackageName,
 			msg: 'Thêm gói nhu yếu phẩm thất bại ! Thử lại',
 		});

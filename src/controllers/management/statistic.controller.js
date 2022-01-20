@@ -1,6 +1,6 @@
-const { Sequelize } = require('sequelize');
+const { Sequelize, QueryTypes } = require('sequelize');
 const TreatmentHistory = require('../../models/treatment-history.model');
-const { Op } = require('../../configs/db.config');
+const { Op, db } = require('../../configs/db.config');
 const ConsumptionHistory = require('../../models/consumption-history.model');
 const PaymentHistory = require('../../models/payment-history.model');
 const { getUserDebtList } = require('../../payment-api');
@@ -182,6 +182,35 @@ exports.getPaymentStatistic = async (req, res) => {
 			payments,
 			debts,
 			year,
+		});
+	}
+};
+
+exports.getProductStatistic = async (req, res) => {
+	try {
+		const data = await db.query(
+			`SELECT p."productName", SUM(c.quantity) AS "total" FROM "ConsumptionPIP" c, "Product" p, "ProductInPackage" pip
+    WHERE c."productInPackageId" = pip."productInPackageId" AND pip."productId" = p."productId"
+    GROUP BY p."productName"`,
+			{ type: QueryTypes.SELECT }
+		);
+
+		const products = [],
+			quantities = [];
+		data.forEach((item) => {
+			products.push(item.productName);
+			quantities.push(Number(item.total));
+		});
+
+		return res.render('./management/statistic/product.pug', {
+			products,
+			quantities,
+		});
+	} catch (error) {
+		console.error('Function getProductStatistic Error: ', error);
+		return res.render('./management/statistic/product.pug', {
+			products: [],
+			quantities: [],
 		});
 	}
 };

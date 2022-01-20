@@ -9,15 +9,16 @@ block append addStyle
 block addContent
   .p-3.flex-grow-1.wrapper
     h1.title.my-3(style="font-size:1.5rem") Thống kê thanh toán, dư nợ năm #{year}
-    .d-flex.mb-5
-      select#yearSelect.field.bg-white.sm-box-shadow
-        option(value="", hidden, disabled, selected) Chọn năm thống kê
-        - const currentYear = new Date().getFullYear()
-        each _, i in new Array(10).fill(1)
-          option(value=currentYear-i) Năm #{currentYear - i}
+    .container
+      .d-flex.mb-5
+        select#yearSelect.field.bg-white.sm-box-shadow
+          option(value="", hidden, disabled, selected) Chọn năm thống kê
+          - const currentYear = new Date().getFullYear()
+          each _, i in new Array(10).fill(1)
+            option(value=currentYear-i) Năm #{currentYear - i}
 
-    .chart-wrap
-      canvas#chart.w-100.h-100
+      .chart-wrap
+        canvas#chart.w-100.h-100
 
 block append addScript
   +chartjsScript

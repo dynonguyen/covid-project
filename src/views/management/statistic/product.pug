@@ -1,0 +1,23 @@
+extends ../../templates/management.template.pug
+include ../../mixins/chartjs-script.mixin.pug
+
+block title
+  title Thống kê tiêu thụ sản phẩm | Covid Project
+
+block append addStyle
+
+block addContent
+  .p-3.flex-grow-1.wrapper
+    h1.title.mt-3.mb-5(style="font-size:1.5rem") Thống kê tiêu thụ sản phẩm
+    .container
+      .chart-wrap
+        canvas#chart.w-100
+
+block append addScript
+  +chartjsScript
+  script.
+    const productsRaw = "#{products}";
+    const products = productsRaw ? productsRaw.split(',').map(i=>i) : [];
+    const quantitiesRaw = "#{quantities}";
+    const quantities = quantitiesRaw ? quantitiesRaw.split(',').map(i=>Number(i)) : [];
+  script(src="/js/management/product-stats.js")

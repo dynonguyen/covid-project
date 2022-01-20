@@ -14,9 +14,9 @@ block append addStyle
 block addContent
   +toastMsg(msg,isSuccess)
 
-  .p-4.flex-grow-1
+  .p-4.flex-grow-1.mw-100
     .flex-center
-      form#form.bg-white.p-4.m-0-auto(action="/management/product-packages/new", method="POST")
+      form#form.bg-white.p-4.m-0-auto.mw-100(action="/management/product-packages/new", method="POST")
         .form-title
           h1.title.text-center.mb-4 Thêm gói nhu yếu phẩm
         .d-flex.flex-column
@@ -35,7 +35,7 @@ block addContent
                   .addProduct.mb-3
                     select.mb-2#product(name="productId")
                       option(selected, hidden, disabled, value) Chọn sản phẩm
-                    input#maxQuantity.field.w-100(type="number", name="maxQuantity", placeholder="Nhập giới hạn gói", min="0", max="1000")
+                    input#maxQuantity.field.w-100(type="number", name="maxQuantity", placeholder="Nhập giới sản phẩm trong gói", min="0", max="1000")
                   .text-right.mt-4
                     .btn.btn-primary.product-add-btn Thêm
 

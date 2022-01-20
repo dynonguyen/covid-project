@@ -1,7 +1,6 @@
 extends ../../templates/management.template.pug
 include ../../mixins/navbar.mixin.pug
 include ../../mixins/footer.mixin.pug
-//- include ../../mixins/package-card.mixin.pug
 include ../../mixins/scroll-top.mixin.pug
 include ../../mixins/no-result.mixin.pug
 
@@ -17,8 +16,8 @@ block addContent
   .toast-msg#toastMsg
 
   .p-4.flex-grow-1
-    #search.d-flex.mb-4
-      input#searchInput.bg-white.field(type="text", placeholder="Nhập tên gói cần tìm", style="border-radius: 8px")
+    #search.d-flex.mb-4.search
+      input#searchInput.bg-white.field(type="text", placeholder="Nhập tên gói cần tìm")
       button#searchBtn.btn.btn-info #[i.bi.bi-search]
     if searchKeyword
       h5.my-3.text-info Kết quả tìm kiếm cho: #[b.mx-3= searchKeyword] #[i.bi.bi-x-square-fill.text-danger.cur-pointer#destroySearch]

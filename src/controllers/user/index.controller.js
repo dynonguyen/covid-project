@@ -112,7 +112,7 @@ exports.getPackageDetail = async (req, res) => {
 							order: [['isThumbnail', 'DESC']],
 							limit: 6,
 						}).then((photos) => {
-							p.thumbnail = photos[0];
+							p.thumbnail = photos[0]?.src;
 							p.photos = [...photos.slice(1).map((i) => i.src)];
 						})
 					)

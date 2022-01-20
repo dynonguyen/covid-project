@@ -9,6 +9,12 @@
 	text-transform: uppercase;
 }
 
+#form {
+	border-radius: 12px;
+	box-shadow: var(--sm-box-shadow);
+	width: 567px;
+}
+
 .f-box {
 	color: var(--blue);
 	font-size: 1.15rem;

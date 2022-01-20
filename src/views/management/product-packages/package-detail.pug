@@ -28,7 +28,7 @@ block append style
 block addContent
   .toast-msg#toastMsg
 
-  .p-4.flex-grow-1
+  .py-4.flex-grow-1.container
     - const { productPackageId, productPackageName, limitedProducts, limitedInDay, limitedInWeek, limitedInMonth, totalPrice } = package;
     h1.text-uppercase.text-left.mb-4 Chi tiết gói sản phẩm - #{productPackageName}
     .package-info

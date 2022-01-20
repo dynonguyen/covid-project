@@ -458,7 +458,7 @@ exports.getPackageList = async (page = 1, pageSize = 12, query) => {
 						ProductImage.findOne({
 							raw: true,
 							where: {
-								productId: data[0].productId,
+								productId: data[0]?.productId || 0,
 								isThumbnail: true,
 							},
 							attributes: ['src'],

@@ -122,6 +122,7 @@ $(document).ready(async function () {
 			return showToastMsg(toastMsg, 'Vui lòng nhập địa chỉ chi tiết', 'danger');
 		}
 
+		$('#submitBt').addClass('disabled');
 		this.submit();
 	});
 });

@@ -9,7 +9,7 @@ mixin packageCard(packageId, packageName, thumbnail, packagePrice, products)
       if products
         ul.p-0
           each product in products
-            li.product-item #[span= product.productName] #[span.text-gray #{helpers.formatCurrency(product.productPrice)} / #{product.productUnit}]
+            li.product-item #[span= product.productName] #[span.product-price.text-gray #{helpers.formatCurrency(product.productPrice)} / #{product.productUnit}]
       p.mt-auto.package-card__price #[span.price= packagePrice]
     .package-card__bottom
       button.btn.btn-primary.w-100.add-cart-btn(data-id=packageId) Thêm vào giỏ hàng #[i.bi.bi-cart-plus-fill]

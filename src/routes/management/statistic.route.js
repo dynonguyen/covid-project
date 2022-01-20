@@ -6,4 +6,9 @@ statisticRoute.get(
 	statisticController.getStatusfTimeStatistic
 );
 
+statisticRoute.get(
+	'/packages-time',
+	statisticController.getPackagesTimeStatistic
+);
+
 module.exports = statisticRoute;

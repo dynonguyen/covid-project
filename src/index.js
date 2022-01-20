@@ -57,10 +57,7 @@ app.use(passport.session());
 app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views'));
 
-// set logging
-app.use(morgan('tiny'));
-
-// https for localhost
+// https for localhost and wake up heroku server in production
 let server = app;
 if (process.env.NODE_ENV?.trim() === 'development') {
 	const key = fs.readFileSync(__dirname + '/key/key.pem');
@@ -71,13 +68,29 @@ if (process.env.NODE_ENV?.trim() === 'development') {
 	};
 	process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 	server = https.createServer(options, app);
+
+	// set logging
+	app.use(morgan('tiny'));
+} else {
+	app.disable('x-powered-by');
+	app.use(morgan('common'));
+	app.get('/', (req, res) => {
+		res.sendFile(path.join(__dirname, '/src/build', 'index.html'));
+	});
+
+	// Auto wake up heroku
+	app.get('/wakeup-heroku', (req, res) => res.send(''));
+	const timer = 25 * 60 * 1000; // 25 minutes
+	setInterval(() => {
+		https.get('https://cp-management.herokuapp.com/wakeup-heroku');
+	}, timer);
 }
 
 /* ============== Global Middleware =============== */
 app.use(unlessRoute([], checkInitSystemMiddleware));
 app.use(
 	unlessRoute(
-		['/auth', '/init-system', '/api/new-payment-history'],
+		['/auth', '/init-system', '/api/new-payment-history', '/'],
 		authMiddleware
 	)
 );

@@ -137,7 +137,7 @@ exports.getPackageDetail = async (req, res) => {
 };
 
 exports.getCart = async (req, res) => {
-	const cart = JSON.parse(req.cookies.cart) || [];
+	const cart = JSON.parse(req.cookies?.cart || '[]') || [];
 
 	try {
 		const packages = [];

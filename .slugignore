@@ -2,7 +2,7 @@
 *.psd
 *.pdf
 /references
-/databases
+/database
 .local.env
 jsconfig.json
 README.md

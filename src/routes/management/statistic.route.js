@@ -7,5 +7,6 @@ statisticRoute.get(
 );
 
 statisticRoute.get('/consumption', statisticController.getConsumptionStatistic);
+statisticRoute.get('/payment', statisticController.getPaymentStatistic);
 
 module.exports = statisticRoute;

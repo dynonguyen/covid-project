@@ -1,6 +1,10 @@
---
--- Insert data to Province table
---
+-- ----------------------------
+-- Script to insert data for "covid-project" database
+-- ----------------------------
+
+-- ----------------------------
+-- Records of Province
+-- ----------------------------
 
 INSERT INTO "Province" ("id", "name", "code") VALUES
 (1, 'Hồ Chí Minh', 'SG'),
@@ -68,9 +72,9 @@ INSERT INTO "Province" ("id", "name", "code") VALUES
 (63, 'Cao Bằng', 'CB');
 
 
---
--- Insert data for District table
---
+-- ----------------------------
+-- Records of District
+-- ----------------------------
 
 INSERT INTO "District" ("id", "name", "prefix", "provinceId") VALUES
 (1, 'Bình Chánh', 'Huyện', 1),
@@ -783,9 +787,9 @@ INSERT INTO "District" ("id", "name", "prefix", "provinceId") VALUES
 (708, 'Trà Lĩnh', 'Huyện', 63),
 (709, 'Trùng Khánh', 'Huyện', 63);
 
---
--- Insert data to Ward table
---
+-- ----------------------------
+-- Records of Ward
+-- ----------------------------
 
 INSERT INTO "Ward" ("id", "name", "prefix", "districtId") VALUES
 (1, 'An Phú Tây', 'Xã', 1),
@@ -12071,3 +12075,25 @@ INSERT INTO "Ward" ("id", "name", "prefix", "districtId") VALUES
 (11281, 'Thông Huề', 'Xã', 709),
 (11282, 'Trùng Khánh', 'Thị trấn', 709),
 (11283, 'Trung Phúc', 'Xã', 709);
+
+-- ----------------------------
+-- Records of Address
+-- ----------------------------
+INSERT INTO "Address" ("details", "wardId") VALUES ('Số 146/7, Bùi Thị Xuân', 18);
+INSERT INTO "Address" ("details", "wardId") VALUES ('Hẻm 456/31 Cao Thắng', 934);
+INSERT INTO "Address" ("details", "wardId") VALUES ('124, Đường Võ Văn Phú', 343);
+INSERT INTO "Address" ("details", "wardId") VALUES ('Tô Vĩnh Diện, Đường Đ. Mạc Đĩnh Chi', 322);
+INSERT INTO "Address" ("details", "wardId") VALUES ('182, Xuân Quỳnh', 2336);
+INSERT INTO "Address" ("details", "wardId") VALUES ('Số 899/12, Nguyễn Khuyến', 922);
+INSERT INTO "Address" ("details", "wardId") VALUES ('Số 198, Đường Thiên Hộ Dương', 8851);
+
+-- ----------------------------
+-- Records of IsolationFacility
+-- ----------------------------
+INSERT INTO "IsolationFacility" ("isolationFacilityName", "capacity", "currentQuantity", "addressId") VALUES ('Đồng Khánh', 1000, 0, 1);
+INSERT INTO "IsolationFacility" ("isolationFacilityName", "capacity", "currentQuantity", "addressId") VALUES ('Bông Sen', 250, 0, 2);
+INSERT INTO "IsolationFacility" ("isolationFacilityName", "capacity", "currentQuantity", "addressId") VALUES ('Đại Nam', 880, 0, 3);
+INSERT INTO "IsolationFacility" ("isolationFacilityName", "capacity", "currentQuantity", "addressId") VALUES ('Ký Túc Xá Khu B - DHQG HCM', 10000, 0, 4);
+INSERT INTO "IsolationFacility" ("isolationFacilityName", "capacity", "currentQuantity", "addressId") VALUES ('Bệnh Viện Y Dược Cần Thơ', 5000, 0, 5);
+INSERT INTO "IsolationFacility" ("isolationFacilityName", "capacity", "currentQuantity", "addressId") VALUES ('Tâm Thái Dương', 120, 0, 6);
+INSERT INTO "IsolationFacility" ("isolationFacilityName", "capacity", "currentQuantity", "addressId") VALUES ('Bệnh viện Hữu Nghị', 2000, 0, 7);

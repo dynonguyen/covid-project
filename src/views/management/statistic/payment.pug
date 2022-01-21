@@ -14,7 +14,7 @@ block addContent
         select#yearSelect.field.bg-white.sm-box-shadow
           option(value="", hidden, disabled, selected) Chọn năm thống kê
           - const currentYear = new Date().getFullYear()
-          each _, i in new Array(10).fill(1)
+          each _, i in new Array(4).fill(1)
             option(value=currentYear-i) Năm #{currentYear - i}
 
       .chart-wrap

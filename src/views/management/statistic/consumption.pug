@@ -13,18 +13,21 @@ block addContent
       select#yearSelect.field.bg-white.sm-box-shadow
         option(value="", hidden, disabled, selected) Chọn năm thống kê
         - const currentYear = new Date().getFullYear()
-        each _, i in new Array(10).fill(1)
+        each _, i in new Array(4).fill(1)
           option(value=currentYear-i) Năm #{currentYear - i}
-    .row.mt-4
+    .row.my-4
       .col-12.col-xl-6
+        .text-gray.mb-3 Tổng doanh thu năm #{year}: #[b.text-danger#totalRevenue]
         .chart-wrap
           canvas#revenueChart.w-100.h-100
       .col-12.col-xl-6
+        .text-gray.mb-3 Tổng mức tiêu thụ năm #{year}: #[b.text-danger#totalPack]
         .chart-wrap.mt-xl-0.mt-5
           canvas#totalPackChart.w-100.h-100
 
 block append addScript
   +chartjsScript
+  script(src="/js/helpers/utils.js")
   script.
     const revenuesRaw = "#{revenues}";
     const revenues = revenuesRaw ? revenuesRaw.split(',').map(i=>Number(i)) : [];

@@ -41,6 +41,13 @@ $(document).ready(function () {
 		'rgb(230, 68, 114)'
 	);
 
+	$('#totalRevenue').text(
+		formatCurrency(revenues?.reduce((sum, r) => sum + r, 0) || 0)
+	);
+	$('#totalPack').text(
+		`${totalPackages?.reduce((sum, p) => sum + p, 0) || 0} Gói`
+	);
+
 	$('#yearSelect').change(function () {
 		const year = Number($(this).val());
 		location.href = `/management/statistic/consumption?year=${year}`;

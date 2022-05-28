@@ -78,11 +78,11 @@ if (process.env.NODE_ENV?.trim() === 'development') {
 	app.use(morgan('common'));
 
 	// Auto wake up heroku
-	app.get('/wakeup-heroku', (req, res) => res.send(''));
-	const timer = 25 * 60 * 1000; // 25 minutes
-	setInterval(() => {
-		https.get('https://cp-management.herokuapp.com/wakeup-heroku');
-	}, timer);
+	// app.get('/wakeup-heroku', (req, res) => res.send(''));
+	// const timer = 25 * 60 * 1000; // 25 minutes
+	// setInterval(() => {
+	// 	https.get('https://cp-management.herokuapp.com/wakeup-heroku');
+	// }, timer);
 }
 
 /* ============== Global Middleware =============== */
@@ -121,3 +121,4 @@ db.sync({ after: true }).then((_) => {
 		console.log(`Server is listening on port ${PORT}`);
 	});
 });
+
